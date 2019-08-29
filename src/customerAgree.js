@@ -307,7 +307,7 @@ export default class customerAgree extends Component<Props>{
                   customerName: customerName,
                   measurementDate: measurementDate,
                   mobileNo: mobileNo,
-                  delivery_date : responseData.delivery_date
+                  delivery_date: responseData.delivery_date
                 });
               })
 
@@ -674,17 +674,7 @@ export default class customerAgree extends Component<Props>{
               <Text style={{ fontSize: 20 }}>Choose delivery option </Text>
 
               <View style={{ flex: 1, marginTop: 10 }}>
-                <View>
-                  <TouchableOpacity
-                    style={{ flex: 1, flexDirection: 'row' }}
-                    onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
-                    {deliveryOption === 'itemTwo'
-                      ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                      : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                    }
-                    <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>
-                  </TouchableOpacity>
-                </View>
+
                 <View>
                   <TouchableOpacity
                     style={{ flex: 1, flexDirection: 'row' }}
@@ -694,6 +684,17 @@ export default class customerAgree extends Component<Props>{
                       : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                     }
                     <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={{ flex: 1, flexDirection: 'row' }}
+                    onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
+                    {deliveryOption === 'itemTwo'
+                      ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
+                      : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
+                    }
+                    <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>
                   </TouchableOpacity>
                 </View>
                 {renderIf(deliveryOption == 'itemTwo')(

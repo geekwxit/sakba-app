@@ -53,7 +53,7 @@ export default class PayPal extends React.Component {
         }
     };
     handleBackButtonClick() {
-        alert('you are in back')
+        // alert('you are in back')
         return true;
     }
     render() {

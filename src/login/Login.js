@@ -176,25 +176,8 @@ export default class Login extends Component {
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                 <Text style={{ fontSize: 18, fontWeight: 'bold' }}>OR</Text>
               </View>
-              <View style={{ flex:1,flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-                
-                  <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }} onPress={() => {
-                    Linking.canOpenURL('https://wa.me/96566333116')
-                      .then(supported => {
-                        if (!supported) {
-                          alert(
-                            'Please install whats app to send direct message'
-                          );
-                        } else {
-                          return Linking.openURL('https://wa.me/96566333116');
-                        }
-                      })
-                      .catch(err => console.error('An error occurred', err));
-                  }}>
-                    <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{paddingRight:10 , color:'green'}}/>
-                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text>
-                  </TouchableOpacity>
-                
+              <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
+
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Please Select Your Choice </Text>
                 </View>
@@ -207,6 +190,23 @@ export default class Login extends Component {
                     onPress={() => this.visitToShop()}>
                     <Text style={{ fontSize: 20, color: 'white' }}>Visit to Shop</Text>
                   </Button>
+                  <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }} onPress={() => {
+                    Linking.canOpenURL('https://wa.me/96566333116')
+                      .then(supported => {
+                        if (!supported) {
+                          alert(
+                            'Please install whats app to send direct message'
+                          );
+                        } else {
+                          return Linking.openURL('https://wa.me/96566333116');
+                        }
+                      })
+                      .catch(err => console.error('An error occurred', err));
+                  }}>
+                    <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{fontSize:50,marginTop:20,   paddingRight: 10, color: 'green' }} />
+                    {/* <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text> */}
+                  </TouchableOpacity>
+
                 </View>
               </View>
             </View>

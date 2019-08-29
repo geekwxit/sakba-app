@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ScrollView, Linking, BackHandler } from 'react-native';
+import { View, Text, Image, Dimensions, StyleSheet, ScrollView, Linking, BackHandler , TouchableOpacity} from 'react-native';
 import { Button, Container, Content } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
@@ -24,7 +24,7 @@ export default class OrderDetail extends Component<Props>{
       tableHead: ['Product / Service', 'Total'],
       widthArr: [180, 125],
       page: 'OrderDetail', emailId: '',
-      id: id,
+      id: id, isLoading: false,
     };
     this.url = "http://sakba.net/payment.php?Sid=" + id + "&&token=" + token;
 
@@ -89,15 +89,17 @@ export default class OrderDetail extends Component<Props>{
     //   })
     //   .catch(error => console.log(error)); 
   }
-  async secondCallForPayment(data) {
-    // try{
-    //   const response = await AxiosInstance.post(,{
-    //     ID , confirm
-    //   })
-    // }catch(e){
-    //   console.log(e)
-    // }
-  }
+  // async secondCallForPayment(data) {
+  //   this.setState({isLoading: true});
+  //   try {
+  //     const requestPaymentApiCall = await Axios.post('http://sakba.net/mobileApi/all-number.php',);
+  //     const mobileNumberList = requestPaymentApiCall.data.error;
+  //     this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
+  //   } catch (err) {
+  //     alert(err);
+  //     console.log("Error fetching data-----------", err);
+  //   }
+  // }
 
 
 
@@ -290,7 +292,7 @@ export default class OrderDetail extends Component<Props>{
             </View>
 
             <View>
-              <Text style={{ fontSize: 20 , textAlign:'center'}}> Expected Delivery on {delivery_date}</Text>
+              <Text style={{ fontSize: 20, textAlign: 'center' }}> Expected Delivery on {delivery_date}</Text>
             </View>
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
@@ -300,6 +302,14 @@ export default class OrderDetail extends Component<Props>{
                 </Button>
               </View>
             )}
+            <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', color:'blue' }}
+              onPress={() => { this.props.navigation.navigate('sign_up',{
+                mobileNo : this.props.navigation.state.params.mobileNo,
+                token:this.props.navigation.state.params.token
+              })}}>
+              {/* <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{ fontSize: 50, marginTop: 20, paddingRight: 10, color: 'green' }} /> */}
+              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Request Payment Link</Text>
+            </TouchableOpacity>
             {renderIf(this.state.page == 'OrderConfirm')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate('login')}>

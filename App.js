@@ -11,7 +11,8 @@ import VisitToShopPage from './src/VisitToShopPage';
 import ExecutiveVisitPage from './src/ExecutiveVisitPage';
 import OrderDetail from './src/OrderDetail';
 import OrderConfirm from './src/OrderConfirm';
-import Paypal from './src/PayPal'
+import Paypal from './src/PayPal';
+import SignUpScreen from './src/SignUpScreen';
 
 const AppNavigator = createStackNavigator(
   {
@@ -23,7 +24,8 @@ const AppNavigator = createStackNavigator(
     executive_visitpage: ExecutiveVisitPage,
     order_detail: OrderDetail,
     order_confirm: OrderConfirm,
-    paypal: Paypal
+    paypal: Paypal,
+    sign_up:SignUpScreen
   },
   {
     initialRouteName: "login",
