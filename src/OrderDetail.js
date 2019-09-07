@@ -302,14 +302,23 @@ export default class OrderDetail extends Component<Props>{
                 </Button>
               </View>
             )}
-            <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', color:'blue' }}
-              onPress={() => { this.props.navigation.navigate('sign_up',{
-                mobileNo : this.props.navigation.state.params.mobileNo,
-                token:this.props.navigation.state.params.token
-              })}}>
-              {/* <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{ fontSize: 50, marginTop: 20, paddingRight: 10, color: 'green' }} /> */}
-              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Request Payment Link</Text>
-            </TouchableOpacity>
+            <View style={{marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }}
+                      onPress={() => { this.props.navigation.navigate('sign_up',{
+                        mobileNo : this.props.navigation.state.params.mobileNo,
+                        token:this.props.navigation.state.params.token
+                      })}}>
+                <Text style={{ fontSize: 20, color: 'white' }}>Request Payment Link</Text>
+              </Button>
+            </View>
+            {/*<TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', color:'blue' }}*/}
+            {/*  onPress={() => { this.props.navigation.navigate('sign_up',{*/}
+            {/*    mobileNo : this.props.navigation.state.params.mobileNo,*/}
+            {/*    token:this.props.navigation.state.params.token*/}
+            {/*  })}}>*/}
+            {/*  /!* <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{ fontSize: 50, marginTop: 20, paddingRight: 10, color: 'green' }} /> *!/*/}
+            {/*  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Request Payment Link</Text>*/}
+            {/*</TouchableOpacity>*/}
             {renderIf(this.state.page == 'OrderConfirm')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate('login')}>

@@ -38,7 +38,7 @@ export default class customerAgree extends Component<Props>{
       d_area: '', d_street: '', d_jada: '', d_floor: '', d_block: '', d_apartment: '',
       d_extra_Number: '', d_house: '',
       area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
-      itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: 0, address: 2, response: [], msg: '', deliveryOption: 'itemTwo',
+      itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: 0, address: 2, response: [], msg: '', deliveryOption: 'itemOne',
       deliveryOptionPickUpFormStore: 'one', delivery_date: ''
     };
   }

@@ -190,7 +190,7 @@ export default class Login extends Component {
                     onPress={() => this.visitToShop()}>
                     <Text style={{ fontSize: 20, color: 'white' }}>Visit to Shop</Text>
                   </Button>
-                  <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }} onPress={() => {
+                  <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }} onPress={() => {
                     Linking.canOpenURL('https://wa.me/96566333116')
                       .then(supported => {
                         if (!supported) {
@@ -203,7 +203,10 @@ export default class Login extends Component {
                       })
                       .catch(err => console.error('An error occurred', err));
                   }}>
-                    <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{fontSize:50,marginTop:20,   paddingRight: 10, color: 'green' }} />
+                    <View>
+                    <Image style={{width: 90, height: 90}} source={require('../../img/whatsapp.png')}/>
+                    </View>
+                    {/*<Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{fontSize:50,marginTop:20,   paddingRight: 10, color: 'green' }} />*/}
                     {/* <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text> */}
                   </TouchableOpacity>
 
