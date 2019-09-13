@@ -15,7 +15,8 @@ export default class Login extends Component {
     header: null,
   };
   constructor(props) {
-    super(props)
+    super(props);
+    //modalValue = props.navigation.getParam('shouldShow', false);
     this.state = {
       itemSelected: 'itemOne',
       flag: false, boardAddModalShow: false,
@@ -32,6 +33,7 @@ export default class Login extends Component {
     try {
       //Assign the promise unresolved first then get the data using the json method.
       const mobileNumberApiCall = await Axios.get('http://sakba.net/mobileApi/all-number.php');
+      console.log("thisi sthe tdataa", mobileNumberApiCall)
       const mobileNumberList = mobileNumberApiCall.data;
       this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
     } catch (err) {
@@ -105,6 +107,7 @@ export default class Login extends Component {
           mobileNo: mobile,
           customerName: mobileNumberFromDataBase[i].n_name,
           measurementDate: mobileNumberFromDataBase[i].n_last_mesurement_date,
+          emailID: mobileNumberFromDataBase[i].n_email
         });
         break;
       } else {

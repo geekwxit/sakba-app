@@ -19,13 +19,19 @@ export default class WelcomeCustomer extends Component {
       headerTintColor: '#fff',
     };
   };
+  state = {
+    email : this.props.navigation.getParam('emailID'),
+  }
 
   moveFunction(value, customerName, measurementDate , mobileNo) {
+    console.log("sakba data to renew: " , this.state)
+    email = this.props.navigation.state.params.emailID;
     if (value == 0) {
       this.props.navigation.navigate('customer_agree', {
         mobileNo: mobileNo,
         customerName: customerName,
-        measurementDate: measurementDate
+        measurementDate: measurementDate,
+        emailID: this.state.email
       });
     }
     else {
@@ -39,7 +45,6 @@ export default class WelcomeCustomer extends Component {
 
   render() {
     const { navigation } = this.props;
-
     var mobileNo = this.props.navigation.state.params.mobileNo;
     const customerName = navigation.getParam('customerName', '');
     const measurementDate = navigation.getParam('measurementDate', '');

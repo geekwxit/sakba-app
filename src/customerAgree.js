@@ -68,6 +68,7 @@ export default class customerAgree extends Component<Props>{
     var customerName = this.props.navigation.state.params.customerName;
     var measurementDate = this.props.navigation.state.params.measurementDate;
     var mobileNo = this.props.navigation.state.params.mobileNo;
+    var emailAddr = this.props.navigation.state.params.emailID;
     var pickup_type, delivery_type, whichStore;
     var fabricOptionValue, deliveryOptionValue, subTotal;
 
@@ -97,8 +98,7 @@ export default class customerAgree extends Component<Props>{
             d_block: block,
             d_extra_number: extra_Number,
             d_floor: floor,
-            d_house: house
-            , d_jada: jada, d_street: street
+            d_house: house, d_jada: jada, d_street: street
           })
 
           // if default condition will occur
@@ -106,7 +106,7 @@ export default class customerAgree extends Component<Props>{
           this.setState({ isLoading: true });
           fetch(url, {
             method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+            headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
             body: data
           })
             .then((response) => response.json())
@@ -122,7 +122,8 @@ export default class customerAgree extends Component<Props>{
                   customerName: customerName,
                   measurementDate: measurementDate,
                   mobileNo: mobileNo,
-                  delivery_date: responseData.delivery_date
+                  delivery_date: responseData.delivery_date,
+                  emailID: emailAddr
                 });
               })
             })
@@ -158,11 +159,11 @@ export default class customerAgree extends Component<Props>{
           delivery_type: delivery_type,
           d_store_name: whichStore
         })
-        const url = 'http://sakba.net/mobileApi/order.php';
+        const url = 'https://sakba.net/mobileApi/order.php';
         this.setState({ isLoading: true });
         fetch(url, {
           method: 'POST',
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+          headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
           body: data
         })
           .then((response) => response.json())
@@ -180,7 +181,8 @@ export default class customerAgree extends Component<Props>{
               customerName: customerName,
               measurementDate: measurementDate,
               mobileNo: mobileNo,
-              delivery_date: responseData.delivery_date
+              delivery_date: responseData.delivery_date,
+              emailID: emailAddr
             });
 
           })
@@ -226,11 +228,11 @@ export default class customerAgree extends Component<Props>{
             })
 
             // if default condition will occur
-            const url = 'http://sakba.net/mobileApi/order.php';
+            const url = 'https://sakba.net/mobileApi/order.php';
             this.setState({ isLoading: true })
             fetch(url, {
               method: 'POST',
-              headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+              headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
               body: data
             })
               .then((response) => response.json())
@@ -247,7 +249,8 @@ export default class customerAgree extends Component<Props>{
                     customerName: customerName,
                     measurementDate: measurementDate,
                     mobileNo: mobileNo,
-                    delivery_date: responseData.delivery_date
+                    delivery_date: responseData.delivery_date,
+                    emailID: emailAddr
                   });
                 })
               })
@@ -286,11 +289,11 @@ export default class customerAgree extends Component<Props>{
             p_jada: jada, p_street: street,
             d_store_name: whichStore
           })
-          const url = 'http://sakba.net/mobileApi/order.php';
+          const url = 'https://sakba.net/mobileApi/order.php';
           this.setState({ isLoading: true });
           fetch(url, {
             method: 'POST',
-            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+            headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
             body: data
           })
             .then((response) => response.json())
@@ -307,7 +310,8 @@ export default class customerAgree extends Component<Props>{
                   customerName: customerName,
                   measurementDate: measurementDate,
                   mobileNo: mobileNo,
-                  delivery_date: responseData.delivery_date
+                  delivery_date: responseData.delivery_date,
+                  emailID: emailAddr
                 });
               })
 

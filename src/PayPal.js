@@ -59,7 +59,7 @@ export default class PayPal extends React.Component {
     render() {
 
         var url = this.props.navigation.state.params.url;
-
+        console.log(" URIIIII:    ", url);
         return (
             <View style={{ marginTop: 10, flex: 1 }}>
                 <WebView

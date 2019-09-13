@@ -87,7 +87,7 @@ export default class OrderDetail extends Component<Props>{
     //             page:'OrderConfirm'
     //           })
     //   })
-    //   .catch(error => console.log(error)); 
+    //   .catch(error => console.log(error));
   }
   // async secondCallForPayment(data) {
   //   this.setState({isLoading: true});
@@ -296,19 +296,22 @@ export default class OrderDetail extends Component<Props>{
             </View>
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }}
+                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 120, justifyContent: 'center', }}
                   onPress={() => this.submitForm(total, noOfPieces)}>
-                  <Text style={{ fontSize: 20, color: 'white' }}>Pay Now !</Text>
+                  <Text style={{ fontSize: 20, color: 'white' }}>Paypal (Visa/Mastercard)</Text>
                 </Button>
               </View>
             )}
             <View style={{marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }}
+              <Button style={{ borderRadius: 15,  minWidth: width - 120, minHeight: 40, borderWidth: 2, backgroundColor: '#0451A5', paddingRight: 5, paddingLeft: 5, justifyContent: 'center' }}
                       onPress={() => { this.props.navigation.navigate('sign_up',{
                         mobileNo : this.props.navigation.state.params.mobileNo,
-                        token:this.props.navigation.state.params.token
+                        token:this.props.navigation.state.params.token,
+                        customerName: this.props.navigation.state.params.customerName,
+                        emailID: this.props.navigation.state.params.emailID,
+                        totalAmount: total
                       })}}>
-                <Text style={{ fontSize: 20, color: 'white' }}>Request Payment Link</Text>
+                <Text style={{ fontSize: 20, color: 'white' }}>Request K-Net Link</Text>
               </Button>
             </View>
             {/*<TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', color:'blue' }}*/}

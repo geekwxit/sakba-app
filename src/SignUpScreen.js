@@ -29,9 +29,16 @@ class SignUpScreen extends Component {
             headerLeft: null
         };
     };
+    constructor(props){
+        super(props);
+        console.log("this is data: ", props.navigation.getParam('customerName'));
+        console.log("amount " , props.navigation.getParam('totalAmount'));
+    }
+
     state = {
-        fullname: null, ph_number: null, email: null, pass: null, confirm_pass: null,
-        amount: null, service: null, address: null, token: this.props.navigation.state.params.mobileNo,
+        fullname: this.props.navigation.state.params.customerName, ph_number: this.props.navigation.state.params.mobileNo, email: this.props.navigation.state.params.emailID, pass: null, confirm_pass: null,
+        amount: Number(this.props.navigation.state.params.totalAmount).toString(), //service: null,
+        address: null, //token: this.props.navigation.state.params.mobileNo,
         token: this.props.navigation.state.params.token,
         error: '', sign_up: false, prevError: false, errorMsg: null, isLoading: false
     }
@@ -51,7 +58,7 @@ class SignUpScreen extends Component {
 
 
     register() {
-        const { fullname, pass, ph_number, confirm_pass, email, service, amount, address, mobileNo, token } = this.state
+        const { fullname, pass, ph_number, confirm_pass, email, amount, address, mobileNo, token } = this.state
 
         // var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         // var email_re_status = re.test(email);
@@ -81,36 +88,50 @@ class SignUpScreen extends Component {
             fullname,
             ph_number,
             email,
-            service,
+            //service,
             amount, address
         })
         console.log("object", data)
-        this.sendApiRequest(data)
+            //this.setState({isLoading: true});
+            this.sendApiRequest(data)
         // this.props.signUp(data)
         // }
     }
 
     async sendApiRequest(data) {
-        this.setState({ isLoading: true })
-        try {
+        //this.setState({ isLoading: true })
+        //try {
             //Assign the promise unresolved first then get the data using the json method.
-            const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
+         await fetch('http://sakba.net/mobileApi/requestPayment.php', {
+                method: 'POST',
+                headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
+                body: data
+            })
+                .then(response=>{return response.json()})
+                .then(response=>{
+                    console.log("sender", data);
+                    if(!response.error){
+                        this.setState({ isLoading: false });
+                        alert('Thanks')
+                        this.props.navigation.dispatch(resetAction);
+                    }
+                    else {
+                        this.setState({ isLoading: false });
+                        alert('Something wrong in your network');
+                    }
+                })
+             .catch(e=>{
+                 alert('Something wrong in your network');
+             });
 
-            if (!response.data.error) {
-                alert('Thanks')
-                this.setState({ isLoading: false });
-                this.props.navigation.dispatch(resetAction);
-            } else {
-                alert('Something wrong in your network');
-                this.setState({ isLoading: false });
-            }
-
-        } catch (err) {
-            alert("Something wrong in your network");
-            console.log("Error fetching data-----------", err);
-            this.setState({ isLoading: false });
-            // this.props.navigation.dispatch(resetAction);
-        }
+            //const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
+        //}
+        // catch (err) {
+        //     alert("Something wrong in your network");
+        //     console.log("Error fetching data-----------", err);
+        //     this.setState({ isLoading: false });
+        //      this.props.navigation.dispatch(resetAction);
+        // }
     }
 
     render() {
@@ -130,6 +151,7 @@ class SignUpScreen extends Component {
                         {/* <Text style={{color:'#333',paddingHorizontal:50,marginBottom:10,fontSize:16}}>Full Name</Text> */}
                         <View style={styles.input}>
                             <TextInput
+                                value ={this.state.fullname}
                                 autoCapitalize='none'
                                 placeholder='Enter Fullname'
                                 style={styles.TextInput}
@@ -140,6 +162,7 @@ class SignUpScreen extends Component {
                         {/* <Text style={{color:'#333',paddingHorizontal:50,marginBottom:10,fontSize:16}}>Contact Number</Text> */}
                         <View style={styles.input}>
                             <TextInput
+                                value = {this.state.ph_number}
                                 autoCapitalize='none'
                                 placeholder='Enter Contact Number'
                                 style={styles.TextInput}
@@ -150,6 +173,7 @@ class SignUpScreen extends Component {
                         {/* <Text style={{color:'#333',paddingHorizontal:50,marginBottom:10,fontSize:16}}>Email ID</Text> */}
                         <View style={styles.input}>
                             <TextInput
+                                value = {this.state.email}
                                 autoCapitalize='none'
                                 placeholder='Enter Email ID'
                                 style={styles.TextInput}
@@ -169,23 +193,26 @@ class SignUpScreen extends Component {
                         </View>
 
                         {/* <Text style={{color:'#333',paddingHorizontal:50,marginBottom:10,fontSize:16}}>Confirm Password</Text> */}
+                        {/*<View style={styles.input}>*/}
+                        {/*    <TextInput*/}
+                        {/*        autoCapitalize='none'*/}
+                        {/*        // secureTextEntry={true}*/}
+                        {/*        placeholder='Enter Service'*/}
+                        {/*        style={styles.TextInput}*/}
+                        {/*        placeholderTextColor={'grey'}*/}
+                        {/*        onChangeText={(service) => { this.setState({ service }) }} />*/}
+                        {/*</View>*/}
                         <View style={styles.input}>
                             <TextInput
-                                autoCapitalize='none'
-                                // secureTextEntry={true}
-                                placeholder='Enter Service'
-                                style={styles.TextInput}
-                                placeholderTextColor={'grey'}
-                                onChangeText={(service) => { this.setState({ service }) }} />
-                        </View>
-                        <View style={styles.input}>
-                            <TextInput
+                                value = {this.state.amount}
                                 autoCapitalize='none'
                                 // secureTextEntry={true}
                                 placeholder='Enter Amount'
+                                editable = {false}
                                 style={styles.TextInput}
                                 placeholderTextColor={'grey'}
-                                onChangeText={(amount) => { this.setState({ amount }) }} />
+                            //    onChangeText={(amount) => { this.setState({ amount }) }}
+                            />
                         </View>
 
                         <TouchableOpacity style={styles.button} onPress={() => this.register()}>
