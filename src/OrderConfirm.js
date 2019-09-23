@@ -75,7 +75,8 @@ export default class  OrderConfirm extends Component<Props>{
     }
 
     reviewOrder(){
-        orderid = this.props.navigation.getParam('orderID', null);
+        var orderid = this.props.navigation.getParam('orderID', null);
+
         this.props.navigation.navigate('review', {order_id: orderid, deliveryDate: this.props.navigation.getParam('deliveryDate', null)});
     }
 }

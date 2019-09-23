@@ -1,10 +1,11 @@
+//*
+// * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
+// * and bundleReleaseJsAndAssets).
+
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
-//*
-// * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
-// * and bundleReleaseJsAndAssets).
 // * These basically call `react-native bundle` with the correct arguments during the Android build
 // * cycle. By default, bundleDebugJsAndAssets is skipped, as in debug/dev mode we prefer to load the
 // * bundle directly from the development server. Below you can see all the possible configurations
@@ -101,8 +102,8 @@ android {
         applicationId "com.sakba"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4300000    /** Here we need to change version every time **/
-        versionName "14.3"  /** Here we need to change version every time **/
+        versionCode 4320000    /** Here we need to change version every time **/
+        versionName "14.3.2"  /** Here we need to change version every time **/
     }
     splits {
         abi {

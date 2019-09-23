@@ -39,14 +39,12 @@ export default class customerAgree extends Component<Props>{
       d_area: '', d_street: '', d_jada: '', d_floor: '', d_block: '', d_apartment: '',
       d_extra_Number: '', d_house: '',
       area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
-      itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: 0, address: 2, response: [], msg: '', deliveryOption: 'itemOne',
+      itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
       deliveryOptionPickUpFormStore: 'one', delivery_date: ''
     };
   }
   componentDidMount() {
     PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
-    var mobileNo = this.props.navigation.state.params.mobileNo;
-    this.setState({ mobileNo: mobileNo })
   }
   minus() {
     if (this.state.noOfPieces > 1)
@@ -59,6 +57,7 @@ export default class customerAgree extends Component<Props>{
   }
   submitForm() {
     console.log('in submit form');
+    const url = 'https://sakba.net/mobileApi/order.php';
     const {
       p_area, p_street, p_jada, p_floor, p_block, p_apartment, p_extra_Number, p_house,
       d_area, d_street, d_jada, d_floor, d_block, d_apartment, d_extra_Number, d_house,
@@ -68,7 +67,6 @@ export default class customerAgree extends Component<Props>{
 
     var customerName = this.props.navigation.state.params.customerName;
     var measurementDate = this.props.navigation.state.params.measurementDate;
-    var mobileNo = this.props.navigation.state.params.mobileNo;
     var emailAddr = this.props.navigation.state.params.emailID;
     var pickup_type, delivery_type, whichStore;
     var fabricOptionValue, deliveryOptionValue, subTotal;
@@ -88,7 +86,7 @@ export default class customerAgree extends Component<Props>{
           var data = JSON.stringify({
             o_pieces: this.state.noOfPieces,
             o_total: this.state.noOfPieces * 12,
-            o_number: mobileNo,
+            o_number: this.state.mobileNo,
             o_subtotal: subTotal,
             o_pickup_charge: fabricOptionValue,
             o_delivery_charge: deliveryOptionValue,
@@ -103,11 +101,11 @@ export default class customerAgree extends Component<Props>{
           })
 
           // if default condition will occur
-          const url = 'http://sakba.net/mobileApi/order.php';
           this.setState({ isLoading: true });
           axios.post(url,data)
             .then((response) => response.data)
             .then((responseData) => {
+
               console.log(responseData);
               this.setState({ emailId: responseData.email, isLoading: false }, () => {
                 this.props.navigation.navigate('order_detail', {
@@ -118,13 +116,14 @@ export default class customerAgree extends Component<Props>{
                   deliveryOptionValue: deliveryOptionValue,
                   customerName: customerName,
                   measurementDate: measurementDate,
-                  mobileNo: mobileNo,
+                  mobileNo: this.state.mobileNo,
                   delivery_date: responseData.delivery_date,
                   emailID: emailAddr
                 });
               })
             })
             .catch((error) => {
+
               console.log(error);
               this.setState({ isLoading: false })
               console.warn('error');
@@ -148,7 +147,7 @@ export default class customerAgree extends Component<Props>{
         var data = JSON.stringify({
           o_pieces: this.state.noOfPieces,
           o_total: this.state.noOfPieces * 12,
-          o_number: mobileNo,
+          o_number: this.state.mobileNo,
           o_subtotal: subTotal,
           o_pickup_charge: fabricOptionValue,
           o_delivery_charge: deliveryOptionValue,
@@ -156,11 +155,11 @@ export default class customerAgree extends Component<Props>{
           delivery_type: delivery_type,
           d_store_name: whichStore
         })
-        const url = 'https://sakba.net/mobileApi/order.php';
         this.setState({ isLoading: true });
         axios.post(url,data)
             .then((response) => response.data)
             .then((responseData) => {
+
             this.setState({ isLoading: false });
             console.log(responseData);
 
@@ -173,13 +172,14 @@ export default class customerAgree extends Component<Props>{
               deliveryOptionValue: deliveryOptionValue,
               customerName: customerName,
               measurementDate: measurementDate,
-              mobileNo: mobileNo,
+              mobileNo: this.state.mobileNo,
               delivery_date: responseData.delivery_date,
               emailID: emailAddr
             });
 
           })
           .catch((error) => {
+
             console.log(error);
             this.setState({ isLoading: false })
             console.warn('error');
@@ -199,7 +199,7 @@ export default class customerAgree extends Component<Props>{
 
               o_pieces: this.state.noOfPieces,
               o_total: this.state.noOfPieces * 12,
-              o_number: mobileNo,
+              o_number: this.state.mobileNo,
               o_subtotal: subTotal,
               o_pickup_charge: fabricOptionValue,
               o_delivery_charge: deliveryOptionValue,
@@ -221,11 +221,11 @@ export default class customerAgree extends Component<Props>{
             })
 
             // if default condition will occur
-            const url = 'https://sakba.net/mobileApi/order.php';
             this.setState({ isLoading: true })
             axios.post(url,data)
                 .then((response) => response.data)
                 .then((responseData) => {
+
                 console.log(responseData);
 
                 this.setState({ emailId: responseData.email, isLoading: false }, () => {
@@ -237,13 +237,14 @@ export default class customerAgree extends Component<Props>{
                     deliveryOptionValue: deliveryOptionValue,
                     customerName: customerName,
                     measurementDate: measurementDate,
-                    mobileNo: mobileNo,
+                    mobileNo: this.state.mobileNo,
                     delivery_date: responseData.delivery_date,
                     emailID: emailAddr
                   });
                 })
               })
               .catch((error) => {
+
                 console.log(error);
                 this.setState({ isLoading: false })
               });
@@ -264,7 +265,7 @@ export default class customerAgree extends Component<Props>{
 
             o_pieces: this.state.noOfPieces,
             o_total: this.state.noOfPieces * 12,
-            o_number: mobileNo,
+            o_number: this.state.mobileNo,
             o_subtotal: subTotal,
             o_pickup_charge: fabricOptionValue,
             o_delivery_charge: deliveryOptionValue,
@@ -278,11 +279,11 @@ export default class customerAgree extends Component<Props>{
             p_jada: jada, p_street: street,
             d_store_name: whichStore
           })
-          const url = 'https://sakba.net/mobileApi/order.php';
           this.setState({ isLoading: true });
           axios.post(url,data)
               .then((response) => response.data)
               .then((responseData) => {
+
               console.log(responseData);
 
               this.setState({ emailId: responseData.email, isLoading: false }, () => {
@@ -294,7 +295,7 @@ export default class customerAgree extends Component<Props>{
                   deliveryOptionValue: deliveryOptionValue,
                   customerName: customerName,
                   measurementDate: measurementDate,
-                  mobileNo: mobileNo,
+                  mobileNo: this.state.mobileNo,
                   delivery_date: responseData.delivery_date,
                   emailID: emailAddr
                 });
@@ -302,6 +303,7 @@ export default class customerAgree extends Component<Props>{
 
             })
             .catch((error) => {
+
               console.log(error);
               this.setState({ isLoading: false })
               console.warn('error');

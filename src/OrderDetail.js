@@ -49,35 +49,39 @@ export default class OrderDetail extends Component<props>{
   componentDidMount() {
     var mobileNo = this.props.navigation.state.params.mobileNo;
     console.warn('mobileNo', mobileNo);
+    this.getEmailAddress(mobileNo);this.getOrderID(mobileNo);
+  }
 
+  async getEmailAddress(number){
     const url = 'http://sakba.net/mobileApi/get-email.php';
     data = JSON.stringify({
-      no: mobileNo,
+      no: number,
     })
     axios.post(url,data)
-      .then((response) => response.data)
-      .then((responseData) => {
-        this.setState({ emailId: responseData.email })
-      })
-      .catch((error) => {
-        console.log("Error");
-        console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+        .then((response) => response.data)
+        .then((responseData) => {
+          this.setState({ emailId: responseData.email })
+        })
+        .catch((error) => {
+          console.log("Error");
+          console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
 
-      });
+        });
+  }
 
+  async getOrderID(mobileNo){
     const url2 = 'http://sakba.net/mobileApi/order-id.php';
     var data = {o_number:mobileNo};
-    axios.post(url2, data)
-      .then((response) => response.data)
-      .then((responseData) => {
-        this.setState({ orderId: responseData.order_id })
-      })
-      .catch((error) => {
-        console.log("Error");
-        console.warn(' order-id errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+    await axios.post(url2, data)
+        .then((response) => response.data)
+        .then((responseData) => {
+          this.setState({ orderId: responseData.order_id })
+        })
+        .catch((error) => {
+          console.log("Error");
+          console.warn(' order-id errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
 
-      });
-
+        });
   }
 
   sendDetails(total, deliveryDate){
@@ -89,6 +93,7 @@ export default class OrderDetail extends Component<props>{
     var email = user.emailID;
     var amount = Number.parseInt(total);
     var data = JSON.stringify({token, fullname, ph_number, email, amount});
+
     this.sendApiRequest(data).then(()=>{
       this.props.navigation.navigate('order_confirm', {
           token: token,

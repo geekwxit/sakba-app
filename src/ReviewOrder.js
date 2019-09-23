@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   BackHandler,
   TouchableOpacity,
+    ActivityIndicator,
   Alert
 } from 'react-native';
 import { Button, Container, Content } from 'native-base';
@@ -20,6 +21,7 @@ import {NavigationActions, StackActions} from "react-navigation";
 
 const {  height,width } = Dimensions.get('window');
 const WIDTH = width/2-20;
+const rate = 12;
 
 const resetAction = StackActions.reset({
   index: 0,
@@ -42,7 +44,7 @@ export default class ReviewOrder extends Component<props>{
       widthArr: [ WIDTH,WIDTH ],
       ordersAvailable: false,
       idLoading: true,
-      page: 'OrderDetail', emailId: '', isLoading: false,
+      page: 'OrderDetail', emailId: '', isLoading: true,
       orderID: props.navigation.getParam('order_id', null),
       tableData: [], deliveryDate: props.navigation.getParam('deliveryDate', null)
     };
@@ -56,7 +58,8 @@ export default class ReviewOrder extends Component<props>{
   }
 
   async getOrder(){
-    url = 'https://sakba.net/mobileApi/get_order.php';
+    this.setState({isLoading:true});
+    var url = 'https://sakba.net/mobileApi/get_order.php';
     var data = JSON.stringify({order_id : this.state.orderID});
     if(this.state.orderID!=null && this.state.orderID!=undefined){
       await axios.post(url,data)
@@ -69,11 +72,14 @@ export default class ReviewOrder extends Component<props>{
               var o = response.order_detail;
               console.log("ooooo", o);
               var rows = [
+                ['Order ID', o.o_id],
                 ['Item Name','Classic Dishdasha'],
                 ['Quantity', o.o_pieces],
+                ['Item Price', o.o_total + " KD"],
+                o.o_pickup=='pickup'?['Pick Up Charges', '3 KD']:null,
+                o.o_delivery=='home'?['Delivery Charges', '3 KD']:null,
                 o.o_delivery=='home'?['Expected Delivery Date ', this.state.deliveryDate]:null,
-                ['Order ID', o.o_id],
-                ['Total', o.o_total]
+                ['Total', o.o_subtotal + " KD"]
               ];
               this.setState({tableData: rows})
               this.setState({ordersAvailable: true});
@@ -100,7 +106,9 @@ export default class ReviewOrder extends Component<props>{
     return (
         <View style={{flex: 1}}>
           {this.state.isLoading?
-              <ActivityIndicator/>:
+              <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+              <ActivityIndicator size={'large'} color={'#0451A5'}/>
+              </View>:
               this.state.ordersAvailable?
           <SafeAreaView>
             <ScrollView style={[styles.dataWrapper, {height:height}]}>
@@ -127,7 +135,7 @@ export default class ReviewOrder extends Component<props>{
           </SafeAreaView>:
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={{fontSize: 20}}>Unable to load any orders</Text>
-            <TouchableOpacity onPress={()=>this.getOrder()}>
+            <TouchableOpacity onPress={()=>this.getOrder().then(()=>this.setState({isLoading: false}))}>
               <View style={{padding: 10,paddingLeft: 20,marginTop: 20, paddingRight: 20, alignItem:'center',justifyContent:'center', borderRadius: 10, backgroundColor: '#0451A5'}}>
                 <Text style={{color: 'white', fontSize: 20}}>RETRY</Text>
               </View>
