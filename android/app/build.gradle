@@ -82,12 +82,12 @@ import com.android.build.OutputFile
  * the correct one based on the CPU architecture of their device.
  **/
 
-def enableSeparateBuildPerCPUArchitecture = false  /** enabled extensively for publishing in small size by Geek**/
+def enableSeparateBuildPerCPUArchitecture = true  /** enabled extensively for publishing in small size by Geek**/
 
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false  /** enabled extensively for publishing in small size by Geek  (make it true to reduce size)**/
+def enableProguardInReleaseBuilds = true  /** enabled extensively for publishing in small size by Geek  (make it true to reduce size)**/
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -101,14 +101,14 @@ android {
         applicationId "com.sakba"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11    /** Here we need to change version every time **/
-        versionName "11"  /** Here we need to change version every time **/
+        versionCode 4300000    /** Here we need to change version every time **/
+        versionName "14.3"  /** Here we need to change version every time **/
     }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture  /** here we need to enable for each version apk GEeek **/
-            universalApk false  // If true, also generate a universal APK  (also Geek here)
+            universalApk true  // If true, also generate a universal APK  (also Geek here)
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
@@ -127,7 +127,7 @@ android {
     buildTypes {
         release {
             minifyEnabled enableProguardInReleaseBuilds  /** this is changed so that to reduce app size Geek **/
-            //shrinkResources true //extra line added  /** this is changed so that to reduce app size Geek **/
+            shrinkResources true //extra line added  /** this is changed so that to reduce app size Geek **/
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
