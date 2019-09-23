@@ -1,14 +1,31 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ScrollView, Linking, BackHandler , TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  BackHandler,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import { Button, Container, Content } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
 import renderIf from 'render-if';
-import AxiosInstance from '../axios_instance';
+import axios from 'axios';
 
-const { width, height } = Dimensions.get('window');
+const {  height,width } = Dimensions.get('window');
+const WIDTH = width/2-20;
 
-export default class OrderDetail extends Component<Props>{
+
+export default class OrderDetail extends Component<props>{
+
+
+
+
   static navigationOptions = ({ navigation }) => {
     return {
       headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
@@ -22,7 +39,7 @@ export default class OrderDetail extends Component<Props>{
     var token = this.props.navigation.state.params.token;
     this.state = {
       tableHead: ['Product / Service', 'Total'],
-      widthArr: [180, 125],
+      widthArr: [ WIDTH,WIDTH ],
       page: 'OrderDetail', emailId: '',
       id: id, isLoading: false,
     };
@@ -37,12 +54,8 @@ export default class OrderDetail extends Component<Props>{
     data = JSON.stringify({
       no: mobileNo,
     })
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-      body: data
-    })
-      .then((response) => response.json())
+    axios.post(url,data)
+      .then((response) => response.data)
       .then((responseData) => {
         this.setState({ emailId: responseData.email })
       })
@@ -53,11 +66,9 @@ export default class OrderDetail extends Component<Props>{
       });
 
     const url2 = 'http://sakba.net/mobileApi/order-id.php';
-    fetch(url2, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-    })
-      .then((response) => response.json())
+    var data = {o_number:mobileNo};
+    axios.post(url2, data)
+      .then((response) => response.data)
       .then((responseData) => {
         this.setState({ orderId: responseData.order_id })
       })
@@ -67,6 +78,77 @@ export default class OrderDetail extends Component<Props>{
 
       });
 
+  }
+
+  sendDetails(total, deliveryDate){
+    var user = this.props.navigation.state.params;
+    console.log(user);
+    var token = user.token;
+    var fullname = user.customerName;
+    var ph_number = user.mobileNo;
+    var email = user.emailID;
+    var amount = Number.parseInt(total);
+    var data = JSON.stringify({token, fullname, ph_number, email, amount});
+    this.sendApiRequest(data).then(()=>{
+      this.props.navigation.navigate('order_confirm', {
+          token: token,
+          customerName: fullname,
+          emailID: email,
+          totalAmount: amount,
+          orderID: this.state.orderId,
+          deliveryDate: deliveryDate
+      })
+    })
+    console.log(data);
+    // this.sendApiRequest(data);
+    // this.props.navigation.navigate('order_confirm',{
+    //   mobileNo : this.props.navigation.state.params.mobileNo,
+    //   token:this.props.navigation.state.params.token,
+    //   customerName: this.props.navigation.state.params.customerName,
+    //   emailID: this.props.navigation.state.params.emailID,
+    //   totalAmount: total
+    // }
+
+  }
+
+  async sendApiRequest(data) {
+    //this.setState({ isLoading: true })
+    //try {
+    //Assign the promise unresolved first then get the data using the json method.
+    await axios.post('http://sakba.net/mobileApi/requestPayment.php', data)
+        .then(response=>{return response.data})
+        .then(response=>{
+          console.log("sender", data);
+          // if(!response.error){
+          //   //debugger;
+          //   this.setState({ isLoading: false });
+          //   Alert.alert('Alert', "Thanks we have receieved your request. Complete your order by making payment.", [
+          //     {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+          //   ])
+          // }
+          // else {
+          //   //debugger;
+          //   this.setState({ isLoading: false });
+          //   Alert.alert('Alert', "Something wrong in your network.", [
+          //     {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+          //   ])
+          // }
+        })
+        .catch(e=>{
+          this.setState({ isLoading: false });
+          Alert.alert('Alert', "Something wrong in your network.", [
+            {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+          ])
+        });
+
+    //const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
+    //}
+    // catch (err) {
+    //     alert("Something wrong in your network");
+    //     console.log("Error fetching data-----------", err);
+    //     this.setState({ isLoading: false });
+    //      this.props.navigation.dispatch(resetAction);
+    // }
   }
   submitForm(total, noOfPieces) {
 
@@ -104,6 +186,11 @@ export default class OrderDetail extends Component<Props>{
 
 
   render() {
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+
     const state = this.state;
     const { navigation } = this.props;
     const noOfPieces = navigation.getParam('noOfPieces', 'NO-ID');
@@ -231,7 +318,8 @@ export default class OrderDetail extends Component<Props>{
     return (
       <Container>
         <Content>
-          <View>
+          <SafeAreaView>
+          <ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
               <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
             </View>
@@ -269,7 +357,7 @@ export default class OrderDetail extends Component<Props>{
 
             )}
             <View style={styles.container}>
-              <View style={{}}>
+              <View style={{width:width-40,}}>
                 <Table borderStyle={{ borderColor: '#C1C0B9' }}>
                   <Row data={state.tableHead} widthArr={state.widthArr} style={styles.header} textStyle={styles.textHeader} />
                 </Table>
@@ -296,32 +384,19 @@ export default class OrderDetail extends Component<Props>{
             </View>
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 120, justifyContent: 'center', }}
+                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 80, justifyContent: 'center', }}
                   onPress={() => this.submitForm(total, noOfPieces)}>
-                  <Text style={{ fontSize: 20, color: 'white' }}>Paypal (Visa/Mastercard)</Text>
+                  <Text style={{ fontSize: 18, color: 'white' }}>Paypal (Visa/Mastercard)</Text>
                 </Button>
               </View>
             )}
             <View style={{marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button style={{ borderRadius: 15,  minWidth: width - 120, minHeight: 40, borderWidth: 2, backgroundColor: '#0451A5', paddingRight: 5, paddingLeft: 5, justifyContent: 'center' }}
-                      onPress={() => { this.props.navigation.navigate('sign_up',{
-                        mobileNo : this.props.navigation.state.params.mobileNo,
-                        token:this.props.navigation.state.params.token,
-                        customerName: this.props.navigation.state.params.customerName,
-                        emailID: this.props.navigation.state.params.emailID,
-                        totalAmount: total
-                      })}}>
-                <Text style={{ fontSize: 20, color: 'white' }}>Request K-Net Link</Text>
+              <Button style={{ borderRadius: 15,  minWidth: width - 80, minHeight: 40, borderWidth: 2, backgroundColor: '#0451A5', paddingRight: 5, paddingLeft: 5, justifyContent: 'center' }}
+                      onPress={() => { this.sendDetails(total, delivery_date)}}>
+                <Text style={{ fontSize: 18, color: 'white' }}>Request K-Net Link</Text>
               </Button>
             </View>
-            {/*<TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', color:'blue' }}*/}
-            {/*  onPress={() => { this.props.navigation.navigate('sign_up',{*/}
-            {/*    mobileNo : this.props.navigation.state.params.mobileNo,*/}
-            {/*    token:this.props.navigation.state.params.token*/}
-            {/*  })}}>*/}
-            {/*  /!* <Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{ fontSize: 50, marginTop: 20, paddingRight: 10, color: 'green' }} /> *!/*/}
-            {/*  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Request Payment Link</Text>*/}
-            {/*</TouchableOpacity>*/}
+
             {renderIf(this.state.page == 'OrderConfirm')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate('login')}>
@@ -329,7 +404,8 @@ export default class OrderDetail extends Component<Props>{
                 </Button>
               </View>
             )}
-          </View>
+            </ScrollView>
+          </SafeAreaView>
         </Content>
       </Container>
     );
@@ -337,7 +413,7 @@ export default class OrderDetail extends Component<Props>{
 
 }
 const styles = StyleSheet.create({
-  container: { padding: 16, paddingTop: 20, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'center' },
+  container: { padding: 16, paddingTop: 20, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'center',alignItems:'center' },
   header: { height: 50, backgroundColor: '#0451A5' },
   textHeader: { textAlign: 'center', fontWeight: '500', color: 'white' },
   text: { textAlign: 'center', fontWeight: '100' },

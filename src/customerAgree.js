@@ -5,6 +5,7 @@ import renderIf from 'render-if';
 import PayPal from 'react-native-paypal-wrapper';
 import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import axios from 'axios';
 
 
 const { width, height } = Dimensions.get('window');
@@ -104,12 +105,8 @@ export default class customerAgree extends Component<Props>{
           // if default condition will occur
           const url = 'http://sakba.net/mobileApi/order.php';
           this.setState({ isLoading: true });
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
-            body: data
-          })
-            .then((response) => response.json())
+          axios.post(url,data)
+            .then((response) => response.data)
             .then((responseData) => {
               console.log(responseData);
               this.setState({ emailId: responseData.email, isLoading: false }, () => {
@@ -161,13 +158,9 @@ export default class customerAgree extends Component<Props>{
         })
         const url = 'https://sakba.net/mobileApi/order.php';
         this.setState({ isLoading: true });
-        fetch(url, {
-          method: 'POST',
-          headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
-          body: data
-        })
-          .then((response) => response.json())
-          .then((responseData) => {
+        axios.post(url,data)
+            .then((response) => response.data)
+            .then((responseData) => {
             this.setState({ isLoading: false });
             console.log(responseData);
 
@@ -230,13 +223,9 @@ export default class customerAgree extends Component<Props>{
             // if default condition will occur
             const url = 'https://sakba.net/mobileApi/order.php';
             this.setState({ isLoading: true })
-            fetch(url, {
-              method: 'POST',
-              headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
-              body: data
-            })
-              .then((response) => response.json())
-              .then((responseData) => {
+            axios.post(url,data)
+                .then((response) => response.data)
+                .then((responseData) => {
                 console.log(responseData);
 
                 this.setState({ emailId: responseData.email, isLoading: false }, () => {
@@ -291,13 +280,9 @@ export default class customerAgree extends Component<Props>{
           })
           const url = 'https://sakba.net/mobileApi/order.php';
           this.setState({ isLoading: true });
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
-            body: data
-          })
-            .then((response) => response.json())
-            .then((responseData) => {
+          axios.post(url,data)
+              .then((response) => response.data)
+              .then((responseData) => {
               console.log(responseData);
 
               this.setState({ emailId: responseData.email, isLoading: false }, () => {
@@ -453,7 +438,7 @@ export default class customerAgree extends Component<Props>{
     //   })
     //   setTimeout(()=> {this.fun()},3000)
     // })
-    //   .catch(error => console.log(error)); 
+    //   .catch(error => console.log(error));
 
   }
   // fun(){
@@ -536,6 +521,11 @@ export default class customerAgree extends Component<Props>{
   }
 
   render() {
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+
     const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
     console.log(deliveryOption);
     return (
@@ -813,7 +803,7 @@ export default class customerAgree extends Component<Props>{
             {/* <View>
                 <View>
                 <Text style={{ fontSize: 20,marginBottom:20 }}>Choose delivery option </Text>
-                  
+
                   <TouchableOpacity>
                     <Text style={{fontSize:18,color:'#333',fontWeight:'700'}}>Pick up from our store</Text>
                   </TouchableOpacity>
@@ -913,11 +903,11 @@ export default class customerAgree extends Component<Props>{
 
 
 
-            <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
-                style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }}
+                style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                 onPress={() => this.submitForm()}>
-                <Text style={{ fontSize: 20, color: 'white' }}>Order Now !</Text>
+                <Text style={{ fontSize: 18, color: 'white' }}>Order Now !</Text>
               </Button>
             </View>
             {renderIf(this.state.msg)(

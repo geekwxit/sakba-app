@@ -14,6 +14,12 @@ export default class VisitToShopPage extends Component<Props>{
     };
   };
   render() {
+
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+
     return (
       <SafeAreaView style={{flex:1,marginLeft:40,marginRight:40,alignItems:'center'}}>
         <ScrollView>

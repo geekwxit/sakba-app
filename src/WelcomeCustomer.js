@@ -44,6 +44,11 @@ export default class WelcomeCustomer extends Component {
 
 
   render() {
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+
     const { navigation } = this.props;
     var mobileNo = this.props.navigation.state.params.mobileNo;
     const customerName = navigation.getParam('customerName', '');

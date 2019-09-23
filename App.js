@@ -13,6 +13,7 @@ import OrderDetail from './src/OrderDetail';
 import OrderConfirm from './src/OrderConfirm';
 import Paypal from './src/PayPal';
 import SignUpScreen from './src/SignUpScreen';
+import Review from './src/ReviewOrder';
 
 const AppNavigator = createStackNavigator(
   {
@@ -25,10 +26,11 @@ const AppNavigator = createStackNavigator(
     order_detail: OrderDetail,
     order_confirm: OrderConfirm,
     paypal: Paypal,
-    sign_up:SignUpScreen
+    sign_up:SignUpScreen,
+      review: Review
   },
   {
-    initialRouteName: "login",
+    initialRouteName: 'login',
     initialRouteParams: { selected: false }
   }
 );

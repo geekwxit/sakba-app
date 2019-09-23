@@ -92,7 +92,7 @@ class SignUpScreen extends Component {
             amount, address
         })
         console.log("object", data)
-            //this.setState({isLoading: true});
+            this.setState({isLoading: true});
             this.sendApiRequest(data)
         // this.props.signUp(data)
         // }
@@ -102,26 +102,30 @@ class SignUpScreen extends Component {
         //this.setState({ isLoading: true })
         //try {
             //Assign the promise unresolved first then get the data using the json method.
-         await fetch('http://sakba.net/mobileApi/requestPayment.php', {
-                method: 'POST',
-                headers: { 'Accept': 'text/json', 'Content-Type': 'text/json', },
-                body: data
-            })
-                .then(response=>{return response.json()})
+         await axios.post('http://sakba.net/mobileApi/requestPayment.php',data)
+                .then(response=>{return response.data})
                 .then(response=>{
                     console.log("sender", data);
                     if(!response.error){
+                        //debugger;
                         this.setState({ isLoading: false });
-                        alert('Thanks')
-                        this.props.navigation.dispatch(resetAction);
+                        Alert.alert('Alert', "Thanks we have receieved your request. Complete your order by making payment.", [
+                            {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+                        ])
                     }
                     else {
+                        //debugger;
                         this.setState({ isLoading: false });
-                        alert('Something wrong in your network');
+                        Alert.alert('Alert', "Something wrong in your network.", [
+                            {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+                        ])
                     }
                 })
              .catch(e=>{
-                 alert('Something wrong in your network');
+                this.setState({ isLoading: false });
+                Alert.alert('Alert', "Something wrong in your network.", [
+                    {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+                ])
              });
 
             //const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
@@ -135,6 +139,9 @@ class SignUpScreen extends Component {
     }
 
     render() {
+
+        Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
 
         const { isLoading } = this.state
         console.log(isLoading, "isLoading state")
@@ -204,7 +211,7 @@ class SignUpScreen extends Component {
                         {/*</View>*/}
                         <View style={styles.input}>
                             <TextInput
-                                value = {this.state.amount}
+                                value = {this.state.amount + " KD"}
                                 autoCapitalize='none'
                                 // secureTextEntry={true}
                                 placeholder='Enter Amount'
@@ -220,7 +227,7 @@ class SignUpScreen extends Component {
                         </TouchableOpacity>
 
                     </View>
-                    {/* 
+                    {/*
                     <View style={{ marginTop: 10 }}>
                         <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '700', color: '#333', paddingBottom: 20, paddingTop: 10 }}>Already have an account? </Text>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('SignIn')} style={{ marginBottom: 30 }}>
@@ -230,7 +237,7 @@ class SignUpScreen extends Component {
                     <Modal
                         animationType="slide"
                         transparent={true}
-                        visible={isLoading}
+                        visible={this.state.isLoading}
                         onRequestClose={() => {
                             this.setState({ isLoading: false })
                         }}>

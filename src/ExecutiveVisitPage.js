@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, Dimensions, ScrollView } from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Icon, Textarea } from 'native-base';
 import DateTimePicker from "react-native-modal-datetime-picker";
+import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,6 +21,9 @@ export default class ExecutiveVisitPage extends Component<Props>{
     };
   }
   request() {
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
 
     const { name , number , area , block, street, jada ,house ,floor ,apartment ,extra_Number } = this.state
 
@@ -42,17 +46,13 @@ export default class ExecutiveVisitPage extends Component<Props>{
     // }
     else {
       URL = 'http://sakba.net/mobileApi/add-visit.php'
-      fetch(URL, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-        body: JSON.stringify({
+      axios.post(URL, {
           name: name,
           old_number: number,
-          area , street, block , jada , house , floor , apartment , 
+          area , street, block , jada , house , floor , apartment ,
           extra_number: extra_Number,
         })
-      })
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((responseData) => {
           console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
           if (responseData.mssg == 'Data Added') {
@@ -138,7 +138,7 @@ export default class ExecutiveVisitPage extends Component<Props>{
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
                       placeholder='House'
-                      
+
                       onChangeText={(text) => this.setState({ house: text })}
                       value={this.state.house}
                     />

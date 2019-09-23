@@ -323,6 +323,10 @@ export default class customerAgree extends Component<Props>{
 
 
   render() {
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
     return (
       <Container>
         <Content>

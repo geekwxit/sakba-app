@@ -3,8 +3,8 @@
  @Date  19/04/2019
 */
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking } from 'react-native';
-import { Form, Item, Input, Container, Content, Button, Radio, Icon } from 'native-base';
+import { View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking,ScrollView } from 'react-native';
+import { Form, Item, Container, Content, Button,} from 'native-base';
 import Axios from 'axios';
 const { width, height } = Dimensions.get('window');
 
@@ -68,7 +68,6 @@ export default class Login extends Component {
   //   this.setState({ mobileNo: newText });
   // }
   submitForm() {
-
     var reg = /^[0-9]+$/
     if (this.state.mobileNo == null) {
       alert('Pls Enter the Mobile No.')
@@ -143,22 +142,27 @@ export default class Login extends Component {
   }
   render() {
 
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+
     return (
       <Container>
         <Content keyboardShouldPersistTaps={'always'} >
           <SafeAreaView>
+            <ScrollView>
             <View style={{ flex: 1 / 6, flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
               <Image style={{ width: 80, height: 80 }} source={require('../../img/om.png')} />
             </View>
             <View style={{ marginTop: 50, justifyContent: 'center', alignItems: 'center', marginLeft: 40, marginRight: 40 }}>
-              <View style={{ marginTop: 30 }}>
+              <View>
                 <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Enter your mobile number</Text>
               </View>
               <Form>
                 <Item style={{ marginLeft: 0, marginTop: 25, height: 40, width: '100%', backgroundColor: '#d1e2ff' }}>
                   <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />
                   <TextInput
-                    style={{ width: width - 110, height: 40, fontSize: 15 }}
+                    style={{ width: width - 110, height: 50, fontSize: 15 }}
                     keyboardType='numeric'
                     value={this.state.mobileNo}
                     onChangeText={(text) => this.setState({ mobileNo: text })}
@@ -170,7 +174,7 @@ export default class Login extends Component {
                 <Button
                   style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                   onPress={() => this.submitForm()}>
-                  <Text style={{ fontSize: 20, color: 'white' }}>Submit</Text>
+                  <Text style={{ fontSize: 18, color: 'white' }}>Submit</Text>
                 </Button>
               </View>
             </View>
@@ -187,11 +191,11 @@ export default class Login extends Component {
                 <View style={{ marginTop: 25, flexDirection: 'column' }}>
                   <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                     onPress={() => this.requestExecutiveVisit()}>
-                    <Text style={{ fontSize: 20, color: 'white' }}>Request Executive Visit </Text>
+                    <Text style={{ fontSize: 18, color: 'white' }}>Request Executive Visit </Text>
                   </Button>
                   <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center', marginTop: 20 }}
                     onPress={() => this.visitToShop()}>
-                    <Text style={{ fontSize: 20, color: 'white' }}>Visit to Shop</Text>
+                    <Text style={{ fontSize: 18, color: 'white' }}>Visit to Shop</Text>
                   </Button>
                   <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }} onPress={() => {
                     Linking.canOpenURL('https://wa.me/96566333116')
@@ -216,6 +220,7 @@ export default class Login extends Component {
                 </View>
               </View>
             </View>
+            </ScrollView>
           </SafeAreaView>
         </Content>
       </Container>

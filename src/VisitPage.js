@@ -22,6 +22,10 @@ export default class VisitPage extends Component<Props>{
      this.props.navigation.navigate('visit_to_shoppage');
   }
   render(){
+
+    Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
     return(
       <View>
         <View style={{flexDirection:'row',justifyContent:'center',marginTop:50}}>
