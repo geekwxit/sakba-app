@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Alert, Text, Image, Dimensions, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { Form, Item, Input, Container, Content, Button, Radio, Icon, Textarea } from 'native-base';
 import renderIf from 'render-if';
 import PayPal from 'react-native-paypal-wrapper';
@@ -40,7 +40,9 @@ export default class customerAgree extends Component<Props>{
       d_extra_Number: '', d_house: '',
       area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
       itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
-      deliveryOptionPickUpFormStore: 'one', delivery_date: ''
+      deliveryOptionPickUpFormStore: 'one', delivery_date: '',
+
+      inHomeCount: 1, outsideCount: 0
     };
   }
   componentDidMount() {
@@ -48,12 +50,14 @@ export default class customerAgree extends Component<Props>{
   }
   minus() {
     if (this.state.noOfPieces > 1)
-      this.setState({ noOfPieces: this.state.noOfPieces - 1 });
+      this.setState({ noOfPieces: this.state.noOfPieces - 1, inHomeCount:  this.state.noOfPieces - 1, outsideCount: 0});
     else
-      this.setState({ noOfPieces: 1 });
+      this.setState({ noOfPieces:1, inHomeCount:1, outsideCount:0});
+    // this.updateQuantity('home', -1);
   }
   plus() {
-    this.setState({ noOfPieces: this.state.noOfPieces + 1 });
+    this.setState({ noOfPieces: this.state.noOfPieces + 1, inHomeCount:  this.state.noOfPieces + 1, outsideCount: 0});
+    // this.updateQuantity('home', 1);
   }
   submitForm() {
     console.log('in submit form');
@@ -522,6 +526,34 @@ export default class customerAgree extends Component<Props>{
     }
   }
 
+  updateQuantity(type, quantity){
+    total = this.state.noOfPieces;
+    home = this.state.inHomeCount;
+    out  = this.state.outsideCount;
+    // if(!(home+quantity<0  out+quantity<0)){
+      if(type==='home'){
+        if(home+quantity>=0){
+        if(home+quantity<=total){
+          i = quantity+home;
+          p = total-(quantity+home);
+          this.setState({inHomeCount: quantity+home});
+          this.setState({outsideCount: total-(quantity+home)});
+        }
+        else{alert("In home count value cannot exceed total no of dishdashas!");}}
+      }
+      else if(type==='outside'){
+        if(out+quantity>=0){
+        if(out+quantity<=total){
+          i = quantity+out;
+          p = total-(quantity+out);
+          this.setState({outsideCount: quantity+out});
+          this.setState({inHomeCount: total-(quantity+out)});
+        }
+        else{alert("Outside count value cannot exceed total no of dishdashas!");}}
+      }
+    // }
+  }
+
   render() {
 
     Text.defaultProps = Text.defaultProps || {};
@@ -530,6 +562,7 @@ Text.defaultProps.allowFontScaling = false;
 
     const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
     console.log(deliveryOption);
+    const sizeCtrl = {width: 40, height: 40}
     return (
       // <Container>
       //   <Content>
@@ -554,6 +587,81 @@ Text.defaultProps.allowFontScaling = false;
               </Button>
             </View>
 
+            <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: 30}}>
+              <View style={{justifyContent: 'center',  marginRight:10}}>
+                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>IN HOME</Text>
+                <View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('home', -1)}>
+                      <Icon style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-remove'/>
+                    </TouchableOpacity>
+                  </View>
+                  {console.log(this.state.inHomeCount)}
+                  <View style={{width: sizeCtrl.width+10, height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>{this.state.inHomeCount}</Text>
+                  </View>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('home', 1)}>
+                      <Icon size={10} style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-add'/>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={{justifyContent: 'center',  marginRight:10}}>
+                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>OUTSIDE</Text>
+                <View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('outside', -1)}>
+                      <Icon style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}}
+                            name='md-remove'/>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{width: sizeCtrl.width+10, height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>{this.state.outsideCount}</Text>
+                  </View>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('outside', 1)}>
+                      <Icon size={10} style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}}
+                            name='md-add'/>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              {/*<View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>*/}
+              {/*  <View style={{*/}
+              {/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
+              {/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
+              {/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 4} style={{textAlign: 'center', color: 'white'}}*/}
+              {/*          name='md-remove'/>*/}
+              {/*  </View>*/}
+              {/*  <View style={{borderRadius: 5, width: 50, height: 40, alignItems: 'center', justifyContent: 'center'}}>*/}
+              {/*    <Text style={{fontSize: (sizeCtrl.height + sizeCtrl.width) / 5, fontWeight: 'bold'}}>1</Text>*/}
+              {/*  </View>*/}
+              {/*  <View style={{*/}
+              {/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
+              {/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
+              {/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 2} style={{textAlign: 'center', color: 'white'}}*/}
+              {/*          name='md-add'/>*/}
+              {/*  </View>*/}
+              {/*</View>*/}
+            </View>
+
+            <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
+                  onPress={() => this.submitForm()}>
+                <Text style={{ fontSize: 18, color: 'white' }}>Proceed</Text>
+              </Button>
+            </View>
 
             <View style={{ marginTop: 40 }}>
               <Text style={{ fontSize: 20 }}>Fabrics</Text>
