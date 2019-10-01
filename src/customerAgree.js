@@ -451,6 +451,19 @@ export default class customerAgree extends Component<Props>{
   //   this.setState({msg:''});
   // }
 
+    proceed(){
+      const inHomeCount = this.state.inHomeCount;
+      const outsideCount= this.state.outsideCount;
+      const mobileNo    = this.props.navigation.getParam('mobileNo', null);
+      const customerName= this.props.navigation.getParam('customerName', null);
+
+      inHomeCount>0?
+          this.props.navigation.navigate('fabric',
+              {inHomeCount, outsideCount, mobileNo, customerName}):
+          this.props.navigation.navigate('delivery',
+              {inHomeCount, outsideCount, mobileNo, customerName})
+    }
+
   getComponent() {
     if (this.state.deliveryOption == 'itemTwo') {
       return (<View style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
@@ -655,261 +668,255 @@ Text.defaultProps.allowFontScaling = false;
               {/*</View>*/}
             </View>
 
-            <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() => this.submitForm()}>
+                  onPress={() => this.proceed()}>
                 <Text style={{ fontSize: 18, color: 'white' }}>Proceed</Text>
               </Button>
             </View>
 
-            <View style={{ marginTop: 40 }}>
-              <Text style={{ fontSize: 20 }}>Fabrics</Text>
-              <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                {/* <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}
-                    selected={this.state.itemSelected == 'itemTwo'}
-                  />
-                  <View style={{ flexDirection: 'column' }}>
-                    <Text style={{ marginLeft: 10, fontSize: 18 }}>Send your fabric to us</Text>
-                    <Text style={{ marginLeft: 10, fontSize: 12 }}>(Note:Please send it within 3 days)</Text>
-                  </View> */}
-                <RadioForm
-                  buttonSize={10}
-                  buttonColor={'#0451A5'}
-                  buttonInnerColor={'#0451A5'}
-                  buttonOuterColor={'#0451A5'}
-                  buttonWrapStyle={{ marginTop: 10 }}
-                  selectedButtonColor={'#0451A5'}
-                  labelStyle={{ fontSize: 20, marginTop: 0, }}
-                  buttonOuterSize={20}
-                  buttonStyle={{ marginTop: 20 }}
+            {/*<View style={{ marginTop: 40 }}>*/}
+            {/*  <Text style={{ fontSize: 20 }}>Fabrics</Text>*/}
+            {/*  <View style={{ flexDirection: 'row', marginTop: 10 }}>*/}
+            {/*    /!* <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}*/}
+            {/*        selected={this.state.itemSelected == 'itemTwo'}*/}
+            {/*      />*/}
+            {/*      <View style={{ flexDirection: 'column' }}>*/}
+            {/*        <Text style={{ marginLeft: 10, fontSize: 18 }}>Send your fabric to us</Text>*/}
+            {/*        <Text style={{ marginLeft: 10, fontSize: 12 }}>(Note:Please send it within 3 days)</Text>*/}
+            {/*      </View> *!/*/}
+            {/*    <RadioForm*/}
+            {/*      buttonSize={10}*/}
+            {/*      buttonColor={'#0451A5'}*/}
+            {/*      buttonInnerColor={'#0451A5'}*/}
+            {/*      buttonOuterColor={'#0451A5'}*/}
+            {/*      buttonWrapStyle={{ marginTop: 10 }}*/}
+            {/*      selectedButtonColor={'#0451A5'}*/}
+            {/*      labelStyle={{ fontSize: 20, marginTop: 0, }}*/}
+            {/*      buttonOuterSize={20}*/}
+            {/*      buttonStyle={{ marginTop: 20 }}*/}
+            {/*      radio_props={fabricRadio}*/}
+            {/*      initial={0}*/}
+            {/*      onPress={(value) => {*/}
+            {/*        (value == 0)*/}
+            {/*          ? this.setState({ itemSelected: 'itemTwo' })*/}
+            {/*          : this.setState({ itemSelected: 'itemOne' })*/}
+            {/*      }}*/}
+            {/*    />*/}
+            {/*  </View>*/}
+            {/*  /!* <View style={{ flexDirection: 'row', marginTop: 5 }}>*/}
+            {/*      <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}*/}
+            {/*        selected={this.state.itemSelected == 'itemOne'}*/}
+            {/*      />*/}
+            {/*      <Text style={{ marginLeft: 10, fontSize: 18 }}>Pick up pay "3 kd"</Text>*/}
+            {/*    </View> *!/*/}
+            {/*  {renderIf(this.state.itemSelected == 'itemOne')(*/}
+            {/*    <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
+            {/*      <Text style={{ fontSize: 18 }}>Address :</Text>*/}
+            {/*      <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Area'*/}
+            {/*            onChangeText={(text) => this.setState({ area: text })}*/}
+            {/*            value={this.state.area}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Block'*/}
+            {/*            keyboardType='numeric'*/}
+            {/*            onChangeText={(text) => this.setState({ block: text })}*/}
+            {/*            value={this.state.block}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*      </View>*/}
+            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Street'*/}
+            {/*            onChangeText={(text) => this.setState({ street: text })}*/}
+            {/*            value={this.state.street}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Jada'*/}
+            {/*            onChangeText={(text) => this.setState({ jada: text })}*/}
+            {/*            value={this.state.jada}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*      </View>*/}
+            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='House'*/}
+            {/*            onChangeText={(text) => this.setState({ house: text })}*/}
+            {/*            value={this.state.house}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Floor'*/}
+            {/*            keyboardType='numeric'*/}
+            {/*            onChangeText={(text) => this.setState({ floor: text })}*/}
+            {/*            value={this.state.floor}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*      </View>*/}
+            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Apartment'*/}
+            {/*            onChangeText={(text) => this.setState({ apartment: text })}*/}
+            {/*            value={this.state.apartment}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*          <Input*/}
+            {/*            placeholder='Extra Number'*/}
+            {/*            keyboardType='numeric'*/}
+            {/*            onChangeText={(text) => this.setState({ extra_Number: text })}*/}
+            {/*            value={this.state.extra_Number}*/}
+            {/*          />*/}
+            {/*        </Item>*/}
+            {/*      </View>*/}
+            {/*    </Form>*/}
+            {/*  )}*/}
+            {/*</View>*/}
 
+            {/*<View style={{ marginTop: 20, }}>*/}
+            {/*  <Text style={{ fontSize: 20 }}>Choose delivery option </Text>*/}
 
-                  radio_props={fabricRadio}
-                  initial={0}
-                  onPress={(value) => {
-                    (value == 0)
-                      ? this.setState({ itemSelected: 'itemTwo' })
-                      : this.setState({ itemSelected: 'itemOne' })
-                  }}
-                />
-              </View>
-              {/* <View style={{ flexDirection: 'row', marginTop: 5 }}>
-                  <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}
-                    selected={this.state.itemSelected == 'itemOne'}
-                  />
-                  <Text style={{ marginLeft: 10, fontSize: 18 }}>Pick up pay "3 kd"</Text>
-                </View> */}
-              {renderIf(this.state.itemSelected == 'itemOne')(
-                <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                  <Text style={{ fontSize: 18 }}>Address :</Text>
-                  <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                      <Input
-                        placeholder='Area'
-                        onChangeText={(text) => this.setState({ area: text })}
-                        value={this.state.area}
-                      />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                      <Input
-                        placeholder='Block'
-                        keyboardType='numeric'
-                        onChangeText={(text) => this.setState({ block: text })}
-                        value={this.state.block}
-                      />
-                    </Item>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                      <Input
-                        placeholder='Street'
-                        onChangeText={(text) => this.setState({ street: text })}
-                        value={this.state.street}
-                      />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                      <Input
-                        placeholder='Jada'
-                        onChangeText={(text) => this.setState({ jada: text })}
-                        value={this.state.jada}
-                      />
-                    </Item>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                      <Input
-                        placeholder='House'
-                        onChangeText={(text) => this.setState({ house: text })}
-                        value={this.state.house}
-                      />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                      <Input
-                        placeholder='Floor'
-                        keyboardType='numeric'
-                        onChangeText={(text) => this.setState({ floor: text })}
-                        value={this.state.floor}
-                      />
-                    </Item>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                      <Input
-                        placeholder='Apartment'
-                        onChangeText={(text) => this.setState({ apartment: text })}
-                        value={this.state.apartment}
-                      />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                      <Input
-                        placeholder='Extra Number'
-                        keyboardType='numeric'
-                        onChangeText={(text) => this.setState({ extra_Number: text })}
-                        value={this.state.extra_Number}
-                      />
-                    </Item>
-                  </View>
-                </Form>
-              )}
-            </View>
+            {/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
 
-            <View style={{ marginTop: 20, }}>
-              <Text style={{ fontSize: 20 }}>Choose delivery option </Text>
+            {/*    <View>*/}
+            {/*      <TouchableOpacity*/}
+            {/*        style={{ flex: 1, flexDirection: 'row' }}*/}
+            {/*        onPress={() => this.setState({ deliveryOption: 'itemOne' })} >*/}
+            {/*        {deliveryOption == 'itemOne'*/}
+            {/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+            {/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+            {/*        }*/}
+            {/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>*/}
+            {/*      </TouchableOpacity>*/}
+            {/*    </View>*/}
+            {/*    <View>*/}
+            {/*      <TouchableOpacity*/}
+            {/*        style={{ flex: 1, flexDirection: 'row' }}*/}
+            {/*        onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >*/}
+            {/*        {deliveryOption === 'itemTwo'*/}
+            {/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+            {/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+            {/*        }*/}
+            {/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>*/}
+            {/*      </TouchableOpacity>*/}
+            {/*    </View>*/}
+            {/*    {renderIf(deliveryOption == 'itemTwo')(*/}
+            {/*      <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
+            {/*        <Text style={{ fontSize: 18 }}>Address :</Text>*/}
+            {/*        <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Area'*/}
+            {/*              onChangeText={(text) => this.setState({ area: text })}*/}
+            {/*              value={this.state.area}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Block'*/}
+            {/*              keyboardType='numeric'*/}
+            {/*              onChangeText={(text) => this.setState({ block: text })}*/}
+            {/*              value={this.state.block}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*        </View>*/}
+            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Street'*/}
+            {/*              onChangeText={(text) => this.setState({ street: text })}*/}
+            {/*              value={this.state.street}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Jada'*/}
+            {/*              onChangeText={(text) => this.setState({ jada: text })}*/}
+            {/*              value={this.state.jada}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*        </View>*/}
+            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='House'*/}
+            {/*              onChangeText={(text) => this.setState({ house: text })}*/}
+            {/*              value={this.state.house}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Floor'*/}
+            {/*              keyboardType='numeric'*/}
+            {/*              onChangeText={(text) => this.setState({ floor: text })}*/}
+            {/*              value={this.state.floor}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*        </View>*/}
+            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Apartment'*/}
+            {/*              onChangeText={(text) => this.setState({ apartment: text })}*/}
+            {/*              value={this.state.apartment}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+            {/*            <Input*/}
+            {/*              placeholder='Extra Number'*/}
+            {/*              keyboardType='numeric'*/}
+            {/*              onChangeText={(text) => this.setState({ extra_Number: text })}*/}
+            {/*              value={this.state.extra_Number}*/}
+            {/*            />*/}
+            {/*          </Item>*/}
+            {/*        </View>*/}
+            {/*      </For m>*/}
+            {/*    )}*/}
+            {/*  </View>*/}
+            {/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
+            {/*    {renderIf(deliveryOption == 'itemOne')(*/}
+            {/*      <View style={{ marginLeft: 25, flex: 1 }}>*/}
+            {/*        <TouchableOpacity*/}
+            {/*          style={{ flexDirection: 'row', marginTop: 10 }}*/}
+            {/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >*/}
+            {/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemOne' })}*/}
+            {/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemOne'}*/}
+            {/*          //   />*/}
+            {/*          {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")*/}
+            {/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+            {/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+            {/*          }*/}
+            {/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Awqaf Complex</Text>*/}
+            {/*        </TouchableOpacity>*/}
+            {/*        <TouchableOpacity*/}
+            {/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}*/}
+            {/*          style={{ flexDirection: 'row', marginTop: 5 }}>*/}
+            {/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemTwo' })}*/}
+            {/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemTwo'}*/}
+            {/*          //   />*/}
+            {/*          {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")*/}
+            {/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+            {/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+            {/*          }*/}
+            {/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Qurain Shop</Text>*/}
+            {/*        </TouchableOpacity>*/}
+            {/*      </View>*/}
+            {/*    )}*/}
 
-              <View style={{ flex: 1, marginTop: 10 }}>
-
-                <View>
-                  <TouchableOpacity
-                    style={{ flex: 1, flexDirection: 'row' }}
-                    onPress={() => this.setState({ deliveryOption: 'itemOne' })} >
-                    {deliveryOption == 'itemOne'
-                      ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                      : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                    }
-                    <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <TouchableOpacity
-                    style={{ flex: 1, flexDirection: 'row' }}
-                    onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
-                    {deliveryOption === 'itemTwo'
-                      ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                      : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                    }
-                    <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>
-                  </TouchableOpacity>
-                </View>
-                {renderIf(deliveryOption == 'itemTwo')(
-                  <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                    <Text style={{ fontSize: 18 }}>Address :</Text>
-                    <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-                      <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                          placeholder='Area'
-                          onChangeText={(text) => this.setState({ area: text })}
-                          value={this.state.area}
-                        />
-                      </Item>
-                      <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                          placeholder='Block'
-                          keyboardType='numeric'
-                          onChangeText={(text) => this.setState({ block: text })}
-                          value={this.state.block}
-                        />
-                      </Item>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                      <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                          placeholder='Street'
-                          onChangeText={(text) => this.setState({ street: text })}
-                          value={this.state.street}
-                        />
-                      </Item>
-                      <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                          placeholder='Jada'
-                          onChangeText={(text) => this.setState({ jada: text })}
-                          value={this.state.jada}
-                        />
-                      </Item>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                      <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                          placeholder='House'
-                          onChangeText={(text) => this.setState({ house: text })}
-                          value={this.state.house}
-                        />
-                      </Item>
-                      <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                          placeholder='Floor'
-                          keyboardType='numeric'
-                          onChangeText={(text) => this.setState({ floor: text })}
-                          value={this.state.floor}
-                        />
-                      </Item>
-                    </View>
-                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-                      <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                          placeholder='Apartment'
-                          onChangeText={(text) => this.setState({ apartment: text })}
-                          value={this.state.apartment}
-                        />
-                      </Item>
-                      <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                          placeholder='Extra Number'
-                          keyboardType='numeric'
-                          onChangeText={(text) => this.setState({ extra_Number: text })}
-                          value={this.state.extra_Number}
-                        />
-                      </Item>
-                    </View>
-                  </Form>
-                )}
-              </View>
-              <View style={{ flex: 1, marginTop: 10 }}>
-                {renderIf(deliveryOption == 'itemOne')(
-                  <View style={{ marginLeft: 25, flex: 1 }}>
-                    <TouchableOpacity
-                      style={{ flexDirection: 'row', marginTop: 10 }}
-                      onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-                      {/* <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemOne' })}
-                          selected={this.state.deliveryOptionPickUpFormStore == 'itemOne'}
-                        /> */}
-                      {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
-                        ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                        : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                      }
-                      <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Awqaf Complex</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
-                      style={{ flexDirection: 'row', marginTop: 5 }}>
-                      {/* <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemTwo' })}
-                          selected={this.state.deliveryOptionPickUpFormStore == 'itemTwo'}
-                        /> */}
-                      {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
-                        ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                        : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                      }
-                      <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Qurain Shop</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {/* Original */}
-              </View>
-
-            </View>
-
-
-
+            {/*  </View>*/}
+            {/*</View>*/}
             {/* <View>
                 <View>
                 <Text style={{ fontSize: 20,marginBottom:20 }}>Choose delivery option </Text>
@@ -1010,16 +1017,13 @@ Text.defaultProps.allowFontScaling = false;
                     </Form>
                 </View>
               </View>       */}
-
-
-
-            <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+            {/*<View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                 onPress={() => this.submitForm()}>
                 <Text style={{ fontSize: 18, color: 'white' }}>Order Now !</Text>
               </Button>
-            </View>
+            </View>*/}
             {renderIf(this.state.msg)(
               <View style={{}}>
                 <Text style={{ color: '#0451A5', fontSize: 20, fontWeight: 'bold' }}>{this.state.msg}</Text>

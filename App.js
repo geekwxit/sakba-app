@@ -14,6 +14,8 @@ import OrderConfirm from './src/OrderConfirm';
 import Paypal from './src/PayPal';
 import SignUpScreen from './src/SignUpScreen';
 import Review from './src/ReviewOrder';
+import FabricTypeSelection from "./src/FabricTypeSelection";
+import DeliveryOptions from "./src/DeliveryOptions";
 
 const AppNavigator = createStackNavigator(
   {
@@ -27,7 +29,9 @@ const AppNavigator = createStackNavigator(
     order_confirm: OrderConfirm,
     paypal: Paypal,
     sign_up:SignUpScreen,
-      review: Review
+    review: Review,
+    fabric: FabricTypeSelection,
+    delivery: DeliveryOptions,
   },
   {
     initialRouteName: 'login',
