@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Alert, Text, Image, Dimensions, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Alert, Text, Image, Dimensions,TouchableWithoutFeedback, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { Form, Item, Input, Container, Content, Button, Radio, Icon, Textarea } from 'native-base';
 import renderIf from 'render-if';
 import PayPal from 'react-native-paypal-wrapper';
@@ -7,10 +7,9 @@ import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons'
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import axios from 'axios';
 import RadioGroup from './components/RadioGroupCustom';
-
-
+import Brands from "./fabrics/brands/brands";
 const { width, height } = Dimensions.get('window');
-const fabric = {
+var fabric = {
   types     : ['Toyobo', 'Shikibo', 'Fine Gold',],
   patterns  : [require('../img/patterns/pattern1.jpg'), require('../img/patterns/pattern2.jpg'),
     require('../img/patterns/pattern3.jpg'), require('../img/patterns/pattern4.jpg'),require('../img/patterns/pattern2.jpg'),],
@@ -22,6 +21,12 @@ const fabric = {
     {name: 'Cream', code: '#fad0a7'}],
   selected : {pattern : 0, type    : 0, color   : 0},
 }
+var cart = [];
+
+var selection = {
+  pattern : 0, type    : 0, color   : 0
+}
+
 
 export default class FabricTypeSelection extends Component<Props>{
 
@@ -34,13 +39,18 @@ export default class FabricTypeSelection extends Component<Props>{
   };
   constructor(props) {
     super(props)
+    console.log("SOMEBRANDS: ", Brands);
     this.state = {
       isLoading: false,
       noOfPieces: this.props.navigation.getParam('noOfPieces', null),
       mobileNo: this.props.navigation.getParam('mobileNo', null),
       inHomeCount: this.props.navigation.getParam('inHomeCount', null),
       outsideCount: this.props.navigation.getParam('outsideCount', null),
-      selectedFabricType: null
+      selectedFabricType: null,
+
+      selectedBrand: 0,
+      selectedPattern: 0,
+      patternOverlayHeight: 0
     };
   }
   componentDidMount() {
@@ -94,8 +104,9 @@ Text.defaultProps.allowFontScaling = false;
 
 
     const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
-    console.log(deliveryOption);
+    console.log(this.state);
 
+    var parentHeight = null;
     const sizeCtrl = {width: 40, height: 40}
     return (
       <SafeAreaView >
@@ -104,16 +115,17 @@ Text.defaultProps.allowFontScaling = false;
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
           <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
-            <View style={{ marginTop: 50, marginBottom: 10}}>
+            <Text style={{marginTop:20, fontSize: 20, textAlign: 'center' }}>Select each product individually</Text>
+            <View style={{ marginTop: 20, marginBottom: 10}}>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric Brand: </Text>
             </View>
 
             <View>
               <RadioGroup
-                data={fabric.types}
+                data={Brands}
                 isImage={false}
                 default={0}
-                onSelect={(index)=>{fabric.selected.type=index}}
+                onSelect={(index)=>{this.setState({selectedBrand:index})}}
               />
             </View>
 
@@ -122,11 +134,14 @@ Text.defaultProps.allowFontScaling = false;
             </View>
 
             <View>
+              {/*<TouchableWithoutFeedback onPress={()=>alert("Please select a brand first!")}>*/}
+              {/*  <View style={{ alignSelf: 'center', zIndex:10,height: this.state.patternOverlayHeight, width:width-50 , position: 'absolute', backgroundColor: 'rgba(255,255,255,0.85)'}}/>*/}
+              {/*</TouchableWithoutFeedback>*/}
               <RadioGroup
-                  data={fabric.patterns}
+                  data={Brands[this.state.selectedBrand].patterns}
                   isImage={true}
                   default={0}
-                  onSelect={(index)=>{fabric.selected.pattern=index}}
+                  onSelect={(index)=>{this.setState({selectedPattern: index})}}
               />
             </View>
 
@@ -136,7 +151,7 @@ Text.defaultProps.allowFontScaling = false;
 
             <View>
               <RadioGroup
-                  data={fabric.colors}
+                  data={Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors}
                   isImage={false}
                   isColor={true}
                   default={0}

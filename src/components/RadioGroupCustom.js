@@ -24,14 +24,16 @@ export default class RadioGroupCustom extends Component{
     }
 
     render() {
+        var data = this.props.data;
+        var length = this.props.data.length;
         var fontSizeLabel = 15;
         var rows = () => {
             var stack = [];
-            isOdd = this.state.length%2==0;
-            maxRow = isOdd?this.state.length-1/2:this.state.length/2;
+            isOdd = length%2==0;
+            maxRow = isOdd?length-1/2:length/2;
             isImage = this.props.isImage;
             isColor = this.props.isColor;
-            for(let i=0, row = 1; i<this.state.length;i){
+            for(let i=0, row = 1; i<length;i){
                 const j = i;
                 row<=maxRow?stack.push(
                     <View key={row} style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
@@ -42,8 +44,13 @@ export default class RadioGroupCustom extends Component{
                                         {isColor?
                                             <View style={{width: 100, height: 100,marginLeft:5, backgroundColor: this.state.fabricTypes[i].code, borderWidth:1, }}  />:null}
                                     </View>
-                                    {!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?this.state.fabricTypes[i].name:this.state.fabricTypes[i]}</Text>:
-                                    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={this.state.fabricTypes[i]} />}
+                                    {!isImage?
+                                        <Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>
+                                            {isColor?
+                                                this.state.fabricTypes[i].name:this.state.fabricTypes[i].name}
+                                        </Text>:
+                                    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={data[i].path} />
+                                    }
                                 </View>
                             </TouchableWithoutFeedback>
 
@@ -54,8 +61,8 @@ export default class RadioGroupCustom extends Component{
                                         {isColor?
                                             <View style={{fontSize: fontSizeLabel, width: 100, height: 100, marginLeft:10, backgroundColor: this.state.fabricTypes[j+1].code, borderWidth:1, }}  />:null}
                                     </View>
-                                    {!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?this.state.fabricTypes[i+1].name:this.state.fabricTypes[i+1]}</Text>:
-                                        <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={this.state.fabricTypes[i+1]} />}
+                                    {!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?this.state.fabricTypes[i+1].name:this.state.fabricTypes[i+1].name}</Text>:
+                                        <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={data[i+1].path} />}
                                 </View>
                             </TouchableWithoutFeedback>
 
@@ -69,8 +76,8 @@ export default class RadioGroupCustom extends Component{
                                 {isColor?
                                     <View style={{width: 100, height: 100,marginLeft: 5, backgroundColor: this.state.fabricTypes[i].code, borderWidth:1, }}  />:null}
                             </View>
-                            {!isImage?<Text style={{fontSize: fontSizeLabel, paddingHorizontal: 5}}>{isColor?this.state.fabricTypes[i].name:this.state.fabricTypes[i]}</Text>:
-                                <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={this.state.fabricTypes[i]} />}
+                            {!isImage?<Text style={{fontSize: fontSizeLabel, paddingHorizontal: 5}}>{isColor?this.state.fabricTypes[i].name:this.state.fabricTypes[i].name}</Text>:
+                                <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={data[i].path} />}
                             {/*<Text style={{paddingHorizontal:5}}>{this.state.fabricTypes[i]}</Text>*/}
                         </View>
                     </TouchableWithoutFeedback>
