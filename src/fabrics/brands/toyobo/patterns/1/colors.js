@@ -1,6 +1,18 @@
 export default colors = [
     {
-        name: 'Red',
-        code: '#ff0000'
+        name: 'Greyish',
+        code: '#A3A3A3'
+    },
+    {
+        name: 'Greyish',
+        code: '#A3A3A3'
+    },
+    {
+        name: 'Greyish',
+        code: '#A3A3A3'
+    },
+    {
+        name: 'Greyish',
+        code: '#A3A3A3'
     }
 ]

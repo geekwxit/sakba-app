@@ -1,6 +1,18 @@
 export default colors = [
     {
-        name: 'Red',
-        code: '#ff0000'
+        name: 'Aqua',
+        code: '#5ef0ff'
+    },
+    {
+        name: 'Aqua',
+        code: '#5ef0ff'
+    },{
+        name: 'Aqua',
+        code: '#5ef0ff'
+    },
+    {
+        name: 'Aqua',
+        code: '#5ef0ff'
     }
+
 ]
