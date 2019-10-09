@@ -19,7 +19,6 @@ var fabric = {
     {name: 'Cream', code: '#fad0a7'}],
   selected : {pattern : 0, type    : 0, color   : 0},
 }
-var cart = [];
 
 var selection = {
   pattern : 0, type    : 0, color   : 0
@@ -64,7 +63,14 @@ export default class FabricTypeSelection extends Component<Props>{
       selectedColor: 0,
       patternOverlayHeight: 0,
       cartVisible: true,
-      productBox: false
+      productBox: false,
+      cart : [
+        {brand : 0, pattern    : 0, color   : 0},
+        // {brand : 2, pattern    : 2, color   : 1},
+        // {brand : 1, pattern    : 3, color   : 1},
+        // {brand : 2, pattern    : 1, color   : 3},
+        // {brand : 2, pattern    : 0, color   : 0},
+      ]
     };
     this.showCart = this.showCart.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
@@ -80,15 +86,15 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   updateQuantity(type, quantity){
-    total = this.state.noOfPieces;
-    home = this.state.inHomeCount;
-    out  = this.state.outsideCount;
+    var total = this.state.noOfPieces;
+    var home = this.state.inHomeCount;
+    var out  = this.state.outsideCount;
     // if(!(home+quantity<0  out+quantity<0)){
       if(type==='home'){
         if(home+quantity>=0){
         if(home+quantity<=total){
-          i = quantity+home;
-          p = total-(quantity+home);
+          var  i = quantity+home;
+          var p = total-(quantity+home);
           this.setState({inHomeCount: quantity+home});
           this.setState({outsideCount: total-(quantity+home)});
         }
@@ -122,9 +128,18 @@ export default class FabricTypeSelection extends Component<Props>{
   addToCart(){
     const {selectedPattern, selectedBrand, selectedColor} = this.state;
     const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor};
-    cart.push(product);
-    this.props.navigation.setParams({cartCount: cart.length});
-    console.log(cart);
+    this.setState({cart : [...this.state.cart, product]});
+    this.props.navigation.setParams({cartCount: this.state.cart.length+1});
+  }
+
+  removeFromCart(item){
+    // alert("Item is brand: "+ cart[item]);
+    tempCart = this.state.cart;
+    tempCart.splice(item,1);
+    this.setState({
+      cart: tempCart
+    });
+    this.props.navigation.setParams({cartCount: this.state.cart.length});
   }
 
   render() {
@@ -143,7 +158,7 @@ Text.defaultProps.allowFontScaling = false;
       <SafeAreaView>
         <ScrollView>
           <ProductModal onAdd={()=>this.addToCart()} selected={{brand: Brands[this.state.selectedBrand].name, pattern: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path, color: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].code}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
-          <CartModal close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible}/>
+          <CartModal removeItem={(item)=>this.removeFromCart(item)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
@@ -258,11 +273,11 @@ const CartModal = (props) => {
           transparent={true}
           onRequestClose={()=>props.close()}
           visible={props.visible}
-          //onShow={this.resetValues()}
+          // onShow={()=>console.log("CAAART", cart)}
       >
         <TouchableWithoutFeedback onPress={()=>props.close()}>
           <View style={{flex:1 ,alignItems: 'center', justifyContent: 'center', backgroundColor:'#00000069'}}>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={()=>{}}>
               <View  style={{width: width*0.8, backgroundColor:'#fff', borderRadius: 10}}>
                 <View style={{padding: 8,borderTopLeftRadius:10, borderTopRightRadius: 10,backgroundColor: '#0451A5',justifyContent: 'center', alignItems: 'center'}}>
                   <Text style={{fontSize: 20, color: 'white'}}>
@@ -270,151 +285,20 @@ const CartModal = (props) => {
                   </Text>
                 </View>
                 <View style={{height: height*0.5}}>
-                <ScrollView>
-                  <View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                    <View style={{flexDirection: 'row', flex:2}}>
-                      <View style={{height: 100, width: 100}}>
-                        <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                      </View>
-                      <View>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                      </View>
+                  {props.cartItems.length>0?
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <View onStartShouldSetResponder={()=>true}>
+                      {
+                        props.cartItems.map((item, index)=>{
+                          return <CartItem key={index} onRemove={()=>props.removeItem(index)} name={Brands[item.brand].name} pattern={Brands[item.brand].patterns[item.pattern].path} color={Brands[item.brand].patterns[item.pattern].colors[item.color].name}/>
+                        })
+                      }
                     </View>
-                    <View style={{flex:2}}>
-
-                    </View>
+                  </ScrollView>:
+                  <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: 'grey', fontSize: 20}}>Cart is empty!</Text>
                   </View>
-                  <View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                    <View style={{flexDirection: 'row', flex:2}}>
-                      <View style={{height: 100, width: 100}}>
-                        <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                      </View>
-                      <View>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                      </View>
-                    </View>
-                    <View style={{flex:2}}>
-
-                    </View>
-                  </View>
-                  <View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                    <View style={{flexDirection: 'row', flex:2}}>
-                      <View style={{height: 100, width: 100}}>
-                        <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                      </View>
-                      <View>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                      </View>
-                    </View>
-                    <View style={{flex:2}}>
-
-                    </View>
-                  </View>
-                  <View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                    <View style={{flexDirection: 'row', flex:2}}>
-                      <View style={{height: 100, width: 100}}>
-                        <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                      </View>
-                      <View>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                      </View>
-                    </View>
-                    <View style={{flex:2}}>
-
-                    </View>
-                  </View>
-
-                  <View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                    <View style={{flexDirection: 'row', flex:2}}>
-                      <View style={{height: 100, width: 100}}>
-                        <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                      </View>
-                      <View>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                      </View>
-                    </View>
-                    <View style={{flex:2}}>
-
-                    </View>
-                  </View><View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                  <View style={{flexDirection: 'row', flex:2}}>
-                    <View style={{height: 100, width: 100}}>
-                      <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                    </View>
-                  </View>
-                  <View style={{flex:2}}>
-
-                  </View>
-                </View><View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                  <View style={{flexDirection: 'row', flex:2}}>
-                    <View style={{height: 100, width: 100}}>
-                      <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                    </View>
-                  </View>
-                  <View style={{flex:2}}>
-
-                  </View>
-                </View><View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                  <View style={{flexDirection: 'row', flex:2}}>
-                    <View style={{height: 100, width: 100}}>
-                      <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                    </View>
-                  </View>
-                  <View style={{flex:2}}>
-
-                  </View>
-                </View><View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                  <View style={{flexDirection: 'row', flex:2}}>
-                    <View style={{height: 100, width: 100}}>
-                      <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                    </View>
-                  </View>
-                  <View style={{flex:2}}>
-
-                  </View>
-                </View><View style={{ borderColor: '#0451A5', borderWidth: 1, padding: 10}}>
-                  <View style={{flexDirection: 'row', flex:2}}>
-                    <View style={{height: 100, width: 100}}>
-                      <Image style={{width: 80,resizeMode: 'contain', flex:1}} source={Brands[0].patterns[0].path} />
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Toyoba</Text>
-                      <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: Blue</Text>
-                    </View>
-                  </View>
-                  <View style={{flex:2}}>
-
-                  </View>
-                </View>
-                  {cart.map((product,index)=>{
-                    return(
-                        <View key={index}>
-                          <Text>{Brands[product.brand].name}</Text>
-                        </View>
-                    )
-                  })}
-                </ScrollView>
+                  }
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -423,4 +307,30 @@ const CartModal = (props) => {
       </Modal>
 
   )
+}
+
+const CartItem = (props) =>{
+    return (
+        <View style={{borderColor: '#0451A5', borderWidth: 1, padding: 0, flexDirection: 'row'}}>
+          {/*<View style={{flex: 2}}>*/}
+            <View style={{flex:2, flexDirection: 'row', width: 400}}>
+              <View style={{ flex: 2, padding : 10}}>
+                <Image style={{width: 80, height: 80,resizeMode: 'contain', flex: 1}} source={props.pattern}/>
+              </View>
+              <View style={{flex: 2}}>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>
+              </View>
+            </View>
+          {/*</View>*/}
+          <View style={{flex: 1, alignSelf: 'flex-end', padding: 10, marginLeft: 10}}>
+            <TouchableOpacity onPress={() => props.onRemove()}>
+              <View style={{flex: 1, backgroundColor: '#0451A5', width: 90, height: 30,
+                alignItems: 'center', justifyContent: 'center', borderRadius: 10}}>
+                <Text style={{fontSize: 20, color: 'white'}}>Remove</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+    )
 }
