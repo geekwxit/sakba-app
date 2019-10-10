@@ -200,8 +200,8 @@ Text.defaultProps.allowFontScaling = false;
             <View>
               <RadioGroup
                   data={(Brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
-                  isImage={false}
-                  isColor={true}
+                  isImage={true}
+                  isColor={false}
                   selected={this.state.selectedColor}
                   onSelect={(index)=>{this.setState({selectedColor: index})}}
               />

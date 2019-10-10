@@ -11,8 +11,8 @@ export default brands = [
         name: "Shikibo",
         patterns: shikiboPattern
     },
-    {
-        name: "Fine Gold",
-        patterns: finegoldPattern
-    }
+    // {
+    //     name: "Fine Gold",
+    //     patterns: finegoldPattern
+    // }
 ]

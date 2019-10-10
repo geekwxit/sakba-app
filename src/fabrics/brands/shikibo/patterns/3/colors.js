@@ -1,18 +1,26 @@
 export default colors = [
     {
-        name: 'Aqua',
-        code: '#5ef0ff'
+        name: 'Greyish',
+        path : require('./colors/1.jpg')
     },
     {
-        name: 'Aqua',
-        code: '#5ef0ff'
-    },{
-        name: 'Aqua',
-        code: '#5ef0ff'
+        name: 'Greyish',
+        path : require('./colors/2.jpg')
     },
     {
-        name: 'Aqua',
-        code: '#5ef0ff'
+        name: 'Greyish',
+        path : require('./colors/3.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/4.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/5.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/6.jpg')
     }
-
 ]

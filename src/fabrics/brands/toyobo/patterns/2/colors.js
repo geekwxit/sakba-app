@@ -1,14 +1,26 @@
 export default colors = [
     {
-        name: 'Purple',
-        code: '#553555'
+        name: 'Greyish',
+        path : require('./colors/1.jpg')
     },
     {
-        name: 'Purple',
-        code: '#553555'
+        name: 'Greyish',
+        path : require('./colors/2.jpg')
     },
     {
-        name: 'Purple',
-        code: '#553555'
+        name: 'Greyish',
+        path : require('./colors/3.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/4.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/5.jpg')
+    },
+    {
+        name: 'Greyish',
+        path : require('./colors/6.jpg')
     }
 ]
