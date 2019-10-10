@@ -62,10 +62,10 @@ export default class FabricTypeSelection extends Component<Props>{
       selectedPattern: 0,
       selectedColor: 0,
       patternOverlayHeight: 0,
-      cartVisible: true,
+      cartVisible: false,
       productBox: false,
       cart : [
-        {brand : 0, pattern    : 0, color   : 0},
+        // {brand : 0, pattern    : 0, color   : 0},
         // {brand : 2, pattern    : 2, color   : 1},
         // {brand : 1, pattern    : 3, color   : 1},
         // {brand : 2, pattern    : 1, color   : 3},
@@ -142,6 +142,20 @@ export default class FabricTypeSelection extends Component<Props>{
     this.props.navigation.setParams({cartCount: this.state.cart.length});
   }
 
+  doCheckout(){
+    const inHomeCount = this.state.inHomeCount;
+    const outsideCount= this.state.outsideCount;
+    const mobileNo    = this.props.navigation.getParam('mobileNo', null);
+    const customerName= this.props.navigation.getParam('customerName', null);
+    const cart = this.state.cart;
+    this.state.cart.length>inHomeCount?alert('Items on cart are more than selected in-home dishdashas. Please remove some items.'):
+        this.state.cart.length<inHomeCount?alert('Items on cart are less than selected in-home dishdashas. Please add some items.'):
+            this.state.cart.length===inHomeCount?
+                this.props.navigation.navigate('delivery',
+                    {inHomeCount, outsideCount, mobileNo, customerName, cart}):
+                alert("Something went wrong!");
+  }
+
   render() {
 
     Text.defaultProps = Text.defaultProps || {};
@@ -157,7 +171,7 @@ Text.defaultProps.allowFontScaling = false;
     return (
       <SafeAreaView>
         <ScrollView>
-          <ProductModal onAdd={()=>this.addToCart()} selected={{brand: Brands[this.state.selectedBrand].name, pattern: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path, color: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].code}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
+          <ProductModal onAdd={()=>this.addToCart()} selected={{brand: Brands[this.state.selectedBrand].name, pattern: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path, color: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
           <CartModal removeItem={(item)=>this.removeFromCart(item)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
@@ -206,11 +220,18 @@ Text.defaultProps.allowFontScaling = false;
                   onSelect={(index)=>{this.setState({selectedColor: index})}}
               />
             </View>
-            <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginTop: 20, marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                   onPress={() =>this.setState({productBox: true})}>
                 <Text style={{ fontSize: 18, color: 'white' }}>ADD TO CART</Text>
+              </Button>
+            </View>
+            <View style={{ marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
+                  onPress={() =>this.doCheckout()}>
+                <Text style={{ fontSize: 18, color: 'white' }}>CHECKOUT</Text>
               </Button>
             </View>
           </View>
@@ -221,6 +242,7 @@ Text.defaultProps.allowFontScaling = false;
 }
 
 const ProductModal = (props) => {
+  isColorAnImage = true;
   return(
       <Modal
           style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
@@ -250,7 +272,11 @@ const ProductModal = (props) => {
               </View>
               <View style={{padding: 10,flexDirection: 'row',marginTop:0, alignItems :'center'}}>
                 <Text style={{fontSize: 18}}>Fabric Color:</Text>
-                <View style={{marginLeft: 5,backgroundColor: props.selected.color, width: 100, height:20}}/>
+                <View style={{marginLeft: 5, width: 100, height:20}}>
+                  {this.isColorAnImage?
+                  <Image style={{flex: 1, height:20, width: 100,   resizeMode: 'cover'}} source={props.selected.color}/>:null
+                  }
+                </View>
               </View>
               <TouchableOpacity onPress={()=>props.onAdd()}>
                 <View style={{backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>

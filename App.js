@@ -36,7 +36,7 @@ const AppNavigator = createStackNavigator(
       fabs: Fabs
   },
   {
-    initialRouteName: 'fabric',
+    initialRouteName: 'login',
     initialRouteParams: { selected: false }
   }
 );

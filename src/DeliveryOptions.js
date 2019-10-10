@@ -31,6 +31,7 @@ export default class customerAgree extends Component<Props>{
     };
     constructor(props) {
         super(props)
+        debugger;
         this.state = {
             isLoading: false,
             pickupStore: null,
