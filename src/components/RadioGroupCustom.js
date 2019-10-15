@@ -50,7 +50,7 @@ export default class RadioGroupCustom extends Component{
                                             {isColor?
                                                 data[i].name:data[i].name}
                                         </Text>:
-                                    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={data[i].path} />
+                                    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={{uri:data[i].path}} />
                                     }
                                 </View>
                             </TouchableWithoutFeedback>
@@ -63,7 +63,7 @@ export default class RadioGroupCustom extends Component{
                                             <View style={{fontSize: fontSizeLabel, width: 100, height: 100, marginLeft:10, backgroundColor: data[j+1].code, borderWidth:1, }}  />:null}
                                     </View>
                                     {!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?data[i+1].name:data[i+1].name}</Text>:
-                                        <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={data[i+1].path} />}
+                                        <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={{uri: data[i+1].path}} />}
                                 </View>
                             </TouchableWithoutFeedback>
 
@@ -94,7 +94,7 @@ export default class RadioGroupCustom extends Component{
                                             paddingHorizontal: 5
                                         }}>{isColor ? data[i].name : data[i].name}</Text> :
                                         <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}}
-                                               source={data[i].path}/>}
+                                               source={{uri: data[i].path}}/>}
                                     {/*<Text style={{paddingHorizontal:5}}>{this.state.fabricTypes[i]}</Text>*/}
                                 </View>
                             </TouchableWithoutFeedback>

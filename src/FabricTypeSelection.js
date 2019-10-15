@@ -4,25 +4,29 @@ import { Form, Item, Input, Container, Content, Button, Radio, Textarea } from '
 import renderIf from 'render-if';
 import axios from 'axios';
 import RadioGroup from './components/RadioGroupCustom';
-import Brands from "./fabrics/brands/brands";
+// import Brands from "./fabrics/brands/brands";
 import Icon from 'react-native-vector-icons/Ionicons';
+import {fabricStrings} from "./Strings";
+
 const { width, height } = Dimensions.get('window');
-var fabric = {
-  types     : ['Toyobo', 'Shikibo', 'Fine Gold',],
-  patterns  : [require('../img/patterns/pattern1.jpg'), require('../img/patterns/pattern2.jpg'),
-    require('../img/patterns/pattern3.jpg'), require('../img/patterns/pattern4.jpg'),require('../img/patterns/pattern2.jpg'),],
-  colors    : [
-      {name: 'Red', code: '#ff3d01'},
-    {name: 'White', code: '#ffffff'},
-    {name: 'Green', code: '#148500'},
-    {name: 'Purple', code: '#f99bff'},
-    {name: 'Cream', code: '#fad0a7'}],
-  selected : {pattern : 0, type    : 0, color   : 0},
-}
+// var fabric = {
+//   types     : ['Toyobo', 'Shikibo', 'Fine Gold',],
+//   patterns  : [require('../img/patterns/pattern1.jpg'), require('../img/patterns/pattern2.jpg'),
+//     require('../img/patterns/pattern3.jpg'), require('../img/patterns/pattern4.jpg'),require('../img/patterns/pattern2.jpg'),],
+//   colors    : [
+//       {name: 'Red', code: '#ff3d01'},
+//     {name: 'White', code: '#ffffff'},
+//     {name: 'Green', code: '#148500'},
+//     {name: 'Purple', code: '#f99bff'},
+//     {name: 'Cream', code: '#fad0a7'}],
+//   selected : {pattern : 0, type    : 0, color   : 0},
+// }
 
 var selection = {
   pattern : 0, type    : 0, color   : 0
 }
+
+// var Brands = [];
 
 
 export default class FabricTypeSelection extends Component<Props>{
@@ -64,6 +68,7 @@ export default class FabricTypeSelection extends Component<Props>{
       patternOverlayHeight: 0,
       cartVisible: false,
       productBox: false,
+      brands: null,
       cart : [
         // {brand : 0, pattern    : 0, color   : 0},
         // {brand : 2, pattern    : 2, color   : 1},
@@ -76,7 +81,15 @@ export default class FabricTypeSelection extends Component<Props>{
     this.props.navigation.setParams({showCart: this.showCart})
   }
   componentDidMount() {
+    this.getAllFabrics();
+  }
 
+  async getAllFabrics(){
+    await axios.get(fabricStrings.getAllFabrics)
+        .then(response=>response.data)
+        .then(response=>this.setState({brands: response.brands}));
+    // console.log(Brands);
+    debugger;
   }
 
   showCart(){
@@ -171,12 +184,13 @@ Text.defaultProps.allowFontScaling = false;
     return (
       <SafeAreaView>
         <ScrollView>
-          <ProductModal onAdd={()=>this.addToCart()} selected={{brand: Brands[this.state.selectedBrand].name, pattern: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path, color: Brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
-          <CartModal removeItem={(item)=>this.removeFromCart(item)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+          <ProductModal brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
+          <CartModal brands={this.state.brands} removeItem={(item)=>this.removeFromCart(item)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
-          <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
+          {this.state.brands?this.state.brands.length?
+            <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
             <Text style={{marginTop:20, fontSize: 20, textAlign: 'center' }}>Select each product individually</Text>
             <View style={{ marginTop: 20, marginBottom: 10}}>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric Brand: </Text>
@@ -184,7 +198,7 @@ Text.defaultProps.allowFontScaling = false;
 
             <View>
               <RadioGroup
-                data={Brands}
+                data={this.state.brands}
                 isImage={false}
                 selected={this.state.selectedBrand}
                 onSelect={(index)=>{this.setState({selectedBrand:index, selectedColor: 0, selectedPattern: 0})}}
@@ -200,7 +214,7 @@ Text.defaultProps.allowFontScaling = false;
               {/*  <View style={{ alignSelf: 'center', zIndex:10,height: this.state.patternOverlayHeight, width:width-50 , position: 'absolute', backgroundColor: 'rgba(255,255,255,0.85)'}}/>*/}
               {/*</TouchableWithoutFeedback>*/}
               <RadioGroup
-                  data={Brands[this.state.selectedBrand].patterns}
+                  data={this.state.brands[this.state.selectedBrand].patterns}
                   isImage={true}
                   selected={this.state.selectedPattern}
                   onSelect={(index)=>{this.setState({selectedPattern: index, selectedColor: 0})}}
@@ -213,7 +227,7 @@ Text.defaultProps.allowFontScaling = false;
 
             <View>
               <RadioGroup
-                  data={(Brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
+                  data={(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
                   isImage={true}
                   isColor={false}
                   selected={this.state.selectedColor}
@@ -235,6 +249,10 @@ Text.defaultProps.allowFontScaling = false;
               </Button>
             </View>
           </View>
+          :
+          <View>
+              </View>:null
+          }
         </ScrollView>
       </SafeAreaView>
     );
@@ -263,23 +281,24 @@ const ProductModal = (props) => {
               </View>
               <View style={{padding: 10}}>
               <Text style={{fontSize: 18}}>Fabric Brand: {props.selected.brand}</Text>
-                <Text style={{fontSize: 18}}>Fabric Pattern:</Text>
+                <Text style={{fontSize: 18}}>Fabric Pattern and Color:</Text>
               </View>
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
                 <View style={{ alignItems : 'center', justifyContent: 'center', }}>
-                  <Image style={{width: width*0.8, height: 200, resizeMode: 'contain',borderRadius: 10}} source={props.selected.pattern} />
+                  <Image style={{width: width*0.8, height: 200, resizeMode: 'contain',borderRadius: 10}} source={{uri: props.selected.color}} />
                 </View>
               </View>
-              <View style={{padding: 10,flexDirection: 'row',marginTop:0, alignItems :'center'}}>
-                <Text style={{fontSize: 18}}>Fabric Color:</Text>
-                <View style={{marginLeft: 5, width: 100, height:20}}>
-                  {this.isColorAnImage?
-                  <Image style={{flex: 1, height:20, width: 100,   resizeMode: 'cover'}} source={props.selected.color}/>:null
-                  }
-                </View>
-              </View>
+              <View style={{height: 10}}/>
+              {/*<View style={{padding: 10,flexDirection: 'row',marginTop:0, alignItems :'center'}}>*/}
+              {/*  <Text style={{fontSize: 18}}>Fabric Color:</Text>*/}
+              {/*  <View style={{marginLeft: 5, width: 100, height:20}}>*/}
+              {/*    {this.isColorAnImage?*/}
+              {/*    <Image style={{flex: 1, height:20, width: 100,   resizeMode: 'cover'}} source={{uri: props.selected.color}}/>:null*/}
+              {/*    }*/}
+              {/*  </View>*/}
+              {/*</View>*/}
               <TouchableOpacity onPress={()=>props.onAdd()}>
-                <View style={{backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+                <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
                   <Text style={{fontSize: 20, color: 'white'}}>Add to Cart</Text>
                 </View>
               </TouchableOpacity>
@@ -316,7 +335,7 @@ const CartModal = (props) => {
                     <View onStartShouldSetResponder={()=>true}>
                       {
                         props.cartItems.map((item, index)=>{
-                          return <CartItem key={index} onRemove={()=>props.removeItem(index)} name={Brands[item.brand].name} pattern={Brands[item.brand].patterns[item.pattern].path} color={Brands[item.brand].patterns[item.pattern].colors[item.color].name}/>
+                          return <CartItem key={index} onRemove={()=>props.removeItem(index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                         })
                       }
                     </View>
@@ -341,11 +360,11 @@ const CartItem = (props) =>{
           {/*<View style={{flex: 2}}>*/}
             <View style={{flex:2, flexDirection: 'row', width: 400}}>
               <View style={{ flex: 2, padding : 10}}>
-                <Image style={{width: 80, height: 80,resizeMode: 'contain', flex: 1}} source={props.pattern}/>
+                <Image style={{width: 80, height: 80,resizeMode: 'contain', flex: 1}} source={{uri: props.color}}/>
               </View>
               <View style={{flex: 2}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>
+                {/*<Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>*/}
               </View>
             </View>
           {/*</View>*/}
