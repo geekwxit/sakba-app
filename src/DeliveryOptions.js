@@ -6,6 +6,7 @@ import PayPal from 'react-native-paypal-wrapper';
 import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import axios from 'axios';
+import {deliveryStrings} from './Strings';
 
 
 const { width, height } = Dimensions.get('window');
@@ -31,7 +32,6 @@ export default class customerAgree extends Component<Props>{
     };
     constructor(props) {
         super(props)
-        debugger;
         this.state = {
             isLoading: false,
             pickupStore: null,
@@ -46,11 +46,8 @@ export default class customerAgree extends Component<Props>{
 
             inHomeCount : props.navigation.getParam('inHomeCount', null),
             outsideCount: props.navigation.getParam('outsideCount', null),
-            fabric : {
-                pattern: props.navigation.getParam('fabricPattern', null),
-                color: props.navigation.getParam('fabricColor', null),
-                type: props.navigation.getParam('fabricType', null)
-            }
+            products: props.navigation.getParam('cart', []),
+            fabrics : props.navigation.getParam('fabrics', null)
         };
     }
     componentDidMount() {
@@ -58,7 +55,24 @@ export default class customerAgree extends Component<Props>{
     }
     submitForm() {
         console.log('in submit form');
-        const url = 'https://sakba.net/mobileApi/order.php';
+        products = [];
+        const url = deliveryStrings.order_now;
+        brands = this.state.fabrics;
+        if(this.state.inHomeCount>0){
+            products = this.state.products.map((item,index)=>{
+                return (
+                    {brandID: brands[item.brand].id,
+                    patternID: brands[item.brand].patterns[item.pattern].id,
+                        colorID: brands[item.brand].patterns[item.pattern].colors[item.color].id,
+                        quantity: item.quantity
+                    }
+                )
+            })
+        }
+
+        otherFabrics = {
+            inHomeCount: this.state.inHomeCount, outsideCount: this.state.outsideCount,
+        }
         const {
             p_area, p_street, p_jada, p_floor, p_block, p_apartment, p_extra_Number, p_house,
             d_area, d_street, d_jada, d_floor, d_block, d_apartment, d_extra_Number, d_house,
@@ -98,7 +112,8 @@ export default class customerAgree extends Component<Props>{
                         d_block: block,
                         d_extra_number: extra_Number,
                         d_floor: floor,
-                        d_house: house, d_jada: jada, d_street: street
+                        d_house: house, d_jada: jada, d_street: street,
+                        products
                     })
 
                     // if default condition will occur
@@ -119,7 +134,9 @@ export default class customerAgree extends Component<Props>{
                                     measurementDate: measurementDate,
                                     mobileNo: this.state.mobileNo,
                                     delivery_date: responseData.delivery_date,
-                                    emailID: emailAddr
+                                    emailID: emailAddr,
+
+
                                 });
                             })
                         })
@@ -154,7 +171,8 @@ export default class customerAgree extends Component<Props>{
                     o_delivery_charge: deliveryOptionValue,
                     pickup_type: pickup_type,
                     delivery_type: delivery_type,
-                    d_store_name: whichStore
+                    d_store_name: whichStore,
+                    products
                 })
                 this.setState({isLoading: true});
                 axios.post(url, data)
@@ -218,7 +236,8 @@ export default class customerAgree extends Component<Props>{
                             p_block: block,
                             p_extra_number: extra_Number,
                             p_floor: floor,
-                            p_house: house, p_jada: jada, p_street: street
+                            p_house: house, p_jada: jada, p_street: street,
+                            products
                         })
 
                         // if default condition will occur
@@ -278,7 +297,8 @@ export default class customerAgree extends Component<Props>{
                         p_block: block, p_extra_number: extra_Number,
                         p_floor: floor, p_house: house,
                         p_jada: jada, p_street: street,
-                        d_store_name: whichStore
+                        d_store_name: whichStore,
+                        products
                     })
                     this.setState({isLoading: true});
                     axios.post(url, data)
@@ -648,7 +668,7 @@ export default class customerAgree extends Component<Props>{
                         <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                             <Button
                                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                                onPress={() => this.tempsubmitForm()}>
+                                onPress={() => this.submitForm()}>
                                 <Text style={{ fontSize: 18, color: 'white' }}>Order Now !</Text>
                             </Button>
                         </View>

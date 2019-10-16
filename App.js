@@ -16,7 +16,7 @@ import SignUpScreen from './src/SignUpScreen';
 import Review from './src/ReviewOrder';
 import FabricTypeSelection from "./src/FabricTypeSelection";
 import DeliveryOptions from "./src/DeliveryOptions";
-import Fabs from "./src/Fabs";
+//import Fabs from "./src/Fabs";
 
 const AppNavigator = createStackNavigator(
   {
@@ -33,7 +33,6 @@ const AppNavigator = createStackNavigator(
     review: Review,
     fabric: FabricTypeSelection,
     delivery: DeliveryOptions,
-      fabs: Fabs
   },
   {
     initialRouteName: 'login',

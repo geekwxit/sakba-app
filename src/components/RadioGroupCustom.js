@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Alert, Text, Image, Dimensions, TouchableWithoutFeedback} from 'react-native';
+import { View, Alert, Text, Image, Dimensions,ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
 import RadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
 const { width, height } = Dimensions.get('window');
+import Loader from "./Loader";
 
 /** This class groups the radio buttons in a single container **/
 
@@ -13,6 +14,7 @@ export default class RadioGroupCustom extends Component{
             fabricTypes: props.data,
             length: props.data.length,
             selectedFabricIndex : props.default,
+            loaderStates: [],
         }
     }
 
@@ -21,6 +23,13 @@ export default class RadioGroupCustom extends Component{
         // this.setState(lastState=>({...lastState,  fabricTypes: {index: {isSelected: true}}}))
         //this.setState({selectedFabricIndex: index});
         this.props.onSelect(index);
+    }
+
+    componentDidMount(){
+        length = this.state.length;
+        array = new Array(length);
+        array.fill(true);
+        this.setState({loaderStates: array});
     }
 
     render() {
@@ -50,7 +59,11 @@ export default class RadioGroupCustom extends Component{
                                             {isColor?
                                                 data[i].name:data[i].name}
                                         </Text>:
-                                    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={{uri:data[i].path}} />
+                                        <View>
+                                    <Image onLoadEnd={()=>this.setState({loaderStates: {i: false} })} style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={{uri:data[i].path}} />
+                                    {this.state.loaderStates[i] &&
+                                        <Loader />
+                                    }</View>
                                     }
                                 </View>
                             </TouchableWithoutFeedback>
@@ -62,8 +75,19 @@ export default class RadioGroupCustom extends Component{
                                         {isColor?
                                             <View style={{fontSize: fontSizeLabel, width: 100, height: 100, marginLeft:10, backgroundColor: data[j+1].code, borderWidth:1, }}  />:null}
                                     </View>
-                                    {!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?data[i+1].name:data[i+1].name}</Text>:
-                                        <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={{uri: data[i+1].path}} />}
+                                    {!isImage?
+                                        <Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>
+                                            {isColor?
+                                                data[i+1].name:data[i+1].name}
+                                        </Text>:
+                                        <View>
+                                            <Image onLoadEnd={()=>{t= i+1;this.setState({loaderStates: {t: false} })}} style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={{uri:data[i+1].path}} />
+                                            {this.state.loaderStates[i+1] &&
+                                            <Loader />
+                                            }</View>
+                                    }
+                                    {/*{!isImage?<Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>{isColor?data[i+1].name:data[i+1].name}</Text>:*/}
+                                    {/*    <Image style={{width: 100, marginLeft: 5,height: 100, resizeMode: 'contain'}} source={{uri: data[i+1].path}} />}*/}
                                 </View>
                             </TouchableWithoutFeedback>
 
@@ -89,12 +113,27 @@ export default class RadioGroupCustom extends Component{
                                                 borderWidth: 1,
                                             }}/> : null}
                                     </View>
-                                    {!isImage ? <Text style={{
-                                            fontSize: fontSizeLabel,
-                                            paddingHorizontal: 5
-                                        }}>{isColor ? data[i].name : data[i].name}</Text> :
-                                        <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}}
-                                               source={{uri: data[i].path}}/>}
+                                    {!isImage?
+                                        <Text style={{paddingHorizontal: 5, fontSize: fontSizeLabel}}>
+                                            {isColor?
+                                                data[i].name:data[i].name}
+                                        </Text>:
+                                        <View>
+                                            <Image onLoadEnd={()=>this.setState({loaderStates: {i: false} })} style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}} source={{uri:data[i].path}} />
+                                            {this.state.loaderStates[i] &&
+                                            <Loader />
+                                            }</View>
+                                    }
+
+
+
+                                    {/*{!isImage ? */}
+                                    {/*    <Text style={{fontSize: fontSizeLabel, paddingHorizontal: 5}}>*/}
+                                    {/*        {isColor ? */}
+                                    {/*            data[i].name : data[i].name}*/}
+                                    {/*    </Text> :*/}
+                                    {/*    <Image style={{width: 100, height: 100, resizeMode: 'contain', marginLeft: 5}}*/}
+                                    {/*           source={{uri: data[i].path}}/>}*/}
                                     {/*<Text style={{paddingHorizontal:5}}>{this.state.fabricTypes[i]}</Text>*/}
                                 </View>
                             </TouchableWithoutFeedback>
@@ -108,7 +147,16 @@ export default class RadioGroupCustom extends Component{
 
         return(
             <View>
-                {rows()}
+                {
+                    this.props.isSelectionChanged?
+                        this.props.type!=='brand'?
+                            this.props.type==='pattern' && this.props.changedType==='pattern'?
+                                rows()
+                                :
+                                this.props.type==='color' && this.props.changedType==='pattern'?
+                                    <Loader/>
+                                    :rows():rows():rows()
+                }
             </View>
         )
     }

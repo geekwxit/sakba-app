@@ -55,7 +55,7 @@ export default class FabricTypeSelection extends Component<Props>{
     super(props)
     //console.log("SOMEBRANDS: ", JSON.stringify(Brands));
     this.state = {
-      isLoading: false,
+      isLoading: true,
       noOfPieces: this.props.navigation.getParam('noOfPieces', null),
       mobileNo: this.props.navigation.getParam('mobileNo', null),
       inHomeCount: this.props.navigation.getParam('inHomeCount', null),
@@ -75,7 +75,10 @@ export default class FabricTypeSelection extends Component<Props>{
         // {brand : 1, pattern    : 3, color   : 1},
         // {brand : 2, pattern    : 1, color   : 3},
         // {brand : 2, pattern    : 0, color   : 0},
-      ]
+      ],
+      totalCartItems: 0,
+      selectionChanged: false,
+      changeType: null
     };
     this.showCart = this.showCart.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
@@ -87,9 +90,14 @@ export default class FabricTypeSelection extends Component<Props>{
   async getAllFabrics(){
     await axios.get(fabricStrings.getAllFabrics)
         .then(response=>response.data)
-        .then(response=>this.setState({brands: response.brands}));
+        .then(response=>{
+          // response.brands[0].patterns.splice(0,1);
+          // debugger;
+            this.setState({brands: response.brands})
+        })
+        .then(()=>this.setState({isLoading:false}))
+        .catch(error=>alert("Something went wrong!"))
     // console.log(Brands);
-    debugger;
   }
 
   showCart(){
@@ -131,6 +139,9 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   proceed(){
+    brand = this.state.brands[this.state.selectedBrand];
+    pattern = brand.patterns[this.state.selectedPattern];
+    color = pattern.colors[this.state.selectedColors];
     const fabricType = fabric.types[fabric.selected.type];
     const fabricColor = fabric.colors[fabric.selected.color];
     const fabricPattern = fabric.patterns[fabric.selected.pattern];
@@ -139,36 +150,57 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   addToCart(){
+    var productFound = false;
     const {selectedPattern, selectedBrand, selectedColor} = this.state;
-    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor};
-    this.setState({cart : [...this.state.cart, product]});
-    this.props.navigation.setParams({cartCount: this.state.cart.length+1});
+    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1};
+    this.state.cart.map((item,index)=>{
+      if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
+        item.quantity = item.quantity+1;
+        productFound = true;
+        alert("Product quantity increased!");
+      }
+    })
+    !productFound?this.setState({cart : [...this.state.cart, product]}):null;
+    !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
+    total = parseInt(this.state.totalCartItems)+1;
+    this.setState({totalCartItems: total, productBox: false});
+    !productFound?alert("Product successfully added to your cart"):null;
   }
 
-  removeFromCart(item){
+  removeFromCart(quantity, index){
     // alert("Item is brand: "+ cart[item]);
     tempCart = this.state.cart;
-    tempCart.splice(item,1);
+    tempCart.splice(index,1);
     this.setState({
-      cart: tempCart
+      cart: tempCart,
+      totalCartItems: this.state.totalCartItems - quantity,
     });
     this.props.navigation.setParams({cartCount: this.state.cart.length});
   }
 
   doCheckout(){
+    //alert("Something went wrong!");
     const inHomeCount = this.state.inHomeCount;
     const outsideCount= this.state.outsideCount;
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
     const customerName= this.props.navigation.getParam('customerName', null);
     const cart = this.state.cart;
-    this.state.cart.length>inHomeCount?alert('Items on cart are more than selected in-home dishdashas. Please remove some items.'):
-        this.state.cart.length<inHomeCount?alert('Items on cart are less than selected in-home dishdashas. Please add some items.'):
-            this.state.cart.length===inHomeCount?
+    this.state.totalCartItems>inHomeCount?alert('Items on cart are more than selected in-home dishdashas i.e.' + inHomeCount +' . Please remove some items.'):
+        this.state.totalCartItems<inHomeCount?alert('Items on cart are less than selected in-home dishdashas i.e.' + inHomeCount +' . Please add some items.'):
+            this.state.totalCartItems==inHomeCount?
                 this.props.navigation.navigate('delivery',
-                    {inHomeCount, outsideCount, mobileNo, customerName, cart}):
-                alert("Something went wrong!");
+                    {inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart}):
+                alert("Something went wrong");
   }
 
+  selectionChanged(type){
+    this.setState({selectionChanged: true, changedType: type})
+    setTimeout(()=>this.temp(), 1000);
+  }
+
+  temp(){
+    this.setState({selectionChanged: false, changedType: null});
+  }
   render() {
 
     Text.defaultProps = Text.defaultProps || {};
@@ -183,10 +215,13 @@ Text.defaultProps.allowFontScaling = false;
     // debugger
     return (
       <SafeAreaView>
+        {this.state.isLoading?<View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
+        </View>:
         <ScrollView>
           <ProductModal brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
-          <CartModal brands={this.state.brands} removeItem={(item)=>this.removeFromCart(item)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
+          <CartModal brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
           {this.state.brands?this.state.brands.length?
@@ -199,9 +234,10 @@ Text.defaultProps.allowFontScaling = false;
             <View>
               <RadioGroup
                 data={this.state.brands}
+                type={'brand'}
                 isImage={false}
                 selected={this.state.selectedBrand}
-                onSelect={(index)=>{this.setState({selectedBrand:index, selectedColor: 0, selectedPattern: 0})}}
+                onSelect={(index)=>{this.setState({selectedBrand:index, selectedColor: 0, selectedPattern: 0}); this.selectionChanged('brand')}}
               />
             </View>
 
@@ -215,9 +251,12 @@ Text.defaultProps.allowFontScaling = false;
               {/*</TouchableWithoutFeedback>*/}
               <RadioGroup
                   data={this.state.brands[this.state.selectedBrand].patterns}
+                  type={'pattern'}
                   isImage={true}
                   selected={this.state.selectedPattern}
                   onSelect={(index)=>{this.setState({selectedPattern: index, selectedColor: 0})}}
+                  isSelectionChanged={this.state.selectionChanged}
+                  changeType={this.state.changeType}
               />
             </View>
 
@@ -228,10 +267,12 @@ Text.defaultProps.allowFontScaling = false;
             <View>
               <RadioGroup
                   data={(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
+                  type={'color'}
                   isImage={true}
                   isColor={false}
                   selected={this.state.selectedColor}
                   onSelect={(index)=>{this.setState({selectedColor: index})}}
+                  changeType={this.state.changedType}
               />
             </View>
             <View style={{ marginTop: 20, marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }}>
@@ -253,7 +294,7 @@ Text.defaultProps.allowFontScaling = false;
           <View>
               </View>:null
           }
-        </ScrollView>
+        </ScrollView>}
       </SafeAreaView>
     );
   }
@@ -335,7 +376,8 @@ const CartModal = (props) => {
                     <View onStartShouldSetResponder={()=>true}>
                       {
                         props.cartItems.map((item, index)=>{
-                          return <CartItem key={index} onRemove={()=>props.removeItem(index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
+                          q = item.quantity
+                          return <CartItem quantity={item.quantity} key={index} onRemove={(q)=>props.removeItem(q,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                         })
                       }
                     </View>
@@ -364,6 +406,7 @@ const CartItem = (props) =>{
               </View>
               <View style={{flex: 2}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Quantity: {props.quantity}</Text>
                 {/*<Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>*/}
               </View>
             </View>

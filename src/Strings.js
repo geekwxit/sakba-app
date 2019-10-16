@@ -25,5 +25,11 @@ export const oConfirm = {
 
 export const fabricStrings = {
     getAllFabrics: 'http://sakba.net/mobileApi/get_fabrics.php',
-
 }
+
+/**Delivery Screen*/
+export const deliveryStrings = {
+    order_now  : 'https://sakba.net/mobileApi/order_test.php',
+}
+
+//https://sakba.net/mobileApi/order.php'
