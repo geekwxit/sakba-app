@@ -138,18 +138,19 @@ export default class FabricTypeSelection extends Component<Props>{
     this.setState({selectedFabricType: this.fabricTypes[fabric]});
   }
 
-  proceed(){
-    brand = this.state.brands[this.state.selectedBrand];
-    pattern = brand.patterns[this.state.selectedPattern];
-    color = pattern.colors[this.state.selectedColors];
-    const fabricType = fabric.types[fabric.selected.type];
-    const fabricColor = fabric.colors[fabric.selected.color];
-    const fabricPattern = fabric.patterns[fabric.selected.pattern];
-    // console.warn("Options: ", type, color, pattern);
-    this.props.navigation.navigate('delivery', {fabricType, fabricColor, fabricPattern})
-  }
+  // proceed(){
+  //   brand = this.state.brands[this.state.selectedBrand];
+  //   pattern = brand.patterns[this.state.selectedPattern];
+  //   color = pattern.colors[this.state.selectedColors];
+  //   const fabricType = fabric.types[fabric.selected.type];
+  //   const fabricColor = fabric.colors[fabric.selected.color];
+  //   const fabricPattern = fabric.patterns[fabric.selected.pattern];
+  //   // console.warn("Options: ", type, color, pattern);
+  //   this.props.navigation.navigate('delivery', {fabricType, fabricColor, fabricPattern})
+  // }
 
   addToCart(){
+    this.setState({productBox:false});
     var productFound = false;
     const {selectedPattern, selectedBrand, selectedColor} = this.state;
     const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1};
@@ -157,14 +158,14 @@ export default class FabricTypeSelection extends Component<Props>{
       if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
         item.quantity = item.quantity+1;
         productFound = true;
-        alert("Product quantity increased!");
+        setTimeout(()=>alert("Product quantity increased!"), 500);
       }
     })
     !productFound?this.setState({cart : [...this.state.cart, product]}):null;
     !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
     total = parseInt(this.state.totalCartItems)+1;
-    this.setState({totalCartItems: total, productBox: false});
-    !productFound?alert("Product successfully added to your cart"):null;
+    this.setState({totalCartItems: total});
+    !productFound?setTimeout(()=>alert("Product successfully added to your cart"), 500):null;
   }
 
   removeFromCart(quantity, index){
@@ -376,8 +377,7 @@ const CartModal = (props) => {
                     <View onStartShouldSetResponder={()=>true}>
                       {
                         props.cartItems.map((item, index)=>{
-                          q = item.quantity
-                          return <CartItem quantity={item.quantity} key={index} onRemove={(q)=>props.removeItem(q,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
+                          return <CartItem quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                         })
                       }
                     </View>

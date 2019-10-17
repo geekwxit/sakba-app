@@ -32,4 +32,9 @@ export const deliveryStrings = {
     order_now  : 'https://sakba.net/mobileApi/order_test.php',
 }
 
+export const visitToShopPage = {
+    awqaf_location_url: 'https://goo.gl/maps/M4YDSRUrgARVrmoQ9',
+    view_on_map       : 'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9',
+}
+
 //https://sakba.net/mobileApi/order.php'
