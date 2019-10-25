@@ -78,7 +78,9 @@ export default class FabricTypeSelection extends Component<Props>{
       ],
       totalCartItems: 0,
       selectionChanged: false,
-      changeType: null
+      changeType: null,
+
+      shouldBrandShow: false, shouldPatternShow: false,shouldColorShow: false,
     };
     this.showCart = this.showCart.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
@@ -88,16 +90,27 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   async getAllFabrics(){
+    try{
     await axios.get(fabricStrings.getAllFabrics)
         .then(response=>response.data)
         .then(response=>{
-          // response.brands[0].patterns.splice(0,1);
-          // debugger;
             this.setState({brands: response.brands})
         })
-        .then(()=>this.setState({isLoading:false}))
-        .catch(error=>alert("Something went wrong!"))
-    // console.log(Brands);
+        .then(()=>this.timeCaller())
+        .catch(error=>alert("Something went wrong!"))}
+        catch (e) {
+          console.log("We got some error : ", e)
+        }
+  }
+
+  timeCaller(){
+    this.setState({isLoading:false});
+    setTimeout(()=>{this.setState({shouldBrandShow:true});setTimeout(()=>{this.setState({shouldPatternShow:true});setTimeout(()=>this.setState({shouldColorShow:true}), 1000);}, 1000);}, 1000);
+    // setTimeout(()=>this.setState({shouldPatternShow:true}), 1000);
+    // setTimeout(()=>this.setState({shouldColorShow:true}), 1000);
+    //For showing brands
+    //For showing patterns
+    //For showing colors
   }
 
   showCart(){
@@ -216,9 +229,10 @@ Text.defaultProps.allowFontScaling = false;
     // debugger
     return (
       <SafeAreaView>
-        {this.state.isLoading?<View style={{alignItems: 'center', justifyContent: 'center'}}>
+        {/*this.state.isLoading?
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
-        </View>:
+        </View>:*/}
         <ScrollView>
           <ProductModal brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
           <CartModal brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
@@ -228,20 +242,31 @@ Text.defaultProps.allowFontScaling = false;
           {this.state.brands?this.state.brands.length?
             <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
             <Text style={{marginTop:20, fontSize: 20, textAlign: 'center' }}>Select each product individually</Text>
-            <View style={{ marginTop: 20, marginBottom: 10}}>
-              <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric Brand: </Text>
-            </View>
 
-            <View>
-              <RadioGroup
-                data={this.state.brands}
-                type={'brand'}
-                isImage={false}
-                selected={this.state.selectedBrand}
-                onSelect={(index)=>{this.setState({selectedBrand:index, selectedColor: 0, selectedPattern: 0}); this.selectionChanged('brand')}}
-              />
-            </View>
+              {this.state.shouldBrandShow ?
+                  <View>
+                    <View style={{marginTop: 20, marginBottom: 10}}>
+                      <Text style={{fontSize: 20, textAlign: 'center'}}>Choose fabric Brand: </Text>
+                    </View>
 
+
+                    <View>
+                      <RadioGroup
+                          data={this.state.brands}
+                          type={'brand'}
+                          isImage={false}
+                          selected={this.state.selectedBrand}
+                          onSelect={(index) => {
+                            this.setState({selectedBrand: index, selectedColor: 0, selectedPattern: 0});
+                            this.selectionChanged('brand')
+                          }}
+                      />
+                    </View>
+                  </View>
+              :null}
+              {this.state.shouldPatternShow ?
+
+              <View>
             <View style={{ marginTop: 50, marginBottom: 10}}>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric pattern </Text>
             </View>
@@ -260,10 +285,15 @@ Text.defaultProps.allowFontScaling = false;
                   changeType={this.state.changeType}
               />
             </View>
+              </View>:null}
 
+              {this.state.shouldColorShow ?
+
+                  <View>
             <View style={{ marginTop: 50, marginBottom: 10}}>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric color </Text>
             </View>
+
 
             <View>
               <RadioGroup
@@ -276,6 +306,7 @@ Text.defaultProps.allowFontScaling = false;
                   changeType={this.state.changedType}
               />
             </View>
+              </View>:null}
             <View style={{ marginTop: 20, marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
@@ -295,7 +326,7 @@ Text.defaultProps.allowFontScaling = false;
           <View>
               </View>:null
           }
-        </ScrollView>}
+        </ScrollView>
       </SafeAreaView>
     );
   }

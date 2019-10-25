@@ -2,7 +2,7 @@
 
 //Login screen
 export const loginStrings = {
-    allNumberLink   : "http://sakba.net/mobileApi/all-number.php",
+    allNumberLink   : "https://sakba.net/mobileApi/all-number.php",
     validation: {
         lengthError : 'Pls Enter the Mobile No. with minimum length of Eight Number',
         mobileError : 'Pls Enter the Mobile No.',
@@ -17,14 +17,14 @@ export const oConfirm = {
     regularError    : "Something Went Wrong!",
     emailError      : "Invalid email address!",
     screenTitle     : "Checkout",
-    sendEmailLink   : "http://sakba.net/mobileApi/request_paymentemail.php",
+    sendEmailLink   : "https://sakba.net/mobileApi/request_paymentemail.php",
     reviewError     : "Please enter an email and send to continue!"
 }
 
 /**Fabric Screen**/
 
 export const fabricStrings = {
-    getAllFabrics: 'http://sakba.net/mobileApi/get_fabrics.php',
+    getAllFabrics: 'https://sakba.net/mobileApi/get_fabrics.php',
 }
 
 /**Delivery Screen*/
