@@ -613,3 +613,114 @@ export default class customerAgree extends Component<Props>{
     );
   }
 }
+
+2019-10-26 15:56:25.781 22497-22561/com.testapp I/ReactNativeJS: PRINTING LIST STARTED
+2019-10-26 15:56:25.781 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:26.734 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 14991 lines
+
+2019-10-26 15:56:26.734 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:26.735 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:30.185 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:33.678 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:37.027 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:40.221 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:43.593 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:46.901 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:50.218 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 65535 lines
+
+2019-10-26 15:56:53.378 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 62310 lines
+
+2019-10-26 15:56:53.383 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:53.383 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:53.463 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 979 lines
+
+2019-10-26 15:56:53.464 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:53.464 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.248 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 59768 lines
+
+2019-10-26 15:56:57.248 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.254 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.264 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 111 lines
+
+2019-10-26 15:56:57.264 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.274 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 8 lines
+
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 3 lines
+
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.276 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.277 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.287 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 49 lines
+
+2019-10-26 15:56:57.288 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.293 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.295 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 26 lines
+
+2019-10-26 15:56:57.295 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.300 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.467 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 1629 lines
+
+2019-10-26 15:56:57.467 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.470 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.481 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 92 lines
+
+2019-10-26 15:56:57.481 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.481 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.483 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 9 lines
+
+2019-10-26 15:56:57.484 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.491 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.504 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 158 lines
+
+2019-10-26 15:56:57.504 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.514 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.516 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 11 lines
+
+2019-10-26 15:56:57.516 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.516 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.635 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 1265 lines
+
+2019-10-26 15:56:57.635 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.635 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.656 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 342 lines
+
+2019-10-26 15:56:57.656 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:57.656 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.859 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 45474 lines
+
+2019-10-26 15:56:59.859 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.859 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.880 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 346 lines
+
+2019-10-26 15:56:59.880 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.880 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.881 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 13 lines
+
+2019-10-26 15:56:59.881 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.882 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.920 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 664 lines
+
+2019-10-26 15:56:59.920 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:56:59.920 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:57:00.182 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 2529 lines
+
+2019-10-26 15:57:00.183 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:57:00.183 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0
+2019-10-26 15:57:01.475 22497-22561/com.testapp A/libc: Fatal signal 4 (SIGILL), code 2, fault addr 0x86da6ecc in tid 22561 (mqt_js), pid 22497 (com.testapp)
+
+2019-10-26 15:57:01.475 22497-22561/com.testapp I/chatty: uid=10093(com.testapp) mqt_js identical 26130 lines
+
+2019-10-26 15:57:01.475 22497-22561/com.testapp I/ReactNativeJS: 'Printing the list ', 0

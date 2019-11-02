@@ -1,24 +1,8 @@
-import React, { Component } from 'react';
-import { View, Alert, Text, Image, Dimensions, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { Form, Item, Input, Container, Content, Button, Radio, Icon, Textarea } from 'native-base';
+import  React, { Component } from 'react';
+import { View, Text, Image, Dimensions, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
+import { Button,Icon} from 'native-base';
 import renderIf from 'render-if';
-import PayPal from 'react-native-paypal-wrapper';
-import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-import axios from 'axios';
-
-
 const { width, height } = Dimensions.get('window');
-
-const deliveryRadio = [
-  { label: 'Pick up from our store', value: 0 },
-  { label: 'Home delivery pay " 3 kd"', value: 1 }
-];
-const fabricRadio = [
-  { label: 'Send your fabric to us', value: 0 },
-  { label: 'Pick up Pay "3kd" ', value: 1 }
-];
-
 
 export default class customerAgree extends Component<Props>{
 
@@ -34,422 +18,22 @@ export default class customerAgree extends Component<Props>{
       isLoading: false,
       pickupStore: null,
       sendFabric: true, homeDelivery: true,
-      p_area: '', p_street: '', p_jada: '', p_floor: '', p_block: '', p_apartment: '',
-      p_extra_Number: '', p_house: '',
-      d_area: '', d_street: '', d_jada: '', d_floor: '', d_block: '', d_apartment: '',
-      d_extra_Number: '', d_house: '',
-      area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
       itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
       deliveryOptionPickUpFormStore: 'one', delivery_date: '',
 
-      inHomeCount: 1, outsideCount: 0
+      inHomeCount: 0, outsideCount: 1
     };
   }
-  componentDidMount() {
-    PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
-  }
+
   minus() {
     if (this.state.noOfPieces > 1)
-      this.setState({ noOfPieces: this.state.noOfPieces - 1, inHomeCount:  this.state.noOfPieces - 1, outsideCount: 0});
+      this.setState({ noOfPieces: this.state.noOfPieces - 1, outsideCount:  this.state.noOfPieces - 1, inHomeCount: 0});
     else
       this.setState({ noOfPieces:1, inHomeCount:1, outsideCount:0});
-    // this.updateQuantity('home', -1);
   }
   plus() {
-    this.setState({ noOfPieces: this.state.noOfPieces + 1, inHomeCount:  this.state.noOfPieces + 1, outsideCount: 0});
-    // this.updateQuantity('home', 1);
+    this.setState({ noOfPieces: this.state.noOfPieces + 1, outsideCount:  this.state.noOfPieces + 1, inHomeCount: 0});
   }
-  submitForm() {
-    console.log('in submit form');
-    const url = 'https://sakba.net/mobileApi/order.php';
-    const {
-      p_area, p_street, p_jada, p_floor, p_block, p_apartment, p_extra_Number, p_house,
-      d_area, d_street, d_jada, d_floor, d_block, d_apartment, d_extra_Number, d_house,
-      itemSelected, deliveryOption, deliveryOptionPickUpFormStore,
-      area, street, jada, floor, block, apartment, extra_Number, house,
-    } = this.state;
-
-    var customerName = this.props.navigation.state.params.customerName;
-    var measurementDate = this.props.navigation.state.params.measurementDate;
-    var emailAddr = this.props.navigation.state.params.emailID;
-    var pickup_type, delivery_type, whichStore;
-    var fabricOptionValue, deliveryOptionValue, subTotal;
-
-
-    if (itemSelected == "itemTwo") {
-      console.log('one');
-      pickup_type = 'send';
-      fabricOptionValue = 0;
-      if (deliveryOption == 'itemTwo') {
-        console.log('2 one');
-        delivery_type = 'home';
-        deliveryOptionValue = 3;
-        subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
-        if (area && block && house && street) {
-
-          var data = JSON.stringify({
-            o_pieces: this.state.noOfPieces,
-            o_total: this.state.noOfPieces * 12,
-            o_number: this.state.mobileNo,
-            o_subtotal: subTotal,
-            o_pickup_charge: fabricOptionValue,
-            o_delivery_charge: deliveryOptionValue,
-            pickup_type: pickup_type,
-            delivery_type: delivery_type,
-            d_apartment: apartment,
-            d_area: area,
-            d_block: block,
-            d_extra_number: extra_Number,
-            d_floor: floor,
-            d_house: house, d_jada: jada, d_street: street
-          })
-
-          // if default condition will occur
-          this.setState({ isLoading: true });
-          axios.post(url,data)
-            .then((response) => response.data)
-            .then((responseData) => {
-
-              console.log(responseData);
-              this.setState({ emailId: responseData.email, isLoading: false }, () => {
-                this.props.navigation.navigate('order_detail', {
-                  id: responseData.id,
-                  token: responseData.token,
-                  noOfPieces: this.state.noOfPieces,
-                  fabricOptionValue: fabricOptionValue,
-                  deliveryOptionValue: deliveryOptionValue,
-                  customerName: customerName,
-                  measurementDate: measurementDate,
-                  mobileNo: this.state.mobileNo,
-                  delivery_date: responseData.delivery_date,
-                  emailID: emailAddr
-                });
-              })
-            })
-            .catch((error) => {
-
-              console.log(error);
-              this.setState({ isLoading: false })
-              console.warn('error');
-            });
-        } else {
-          alert('All Details Are Required');
-        }
-      } else {
-        console.log('2 two');
-        deliveryOptionValue = 0;
-        delivery_type = "self";
-        if (deliveryOptionPickUpFormStore == 'one') {
-
-          whichStore = "Awquaf Complex"
-        } else {
-          whichStore = "Qurain Shop"
-        }
-
-        subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
-
-        var data = JSON.stringify({
-          o_pieces: this.state.noOfPieces,
-          o_total: this.state.noOfPieces * 12,
-          o_number: this.state.mobileNo,
-          o_subtotal: subTotal,
-          o_pickup_charge: fabricOptionValue,
-          o_delivery_charge: deliveryOptionValue,
-          pickup_type: pickup_type,
-          delivery_type: delivery_type,
-          d_store_name: whichStore
-        })
-        this.setState({ isLoading: true });
-        axios.post(url,data)
-            .then((response) => response.data)
-            .then((responseData) => {
-
-            this.setState({ isLoading: false });
-            console.log(responseData);
-
-            this.setState({ emailId: responseData.email, isLoading: false });
-            this.props.navigation.navigate('order_detail', {
-              id: responseData.id,
-              token: responseData.token,
-              noOfPieces: this.state.noOfPieces,
-              fabricOptionValue: fabricOptionValue,
-              deliveryOptionValue: deliveryOptionValue,
-              customerName: customerName,
-              measurementDate: measurementDate,
-              mobileNo: this.state.mobileNo,
-              delivery_date: responseData.delivery_date,
-              emailID: emailAddr
-            });
-
-          })
-          .catch((error) => {
-
-            console.log(error);
-            this.setState({ isLoading: false })
-            console.warn('error');
-          });
-      }
-    } else {
-      console.log('two');
-      pickup_type = 'pickup';
-      fabricOptionValue = 3;
-      if (area && block && house && street) {
-        if (deliveryOption == "itemTwo") {
-          delivery_type = 'home';
-          deliveryOptionValue = 3;
-          subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
-          if (area && block && house && street) {
-            var data = JSON.stringify({
-
-              o_pieces: this.state.noOfPieces,
-              o_total: this.state.noOfPieces * 12,
-              o_number: this.state.mobileNo,
-              o_subtotal: subTotal,
-              o_pickup_charge: fabricOptionValue,
-              o_delivery_charge: deliveryOptionValue,
-
-
-              pickup_type: pickup_type,
-              delivery_type: delivery_type,
-              d_apartment: apartment,
-              d_area: area, d_block: block,
-              d_extra_number: extra_Number,
-              d_floor: floor, d_house: house,
-              d_jada: jada, d_street: street
-              , p_apartment: apartment,
-              p_area: area,
-              p_block: block,
-              p_extra_number: extra_Number,
-              p_floor: floor,
-              p_house: house, p_jada: jada, p_street: street
-            })
-
-            // if default condition will occur
-            this.setState({ isLoading: true })
-            axios.post(url,data)
-                .then((response) => response.data)
-                .then((responseData) => {
-
-                console.log(responseData);
-
-                this.setState({ emailId: responseData.email, isLoading: false }, () => {
-                  this.props.navigation.navigate('order_detail', {
-                    id: responseData.id,
-                    token: responseData.token,
-                    noOfPieces: this.state.noOfPieces,
-                    fabricOptionValue: fabricOptionValue,
-                    deliveryOptionValue: deliveryOptionValue,
-                    customerName: customerName,
-                    measurementDate: measurementDate,
-                    mobileNo: this.state.mobileNo,
-                    delivery_date: responseData.delivery_date,
-                    emailID: emailAddr
-                  });
-                })
-              })
-              .catch((error) => {
-
-                console.log(error);
-                this.setState({ isLoading: false })
-              });
-          } else {
-            alert('All Details Are Required');
-          }
-
-
-        } else {
-          if (deliveryOptionPickUpFormStore == 'one') {
-            whichStore = "Awquaf Complex"
-          } else {
-            whichStore = "Qurain Shop"
-          }
-          deliveryOptionValue = 0;
-          subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
-          var data = JSON.stringify({
-
-            o_pieces: this.state.noOfPieces,
-            o_total: this.state.noOfPieces * 12,
-            o_number: this.state.mobileNo,
-            o_subtotal: subTotal,
-            o_pickup_charge: fabricOptionValue,
-            o_delivery_charge: deliveryOptionValue,
-
-
-            pickup_type: pickup_type,
-            delivery_type: delivery_type,
-            p_apartment: apartment, p_area: area,
-            p_block: block, p_extra_number: extra_Number,
-            p_floor: floor, p_house: house,
-            p_jada: jada, p_street: street,
-            d_store_name: whichStore
-          })
-          this.setState({ isLoading: true });
-          axios.post(url,data)
-              .then((response) => response.data)
-              .then((responseData) => {
-
-              console.log(responseData);
-
-              this.setState({ emailId: responseData.email, isLoading: false }, () => {
-                this.props.navigation.navigate('order_detail', {
-                  id: responseData.id,
-                  token: responseData.token,
-                  noOfPieces: this.state.noOfPieces,
-                  fabricOptionValue: fabricOptionValue,
-                  deliveryOptionValue: deliveryOptionValue,
-                  customerName: customerName,
-                  measurementDate: measurementDate,
-                  mobileNo: this.state.mobileNo,
-                  delivery_date: responseData.delivery_date,
-                  emailID: emailAddr
-                });
-              })
-
-            })
-            .catch((error) => {
-
-              console.log(error);
-              this.setState({ isLoading: false })
-              console.warn('error');
-            });
-        }
-
-      } else {
-        alert('All Details Are Required');
-      }
-    }
-
-
-    // if (area && street && jada && floor && block && apartment && extra_Number && house) {
-
-
-    //   if (itemSelected == "itemTwo") {
-    //     pickup_type = 'send'
-    //   } else {
-    //     pickup_type = 'pickup'
-    //   }
-
-    //   if (deliveryOption == "itemTwo") {
-    //     delivery_type = 'home'
-    //   } else {
-    //     delivery_type = 'self'
-    //   }
-
-    //   var data = JSON.stringify({
-    //     pickup_type: 'send'
-    //   })
-
-    //   const url = 'http://sakba.net/mobileApi/order.php';
-    //   fetch(url, {
-    //     method: 'POST',
-    //     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
-    //     body: data
-    //   })
-    //     .then((response) => response.json())
-    //     .then((responseData) => {
-    //       this.setState({ emailId: responseData.email })
-    //     })
-    //     .catch((error) => {
-    //       console.log("Error");
-    //       console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-    //     });
-    //   // this is restricted field
-
-    // if (this.state.itemSelected == 'itemOne') {
-    //   fabricOptionValue = 3;
-    // } else {
-    //   fabricOptionValue = 0;
-    // }
-    // if (this.state.deliveryOption == 'itemTwo') {
-    //   deliveryOptionValue = 3
-    // } else {
-    //   deliveryOptionValue = 0;
-    // }
-
-    // this.props.navigation.navigate('order_detail', {
-    //   noOfPieces: this.state.noOfPieces,
-    //   fabricOptionValue: fabricOptionValue,
-    //   deliveryOptionValue: deliveryOptionValue,
-    //   customerName: customerName,
-    //   measurementDate: measurementDate,
-    //   mobileNo: mobileNo
-    // })
-
-    // } else {
-    //   alert("Please Enter All the Values Of Address");
-    // }
-    // var noOfPieces= this.state.noOfPieces;
-    // var address=this.state.address;
-    // var  area=this.state.area;
-    // var  block=this.state.block;
-    // var  street=this.state.street;
-    // var  house=this.state.house;
-    // var  floor=this.state.floor;
-    // var  apartment=this.state.apartment;
-    // var  extra_Number=this.state.extra_Number;
-    // var  jada=this.state.jada;
-    // var fabric;
-
-    //   if(this.state.itemSelected=='itemOne'){
-    //     fabric='pick up';
-    //     address=1;
-    //   }else{
-    //     fabric='send fabric';
-    //     address=0;
-    //   }
-
-    // URL='http://sakba.net/mobileApi/add-number.php'
-    // fetch(URL, {
-    //     method: 'POST',
-    //     headers: { 'Accept': 'application/json','Content-Type': 'application/json',},
-    //     body: JSON.stringify({
-    //       number:this.state.mobileNo,
-    //       noOfPieces:noOfPieces,
-    //       fabric:fabric,
-    //       address:address,
-    //       area:area,
-    //       block:block,
-    //       street:street,
-    //       jada:jada,
-    //       house:house,
-    //       floor:floor,
-    //       apartment:apartment,
-    //       extra_Number:extra_Number,
-    //     })
-    // })
-    // .then((response) => response.json())
-    // .then((responseData) => {
-    //     console.warn('tyuhrtyrtytyrtyyryeyrrr',responseData);
-    //     if(responseData.mssg=='Data Added'){
-    //       alert('Your information is stored at our end')
-    //       this.props.navigation.navigate('login',{
-    //         selected: true
-    //       });
-    //       // navigation.state.params.onSelect({ });
-    //     }
-    // })
-    // .catch((error) => {
-    //     console.log("Error");
-    // });
-
-    //Paypal-------------------------------------------
-    // PayPal.pay({
-    //   price: (this.state.noOfPieces)*1+'',
-    //   currency: 'USD',
-    //   description: 'No of Pieces :'+this.state.noOfPieces,
-    // }).then(confirm => {
-    //   this.setState({
-    //     response:confirm,
-    //     msg:'payment is successful'
-    //   })
-    //   setTimeout(()=> {this.fun()},3000)
-    // })
-    //   .catch(error => console.log(error));
-
-  }
-  // fun(){
-  //   this.setState({msg:''});
-  // }
 
     proceed(){
       const inHomeCount = this.state.inHomeCount;
@@ -457,93 +41,22 @@ export default class customerAgree extends Component<Props>{
       const mobileNo    = this.props.navigation.getParam('mobileNo', null);
       const customerName= this.props.navigation.getParam('customerName', null);
 
-      inHomeCount>0?
-          this.props.navigation.navigate('fabric',
-              {inHomeCount, outsideCount, mobileNo, customerName}):
-          this.props.navigation.navigate('delivery',
-              {inHomeCount, outsideCount, mobileNo, customerName})
+      // this.props.navigation.navigate('delivery',
+      //     {inHomeCount, outsideCount, mobileNo, customerName, noOfPieces: this.state.noOfPieces})
+      //
+      this.props.navigation.navigate(inHomeCount>0?'fabric':'delivery',
+          {inHomeCount, outsideCount, mobileNo, customerName, noOfPieces: this.state.noOfPieces})
+      // inHomeCount>0?
+      //     this.props.navigation.navigate('fabric',
+      //         {inHomeCount, outsideCount, mobileNo, customerName}):
+      //     this.props.navigation.navigate('delivery',
+      //         {inHomeCount, outsideCount, mobileNo, customerName, noOfPieces: this.state.noOfPieces})
     }
-
-  getComponent() {
-    if (this.state.deliveryOption == 'itemTwo') {
-      return (<View style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-        <Text style={{ fontSize: 18 }}>Address :</Text>
-        <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-            <Input
-              placeholder='Area'
-              onChangeText={(text) => this.setState({ area: text })}
-              value={this.state.area}
-            />
-          </Item>
-          <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-            <Input
-              placeholder='Block'
-              keyboardType='numeric'
-              onChangeText={(text) => this.setState({ block: text })}
-              value={this.state.block}
-            />
-          </Item>
-        </View>
-        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-            <Input
-              placeholder='Street'
-              onChangeText={(text) => this.setState({ street: text })}
-              value={this.state.street}
-            />
-          </Item>
-          <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-            <Input
-              placeholder='Jada'
-              onChangeText={(text) => this.setState({ jada: text })}
-              value={this.state.jada}
-            />
-          </Item>
-        </View>
-        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-            <Input
-              placeholder='House'
-              onChangeText={(text) => this.setState({ house: text })}
-              value={this.state.house}
-            />
-          </Item>
-          <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-            <Input
-              placeholder='Floor'
-              keyboardType='numeric'
-              onChangeText={(text) => this.setState({ floor: text })}
-              value={this.state.floor}
-            />
-          </Item>
-        </View>
-        <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-            <Input
-              placeholder='Apartment'
-              onChangeText={(text) => this.setState({ apartment: text })}
-              value={this.state.apartment}
-            />
-          </Item>
-          <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-            <Input
-              placeholder='Extra Number'
-              keyboardType='numeric'
-              onChangeText={(text) => this.setState({ extra_Number: text })}
-              value={this.state.extra_Number}
-            />
-          </Item>
-        </View>
-      </View>)
-    }
-  }
 
   updateQuantity(type, quantity){
     total = this.state.noOfPieces;
     home = this.state.inHomeCount;
     out  = this.state.outsideCount;
-    // if(!(home+quantity<0  out+quantity<0)){
       if(type==='home'){
         if(home+quantity>=0){
         if(home+quantity<=total){
@@ -564,7 +77,6 @@ export default class customerAgree extends Component<Props>{
         }
         else{alert("Outside count value cannot exceed total no of dishdashas!");}}
       }
-    // }
   }
 
   render() {
@@ -572,13 +84,8 @@ export default class customerAgree extends Component<Props>{
     Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 
-
-    const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
-    console.log(deliveryOption);
     const sizeCtrl = {width: 40, height: 40}
     return (
-      // <Container>
-      //   <Content>
       <SafeAreaView >
         <ScrollView>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
@@ -602,30 +109,7 @@ Text.defaultProps.allowFontScaling = false;
 
             <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: 30}}>
               <View style={{justifyContent: 'center',  marginRight:10}}>
-                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>IN HOME</Text>
-                <View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>
-                  <View style={{
-                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
-                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={()=>this.updateQuantity('home', -1)}>
-                      <Icon style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-remove'/>
-                    </TouchableOpacity>
-                  </View>
-                  {console.log(this.state.inHomeCount)}
-                  <View style={{width: sizeCtrl.width+10, height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
-                    <Text>{this.state.inHomeCount}</Text>
-                  </View>
-                  <View style={{
-                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
-                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
-                    <TouchableOpacity onPress={()=>this.updateQuantity('home', 1)}>
-                      <Icon size={10} style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-add'/>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={{justifyContent: 'center',  marginRight:10}}>
-                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>OUTSIDE</Text>
+                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>TAKE YOUR OWN</Text>
                 <View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>
                   <View style={{
                     borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
@@ -648,24 +132,29 @@ Text.defaultProps.allowFontScaling = false;
                   </View>
                 </View>
               </View>
-
-              {/*<View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>*/}
-              {/*  <View style={{*/}
-              {/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
-              {/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
-              {/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 4} style={{textAlign: 'center', color: 'white'}}*/}
-              {/*          name='md-remove'/>*/}
-              {/*  </View>*/}
-              {/*  <View style={{borderRadius: 5, width: 50, height: 40, alignItems: 'center', justifyContent: 'center'}}>*/}
-              {/*    <Text style={{fontSize: (sizeCtrl.height + sizeCtrl.width) / 5, fontWeight: 'bold'}}>1</Text>*/}
-              {/*  </View>*/}
-              {/*  <View style={{*/}
-              {/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
-              {/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
-              {/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 2} style={{textAlign: 'center', color: 'white'}}*/}
-              {/*          name='md-add'/>*/}
-              {/*  </View>*/}
-              {/*</View>*/}
+              <View style={{justifyContent: 'center',  marginRight:10}}>
+                <Text style={{alignSelf: 'center', fontWeight: 'bold', marginBottom: 5}}>BUY FROM US</Text>
+                <View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('home', -1)}>
+                      <Icon style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-remove'/>
+                    </TouchableOpacity>
+                  </View>
+                  {console.log(this.state.inHomeCount)}
+                  <View style={{width: sizeCtrl.width+10, height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>{this.state.inHomeCount}</Text>
+                  </View>
+                  <View style={{
+                    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,
+                    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>
+                    <TouchableOpacity onPress={()=>this.updateQuantity('home', 1)}>
+                      <Icon size={10} style={{textAlign: 'center', color: 'white', fontSize: sizeCtrl.width/2}} name='md-add'/>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
             </View>
 
             <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
@@ -675,249 +164,279 @@ Text.defaultProps.allowFontScaling = false;
                 <Text style={{ fontSize: 18, color: 'white' }}>Proceed</Text>
               </Button>
             </View>
+            {renderIf(this.state.msg)(
+              <View style={{}}>
+                <Text style={{ color: '#0451A5', fontSize: 20, fontWeight: 'bold' }}>{this.state.msg}</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+}
 
-            {/*<View style={{ marginTop: 40 }}>*/}
-            {/*  <Text style={{ fontSize: 20 }}>Fabrics</Text>*/}
-            {/*  <View style={{ flexDirection: 'row', marginTop: 10 }}>*/}
-            {/*    /!* <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}*/}
-            {/*        selected={this.state.itemSelected == 'itemTwo'}*/}
-            {/*      />*/}
-            {/*      <View style={{ flexDirection: 'column' }}>*/}
-            {/*        <Text style={{ marginLeft: 10, fontSize: 18 }}>Send your fabric to us</Text>*/}
-            {/*        <Text style={{ marginLeft: 10, fontSize: 12 }}>(Note:Please send it within 3 days)</Text>*/}
-            {/*      </View> *!/*/}
-            {/*    <RadioForm*/}
-            {/*      buttonSize={10}*/}
-            {/*      buttonColor={'#0451A5'}*/}
-            {/*      buttonInnerColor={'#0451A5'}*/}
-            {/*      buttonOuterColor={'#0451A5'}*/}
-            {/*      buttonWrapStyle={{ marginTop: 10 }}*/}
-            {/*      selectedButtonColor={'#0451A5'}*/}
-            {/*      labelStyle={{ fontSize: 20, marginTop: 0, }}*/}
-            {/*      buttonOuterSize={20}*/}
-            {/*      buttonStyle={{ marginTop: 20 }}*/}
-            {/*      radio_props={fabricRadio}*/}
-            {/*      initial={0}*/}
-            {/*      onPress={(value) => {*/}
-            {/*        (value == 0)*/}
-            {/*          ? this.setState({ itemSelected: 'itemTwo' })*/}
-            {/*          : this.setState({ itemSelected: 'itemOne' })*/}
-            {/*      }}*/}
-            {/*    />*/}
-            {/*  </View>*/}
-            {/*  /!* <View style={{ flexDirection: 'row', marginTop: 5 }}>*/}
-            {/*      <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}*/}
-            {/*        selected={this.state.itemSelected == 'itemOne'}*/}
-            {/*      />*/}
-            {/*      <Text style={{ marginLeft: 10, fontSize: 18 }}>Pick up pay "3 kd"</Text>*/}
-            {/*    </View> *!/*/}
-            {/*  {renderIf(this.state.itemSelected == 'itemOne')(*/}
-            {/*    <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
-            {/*      <Text style={{ fontSize: 18 }}>Address :</Text>*/}
-            {/*      <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Area'*/}
-            {/*            onChangeText={(text) => this.setState({ area: text })}*/}
-            {/*            value={this.state.area}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Block'*/}
-            {/*            keyboardType='numeric'*/}
-            {/*            onChangeText={(text) => this.setState({ block: text })}*/}
-            {/*            value={this.state.block}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*      </View>*/}
-            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Street'*/}
-            {/*            onChangeText={(text) => this.setState({ street: text })}*/}
-            {/*            value={this.state.street}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Jada'*/}
-            {/*            onChangeText={(text) => this.setState({ jada: text })}*/}
-            {/*            value={this.state.jada}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*      </View>*/}
-            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='House'*/}
-            {/*            onChangeText={(text) => this.setState({ house: text })}*/}
-            {/*            value={this.state.house}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Floor'*/}
-            {/*            keyboardType='numeric'*/}
-            {/*            onChangeText={(text) => this.setState({ floor: text })}*/}
-            {/*            value={this.state.floor}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*      </View>*/}
-            {/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Apartment'*/}
-            {/*            onChangeText={(text) => this.setState({ apartment: text })}*/}
-            {/*            value={this.state.apartment}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*          <Input*/}
-            {/*            placeholder='Extra Number'*/}
-            {/*            keyboardType='numeric'*/}
-            {/*            onChangeText={(text) => this.setState({ extra_Number: text })}*/}
-            {/*            value={this.state.extra_Number}*/}
-            {/*          />*/}
-            {/*        </Item>*/}
-            {/*      </View>*/}
-            {/*    </Form>*/}
-            {/*  )}*/}
-            {/*</View>*/}
+{/*<View style={{flexDirection: 'row', borderColor: '#0451A5', borderWidth: 2}}>*/}
+{/*  <View style={{*/}
+{/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
+{/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
+{/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 4} style={{textAlign: 'center', color: 'white'}}*/}
+{/*          name='md-remove'/>*/}
+{/*  </View>*/}
+{/*  <View style={{borderRadius: 5, width: 50, height: 40, alignItems: 'center', justifyContent: 'center'}}>*/}
+{/*    <Text style={{fontSize: (sizeCtrl.height + sizeCtrl.width) / 5, fontWeight: 'bold'}}>1</Text>*/}
+{/*  </View>*/}
+{/*  <View style={{*/}
+{/*    borderRadius: 0, backgroundColor: '#0451A5', width: sizeCtrl.width,*/}
+{/*    height: sizeCtrl.height, alignItems: 'center', justifyContent: 'center'}}>*/}
+{/*    <Icon size={(sizeCtrl.height + sizeCtrl.width) / 2} style={{textAlign: 'center', color: 'white'}}*/}
+{/*          name='md-add'/>*/}
+{/*  </View>*/}
+{/*</View>*/}
 
-            {/*<View style={{ marginTop: 20, }}>*/}
-            {/*  <Text style={{ fontSize: 20 }}>Choose delivery option </Text>*/}
 
-            {/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
+{/*<View style={{ marginTop: 40 }}>*/}
+{/*  <Text style={{ fontSize: 20 }}>Fabrics</Text>*/}
+{/*  <View style={{ flexDirection: 'row', marginTop: 10 }}>*/}
+{/*    /!* <Radio onPress={() => this.setState({ itemSelected: 'itemTwo' })}*/}
+{/*        selected={this.state.itemSelected == 'itemTwo'}*/}
+{/*      />*/}
+{/*      <View style={{ flexDirection: 'column' }}>*/}
+{/*        <Text style={{ marginLeft: 10, fontSize: 18 }}>Send your fabric to us</Text>*/}
+{/*        <Text style={{ marginLeft: 10, fontSize: 12 }}>(Note:Please send it within 3 days)</Text>*/}
+{/*      </View> *!/*/}
+{/*    <RadioForm*/}
+{/*      buttonSize={10}*/}
+{/*      buttonColor={'#0451A5'}*/}
+{/*      buttonInnerColor={'#0451A5'}*/}
+{/*      buttonOuterColor={'#0451A5'}*/}
+{/*      buttonWrapStyle={{ marginTop: 10 }}*/}
+{/*      selectedButtonColor={'#0451A5'}*/}
+{/*      labelStyle={{ fontSize: 20, marginTop: 0, }}*/}
+{/*      buttonOuterSize={20}*/}
+{/*      buttonStyle={{ marginTop: 20 }}*/}
+{/*      radio_props={fabricRadio}*/}
+{/*      initial={0}*/}
+{/*      onPress={(value) => {*/}
+{/*        (value == 0)*/}
+{/*          ? this.setState({ itemSelected: 'itemTwo' })*/}
+{/*          : this.setState({ itemSelected: 'itemOne' })*/}
+{/*      }}*/}
+{/*    />*/}
+{/*  </View>*/}
+{/*  /!* <View style={{ flexDirection: 'row', marginTop: 5 }}>*/}
+{/*      <Radio onPress={() => this.setState({ itemSelected: 'itemOne' })}*/}
+{/*        selected={this.state.itemSelected == 'itemOne'}*/}
+{/*      />*/}
+{/*      <Text style={{ marginLeft: 10, fontSize: 18 }}>Pick up pay "3 kd"</Text>*/}
+{/*    </View> *!/*/}
+{/*  {renderIf(this.state.itemSelected == 'itemOne')(*/}
+{/*    <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
+{/*      <Text style={{ fontSize: 18 }}>Address :</Text>*/}
+{/*      <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Area'*/}
+{/*            onChangeText={(text) => this.setState({ area: text })}*/}
+{/*            value={this.state.area}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Block'*/}
+{/*            keyboardType='numeric'*/}
+{/*            onChangeText={(text) => this.setState({ block: text })}*/}
+{/*            value={this.state.block}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*      </View>*/}
+{/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Street'*/}
+{/*            onChangeText={(text) => this.setState({ street: text })}*/}
+{/*            value={this.state.street}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Jada'*/}
+{/*            onChangeText={(text) => this.setState({ jada: text })}*/}
+{/*            value={this.state.jada}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*      </View>*/}
+{/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='House'*/}
+{/*            onChangeText={(text) => this.setState({ house: text })}*/}
+{/*            value={this.state.house}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Floor'*/}
+{/*            keyboardType='numeric'*/}
+{/*            onChangeText={(text) => this.setState({ floor: text })}*/}
+{/*            value={this.state.floor}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*      </View>*/}
+{/*      <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Apartment'*/}
+{/*            onChangeText={(text) => this.setState({ apartment: text })}*/}
+{/*            value={this.state.apartment}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*        <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*          <Input*/}
+{/*            placeholder='Extra Number'*/}
+{/*            keyboardType='numeric'*/}
+{/*            onChangeText={(text) => this.setState({ extra_Number: text })}*/}
+{/*            value={this.state.extra_Number}*/}
+{/*          />*/}
+{/*        </Item>*/}
+{/*      </View>*/}
+{/*    </Form>*/}
+{/*  )}*/}
+{/*</View>*/}
 
-            {/*    <View>*/}
-            {/*      <TouchableOpacity*/}
-            {/*        style={{ flex: 1, flexDirection: 'row' }}*/}
-            {/*        onPress={() => this.setState({ deliveryOption: 'itemOne' })} >*/}
-            {/*        {deliveryOption == 'itemOne'*/}
-            {/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
-            {/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
-            {/*        }*/}
-            {/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>*/}
-            {/*      </TouchableOpacity>*/}
-            {/*    </View>*/}
-            {/*    <View>*/}
-            {/*      <TouchableOpacity*/}
-            {/*        style={{ flex: 1, flexDirection: 'row' }}*/}
-            {/*        onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >*/}
-            {/*        {deliveryOption === 'itemTwo'*/}
-            {/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
-            {/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
-            {/*        }*/}
-            {/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>*/}
-            {/*      </TouchableOpacity>*/}
-            {/*    </View>*/}
-            {/*    {renderIf(deliveryOption == 'itemTwo')(*/}
-            {/*      <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
-            {/*        <Text style={{ fontSize: 18 }}>Address :</Text>*/}
-            {/*        <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Area'*/}
-            {/*              onChangeText={(text) => this.setState({ area: text })}*/}
-            {/*              value={this.state.area}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Block'*/}
-            {/*              keyboardType='numeric'*/}
-            {/*              onChangeText={(text) => this.setState({ block: text })}*/}
-            {/*              value={this.state.block}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*        </View>*/}
-            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Street'*/}
-            {/*              onChangeText={(text) => this.setState({ street: text })}*/}
-            {/*              value={this.state.street}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Jada'*/}
-            {/*              onChangeText={(text) => this.setState({ jada: text })}*/}
-            {/*              value={this.state.jada}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*        </View>*/}
-            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='House'*/}
-            {/*              onChangeText={(text) => this.setState({ house: text })}*/}
-            {/*              value={this.state.house}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Floor'*/}
-            {/*              keyboardType='numeric'*/}
-            {/*              onChangeText={(text) => this.setState({ floor: text })}*/}
-            {/*              value={this.state.floor}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*        </View>*/}
-            {/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Apartment'*/}
-            {/*              onChangeText={(text) => this.setState({ apartment: text })}*/}
-            {/*              value={this.state.apartment}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
-            {/*            <Input*/}
-            {/*              placeholder='Extra Number'*/}
-            {/*              keyboardType='numeric'*/}
-            {/*              onChangeText={(text) => this.setState({ extra_Number: text })}*/}
-            {/*              value={this.state.extra_Number}*/}
-            {/*            />*/}
-            {/*          </Item>*/}
-            {/*        </View>*/}
-            {/*      </For m>*/}
-            {/*    )}*/}
-            {/*  </View>*/}
-            {/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
-            {/*    {renderIf(deliveryOption == 'itemOne')(*/}
-            {/*      <View style={{ marginLeft: 25, flex: 1 }}>*/}
-            {/*        <TouchableOpacity*/}
-            {/*          style={{ flexDirection: 'row', marginTop: 10 }}*/}
-            {/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >*/}
-            {/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemOne' })}*/}
-            {/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemOne'}*/}
-            {/*          //   />*/}
-            {/*          {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")*/}
-            {/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
-            {/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
-            {/*          }*/}
-            {/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Awqaf Complex</Text>*/}
-            {/*        </TouchableOpacity>*/}
-            {/*        <TouchableOpacity*/}
-            {/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}*/}
-            {/*          style={{ flexDirection: 'row', marginTop: 5 }}>*/}
-            {/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemTwo' })}*/}
-            {/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemTwo'}*/}
-            {/*          //   />*/}
-            {/*          {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")*/}
-            {/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
-            {/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
-            {/*          }*/}
-            {/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Qurain Shop</Text>*/}
-            {/*        </TouchableOpacity>*/}
-            {/*      </View>*/}
-            {/*    )}*/}
+{/*<View style={{ marginTop: 20, }}>*/}
+{/*  <Text style={{ fontSize: 20 }}>Choose delivery option </Text>*/}
 
-            {/*  </View>*/}
-            {/*</View>*/}
-            {/* <View>
+{/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
+
+{/*    <View>*/}
+{/*      <TouchableOpacity*/}
+{/*        style={{ flex: 1, flexDirection: 'row' }}*/}
+{/*        onPress={() => this.setState({ deliveryOption: 'itemOne' })} >*/}
+{/*        {deliveryOption == 'itemOne'*/}
+{/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+{/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+{/*        }*/}
+{/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>*/}
+{/*      </TouchableOpacity>*/}
+{/*    </View>*/}
+{/*    <View>*/}
+{/*      <TouchableOpacity*/}
+{/*        style={{ flex: 1, flexDirection: 'row' }}*/}
+{/*        onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >*/}
+{/*        {deliveryOption === 'itemTwo'*/}
+{/*          ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+{/*          : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+{/*        }*/}
+{/*        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>*/}
+{/*      </TouchableOpacity>*/}
+{/*    </View>*/}
+{/*    {renderIf(deliveryOption == 'itemTwo')(*/}
+{/*      <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>*/}
+{/*        <Text style={{ fontSize: 18 }}>Address :</Text>*/}
+{/*        <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Area'*/}
+{/*              onChangeText={(text) => this.setState({ area: text })}*/}
+{/*              value={this.state.area}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Block'*/}
+{/*              keyboardType='numeric'*/}
+{/*              onChangeText={(text) => this.setState({ block: text })}*/}
+{/*              value={this.state.block}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*        </View>*/}
+{/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Street'*/}
+{/*              onChangeText={(text) => this.setState({ street: text })}*/}
+{/*              value={this.state.street}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Jada'*/}
+{/*              onChangeText={(text) => this.setState({ jada: text })}*/}
+{/*              value={this.state.jada}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*        </View>*/}
+{/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='House'*/}
+{/*              onChangeText={(text) => this.setState({ house: text })}*/}
+{/*              value={this.state.house}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Floor'*/}
+{/*              keyboardType='numeric'*/}
+{/*              onChangeText={(text) => this.setState({ floor: text })}*/}
+{/*              value={this.state.floor}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*        </View>*/}
+{/*        <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Apartment'*/}
+{/*              onChangeText={(text) => this.setState({ apartment: text })}*/}
+{/*              value={this.state.apartment}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*          <Item regular style={{ width: width / 2 - 40, height: 30 }}>*/}
+{/*            <Input*/}
+{/*              placeholder='Extra Number'*/}
+{/*              keyboardType='numeric'*/}
+{/*              onChangeText={(text) => this.setState({ extra_Number: text })}*/}
+{/*              value={this.state.extra_Number}*/}
+{/*            />*/}
+{/*          </Item>*/}
+{/*        </View>*/}
+{/*      </For m>*/}
+{/*    )}*/}
+{/*  </View>*/}
+{/*  <View style={{ flex: 1, marginTop: 10 }}>*/}
+{/*    {renderIf(deliveryOption == 'itemOne')(*/}
+{/*      <View style={{ marginLeft: 25, flex: 1 }}>*/}
+{/*        <TouchableOpacity*/}
+{/*          style={{ flexDirection: 'row', marginTop: 10 }}*/}
+{/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >*/}
+{/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemOne' })}*/}
+{/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemOne'}*/}
+{/*          //   />*/}
+{/*          {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")*/}
+{/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+{/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+{/*          }*/}
+{/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Awqaf Complex</Text>*/}
+{/*        </TouchableOpacity>*/}
+{/*        <TouchableOpacity*/}
+{/*          onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}*/}
+{/*          style={{ flexDirection: 'row', marginTop: 5 }}>*/}
+{/*          // <Radio onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'itemTwo' })}*/}
+{/*          //     selected={this.state.deliveryOptionPickUpFormStore == 'itemTwo'}*/}
+{/*          //   />*/}
+{/*          {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")*/}
+{/*            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />*/}
+{/*            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />*/}
+{/*          }*/}
+{/*          <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Qurain Shop</Text>*/}
+{/*        </TouchableOpacity>*/}
+{/*      </View>*/}
+{/*    )}*/}
+
+{/*  </View>*/}
+{/*</View>*/}
+{/* <View>
                 <View>
                 <Text style={{ fontSize: 20,marginBottom:20 }}>Choose delivery option </Text>
 
@@ -1017,21 +536,17 @@ Text.defaultProps.allowFontScaling = false;
                     </Form>
                 </View>
               </View>       */}
-            {/*<View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+{/*<View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                 onPress={() => this.submitForm()}>
                 <Text style={{ fontSize: 18, color: 'white' }}>Order Now !</Text>
               </Button>
             </View>*/}
-            {renderIf(this.state.msg)(
-              <View style={{}}>
-                <Text style={{ color: '#0451A5', fontSize: 20, fontWeight: 'bold' }}>{this.state.msg}</Text>
-              </View>
-            )}
-          </View>
 
-          {/* <Modal
+
+
+{/* <Modal
                 style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                 animationType="fade"
                 transparent={true}
@@ -1042,10 +557,476 @@ Text.defaultProps.allowFontScaling = false;
                 <ActivityIndicator size={"large"} color="#00ff00" />
               </Modal> */}
 
-        </ScrollView>
-      </SafeAreaView>
-      //   </Content>
-      // </Container>
-    );
-  }
-}
+// submitForm() {
+//   console.log('in submit form');
+//   const url = 'https://sakba.net/mobileApi/order.php';
+//   const {
+//     p_area, p_street, p_jada, p_floor, p_block, p_apartment, p_extra_Number, p_house,
+//     d_area, d_street, d_jada, d_floor, d_block, d_apartment, d_extra_Number, d_house,
+//     itemSelected, deliveryOption, deliveryOptionPickUpFormStore,
+//     area, street, jada, floor, block, apartment, extra_Number, house,
+//   } = this.state;
+//
+//   var customerName = this.props.navigation.state.params.customerName;
+//   var measurementDate = this.props.navigation.state.params.measurementDate;
+//   var emailAddr = this.props.navigation.state.params.emailID;
+//   var pickup_type, delivery_type, whichStore;
+//   var fabricOptionValue, deliveryOptionValue, subTotal;
+//
+//
+//   if (itemSelected == "itemTwo") {
+//     console.log('one');
+//     pickup_type = 'send';
+//     fabricOptionValue = 0;
+//     if (deliveryOption == 'itemTwo') {
+//       console.log('2 one');
+//       delivery_type = 'home';
+//       deliveryOptionValue = 3;
+//       subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+//       if (area && block && house && street) {
+//
+//         var data = JSON.stringify({
+//           o_pieces: this.state.noOfPieces,
+//           o_total: this.state.noOfPieces * 12,
+//           o_number: this.state.mobileNo,
+//           o_subtotal: subTotal,
+//           o_pickup_charge: fabricOptionValue,
+//           o_delivery_charge: deliveryOptionValue,
+//           pickup_type: pickup_type,
+//           delivery_type: delivery_type,
+//           d_apartment: apartment,
+//           d_area: area,
+//           d_block: block,
+//           d_extra_number: extra_Number,
+//           d_floor: floor,
+//           d_house: house, d_jada: jada, d_street: street
+//         })
+//
+//         // if default condition will occur
+//         this.setState({ isLoading: true });
+//         axios.post(url,data)
+//             .then((response) => response.data)
+//             .then((responseData) => {
+//
+//               console.log(responseData);
+//               this.setState({ emailId: responseData.email, isLoading: false }, () => {
+//                 this.props.navigation.navigate('order_detail', {
+//                   id: responseData.id,
+//                   token: responseData.token,
+//                   noOfPieces: this.state.noOfPieces,
+//                   fabricOptionValue: fabricOptionValue,
+//                   deliveryOptionValue: deliveryOptionValue,
+//                   customerName: customerName,
+//                   measurementDate: measurementDate,
+//                   mobileNo: this.state.mobileNo,
+//                   delivery_date: responseData.delivery_date,
+//                   emailID: emailAddr
+//                 });
+//               })
+//             })
+//             .catch((error) => {
+//
+//               console.log(error);
+//               this.setState({ isLoading: false })
+//               console.warn('error');
+//             });
+//       } else {
+//         alert('All Details Are Required');
+//       }
+//     } else {
+//       console.log('2 two');
+//       deliveryOptionValue = 0;
+//       delivery_type = "self";
+//       if (deliveryOptionPickUpFormStore == 'one') {
+//
+//         whichStore = "Awquaf Complex"
+//       } else {
+//         whichStore = "Qurain Shop"
+//       }
+//
+//       subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+//
+//       var data = JSON.stringify({
+//         o_pieces: this.state.noOfPieces,
+//         o_total: this.state.noOfPieces * 12,
+//         o_number: this.state.mobileNo,
+//         o_subtotal: subTotal,
+//         o_pickup_charge: fabricOptionValue,
+//         o_delivery_charge: deliveryOptionValue,
+//         pickup_type: pickup_type,
+//         delivery_type: delivery_type,
+//         d_store_name: whichStore
+//       })
+//       this.setState({ isLoading: true });
+//       axios.post(url,data)
+//           .then((response) => response.data)
+//           .then((responseData) => {
+//
+//             this.setState({ isLoading: false });
+//             console.log(responseData);
+//
+//             this.setState({ emailId: responseData.email, isLoading: false });
+//             this.props.navigation.navigate('order_detail', {
+//               id: responseData.id,
+//               token: responseData.token,
+//               noOfPieces: this.state.noOfPieces,
+//               fabricOptionValue: fabricOptionValue,
+//               deliveryOptionValue: deliveryOptionValue,
+//               customerName: customerName,
+//               measurementDate: measurementDate,
+//               mobileNo: this.state.mobileNo,
+//               delivery_date: responseData.delivery_date,
+//               emailID: emailAddr
+//             });
+//
+//           })
+//           .catch((error) => {
+//
+//             console.log(error);
+//             this.setState({ isLoading: false })
+//             console.warn('error');
+//           });
+//     }
+//   } else {
+//     console.log('two');
+//     pickup_type = 'pickup';
+//     fabricOptionValue = 3;
+//     if (area && block && house && street) {
+//       if (deliveryOption == "itemTwo") {
+//         delivery_type = 'home';
+//         deliveryOptionValue = 3;
+//         subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+//         if (area && block && house && street) {
+//           var data = JSON.stringify({
+//
+//             o_pieces: this.state.noOfPieces,
+//             o_total: this.state.noOfPieces * 12,
+//             o_number: this.state.mobileNo,
+//             o_subtotal: subTotal,
+//             o_pickup_charge: fabricOptionValue,
+//             o_delivery_charge: deliveryOptionValue,
+//
+//
+//             pickup_type: pickup_type,
+//             delivery_type: delivery_type,
+//             d_apartment: apartment,
+//             d_area: area, d_block: block,
+//             d_extra_number: extra_Number,
+//             d_floor: floor, d_house: house,
+//             d_jada: jada, d_street: street
+//             , p_apartment: apartment,
+//             p_area: area,
+//             p_block: block,
+//             p_extra_number: extra_Number,
+//             p_floor: floor,
+//             p_house: house, p_jada: jada, p_street: street
+//           })
+//
+//           // if default condition will occur
+//           this.setState({ isLoading: true })
+//           axios.post(url,data)
+//               .then((response) => response.data)
+//               .then((responseData) => {
+//
+//                 console.log(responseData);
+//
+//                 this.setState({ emailId: responseData.email, isLoading: false }, () => {
+//                   this.props.navigation.navigate('order_detail', {
+//                     id: responseData.id,
+//                     token: responseData.token,
+//                     noOfPieces: this.state.noOfPieces,
+//                     fabricOptionValue: fabricOptionValue,
+//                     deliveryOptionValue: deliveryOptionValue,
+//                     customerName: customerName,
+//                     measurementDate: measurementDate,
+//                     mobileNo: this.state.mobileNo,
+//                     delivery_date: responseData.delivery_date,
+//                     emailID: emailAddr
+//                   });
+//                 })
+//               })
+//               .catch((error) => {
+//
+//                 console.log(error);
+//                 this.setState({ isLoading: false })
+//               });
+//         } else {
+//           alert('All Details Are Required');
+//         }
+//
+//
+//       } else {
+//         if (deliveryOptionPickUpFormStore == 'one') {
+//           whichStore = "Awquaf Complex"
+//         } else {
+//           whichStore = "Qurain Shop"
+//         }
+//         deliveryOptionValue = 0;
+//         subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+//         var data = JSON.stringify({
+//
+//           o_pieces: this.state.noOfPieces,
+//           o_total: this.state.noOfPieces * 12,
+//           o_number: this.state.mobileNo,
+//           o_subtotal: subTotal,
+//           o_pickup_charge: fabricOptionValue,
+//           o_delivery_charge: deliveryOptionValue,
+//
+//
+//           pickup_type: pickup_type,
+//           delivery_type: delivery_type,
+//           p_apartment: apartment, p_area: area,
+//           p_block: block, p_extra_number: extra_Number,
+//           p_floor: floor, p_house: house,
+//           p_jada: jada, p_street: street,
+//           d_store_name: whichStore
+//         })
+//         this.setState({ isLoading: true });
+//         axios.post(url,data)
+//             .then((response) => response.data)
+//             .then((responseData) => {
+//
+//               console.log(responseData);
+//
+//               this.setState({ emailId: responseData.email, isLoading: false }, () => {
+//                 this.props.navigation.navigate('order_detail', {
+//                   id: responseData.id,
+//                   token: responseData.token,
+//                   noOfPieces: this.state.noOfPieces,
+//                   fabricOptionValue: fabricOptionValue,
+//                   deliveryOptionValue: deliveryOptionValue,
+//                   customerName: customerName,
+//                   measurementDate: measurementDate,
+//                   mobileNo: this.state.mobileNo,
+//                   delivery_date: responseData.delivery_date,
+//                   emailID: emailAddr
+//                 });
+//               })
+//
+//             })
+//             .catch((error) => {
+//
+//               console.log(error);
+//               this.setState({ isLoading: false })
+//               console.warn('error');
+//             });
+//       }
+//
+//     } else {
+//       alert('All Details Are Required');
+//     }
+//   }
+//
+//
+//   // if (area && street && jada && floor && block && apartment && extra_Number && house) {
+//
+//
+//   //   if (itemSelected == "itemTwo") {
+//   //     pickup_type = 'send'
+//   //   } else {
+//   //     pickup_type = 'pickup'
+//   //   }
+//
+//   //   if (deliveryOption == "itemTwo") {
+//   //     delivery_type = 'home'
+//   //   } else {
+//   //     delivery_type = 'self'
+//   //   }
+//
+//   //   var data = JSON.stringify({
+//   //     pickup_type: 'send'
+//   //   })
+//
+//   //   const url = 'http://sakba.net/mobileApi/order.php';
+//   //   fetch(url, {
+//   //     method: 'POST',
+//   //     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', },
+//   //     body: data
+//   //   })
+//   //     .then((response) => response.json())
+//   //     .then((responseData) => {
+//   //       this.setState({ emailId: responseData.email })
+//   //     })
+//   //     .catch((error) => {
+//   //       console.log("Error");
+//   //       console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+//   //     });
+//   //   // this is restricted field
+//
+//   // if (this.state.itemSelected == 'itemOne') {
+//   //   fabricOptionValue = 3;
+//   // } else {
+//   //   fabricOptionValue = 0;
+//   // }
+//   // if (this.state.deliveryOption == 'itemTwo') {
+//   //   deliveryOptionValue = 3
+//   // } else {
+//   //   deliveryOptionValue = 0;
+//   // }
+//
+//   // this.props.navigation.navigate('order_detail', {
+//   //   noOfPieces: this.state.noOfPieces,
+//   //   fabricOptionValue: fabricOptionValue,
+//   //   deliveryOptionValue: deliveryOptionValue,
+//   //   customerName: customerName,
+//   //   measurementDate: measurementDate,
+//   //   mobileNo: mobileNo
+//   // })
+//
+//   // } else {
+//   //   alert("Please Enter All the Values Of Address");
+//   // }
+//   // var noOfPieces= this.state.noOfPieces;
+//   // var address=this.state.address;
+//   // var  area=this.state.area;
+//   // var  block=this.state.block;
+//   // var  street=this.state.street;
+//   // var  house=this.state.house;
+//   // var  floor=this.state.floor;
+//   // var  apartment=this.state.apartment;
+//   // var  extra_Number=this.state.extra_Number;
+//   // var  jada=this.state.jada;
+//   // var fabric;
+//
+//   //   if(this.state.itemSelected=='itemOne'){
+//   //     fabric='pick up';
+//   //     address=1;
+//   //   }else{
+//   //     fabric='send fabric';
+//   //     address=0;
+//   //   }
+//
+//   // URL='http://sakba.net/mobileApi/add-number.php'
+//   // fetch(URL, {
+//   //     method: 'POST',
+//   //     headers: { 'Accept': 'application/json','Content-Type': 'application/json',},
+//   //     body: JSON.stringify({
+//   //       number:this.state.mobileNo,
+//   //       noOfPieces:noOfPieces,
+//   //       fabric:fabric,
+//   //       address:address,
+//   //       area:area,
+//   //       block:block,
+//   //       street:street,
+//   //       jada:jada,
+//   //       house:house,
+//   //       floor:floor,
+//   //       apartment:apartment,
+//   //       extra_Number:extra_Number,
+//   //     })
+//   // })
+//   // .then((response) => response.json())
+//   // .then((responseData) => {
+//   //     console.warn('tyuhrtyrtytyrtyyryeyrrr',responseData);
+//   //     if(responseData.mssg=='Data Added'){
+//   //       alert('Your information is stored at our end')
+//   //       this.props.navigation.navigate('login',{
+//   //         selected: true
+//   //       });
+//   //       // navigation.state.params.onSelect({ });
+//   //     }
+//   // })
+//   // .catch((error) => {
+//   //     console.log("Error");
+//   // });
+//
+//   //Paypal-------------------------------------------
+//   // PayPal.pay({
+//   //   price: (this.state.noOfPieces)*1+'',
+//   //   currency: 'USD',
+//   //   description: 'No of Pieces :'+this.state.noOfPieces,
+//   // }).then(confirm => {
+//   //   this.setState({
+//   //     response:confirm,
+//   //     msg:'payment is successful'
+//   //   })
+//   //   setTimeout(()=> {this.fun()},3000)
+//   // })
+//   //   .catch(error => console.log(error));
+//
+// }
+
+//
+// const deliveryRadio = [
+//   { label: 'Pick up from our store', value: 0 },
+//   { label: 'Home delivery pay " 3 kd"', value: 1 }
+// ];
+// const fabricRadio = [
+//   { label: 'Send your fabric to us', value: 0 },
+//   { label: 'Pick up Pay "3kd" ', value: 1 }
+// ];
+//
+// getComponent() {
+//   if (this.state.deliveryOption == 'itemTwo') {
+//     return (<View style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
+//       <Text style={{ fontSize: 18 }}>Address :</Text>
+//       <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
+//         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
+//           <Input
+//               placeholder='Area'
+//               onChangeText={(text) => this.setState({ area: text })}
+//               value={this.state.area}
+//           />
+//         </Item>
+//         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
+//           <Input
+//               placeholder='Block'
+//               keyboardType='numeric'
+//               onChangeText={(text) => this.setState({ block: text })}
+//               value={this.state.block}
+//           />
+//         </Item>
+//       </View>
+//       <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
+//         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
+//           <Input
+//               placeholder='Street'
+//               onChangeText={(text) => this.setState({ street: text })}
+//               value={this.state.street}
+//           />
+//         </Item>
+//         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
+//           <Input
+//               placeholder='Jada'
+//               onChangeText={(text) => this.setState({ jada: text })}
+//               value={this.state.jada}
+//           />
+//         </Item>
+//       </View>
+//       <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
+//         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
+//           <Input
+//               placeholder='House'
+//               onChangeText={(text) => this.setState({ house: text })}
+//               value={this.state.house}
+//           />
+//         </Item>
+//         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
+//           <Input
+//               placeholder='Floor'
+//               keyboardType='numeric'
+//               onChangeText={(text) => this.setState({ floor: text })}
+//               value={this.state.floor}
+//           />
+//         </Item>
+//       </View>
+//       <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
+//         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
+//           <Input
+//               placeholder='Apartment'
+//               onChangeText={(text) => this.setState({ apartment: text })}
+//               value={this.state.apartment}
+//           />
+//         </Item>
+//         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
+//           <Input
+//               placeholder='Extra Number'
+//               keyboardType='numeric'
+//               onChangeText={(text) => this.setState({ extra_Number: text })}
+//               value={this.state.extra_Number}
+//           />
+//         </Item>
+//       </View>
+//     </View>)
+//   }
+// }

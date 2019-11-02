@@ -13,9 +13,9 @@ export default class PayPal extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Checkout',
-            headerLeft:(<TouchableOpacity onPress={()=>{navigation.dispatch(resetAction)}}>
-                <Icon name="md-arrow-back" size={20} style={{paddingLeft:20 , color:'#fff'}}/>
-            </TouchableOpacity>),
+            // headerLeft:(<TouchableOpacity onPress={()=>{navigation.dispatch(resetAction)}}>
+            //     <Icon name="md-arrow-back" size={20} style={{paddingLeft:20 , color:'#fff'}}/>
+            // </TouchableOpacity>),
             headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
             headerTintColor: '#fff',
         };
@@ -33,14 +33,14 @@ export default class PayPal extends React.Component {
 
     componentDidMount() {
         this.setState({ isLoading: true })
-        this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            this.props.navigation.dispatch(resetAction);
-            return true;
-        });
+        // this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        //     this.props.navigation.dispatch(resetAction);
+        //     return true;
+        // });
     }
 
     componentWillUnmount(){
-        this.backhandler.remove();
+        // this.backhandler.remove();
     }
 
     handleResponse = data => {

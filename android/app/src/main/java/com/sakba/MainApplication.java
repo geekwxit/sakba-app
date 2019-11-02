@@ -3,8 +3,9 @@ package com.sakba;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.taessina.paypal.RNPaypalWrapperPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.taessina.paypal.RNPaypalWrapperPackage;
+
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;

@@ -23,9 +23,7 @@ const WIDTH = width/2-20;
 
 export default class OrderDetail extends Component<props>{
 
-
-
-
+  cart = [];
   static navigationOptions = ({ navigation }) => {
     return {
       headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
@@ -188,20 +186,22 @@ export default class OrderDetail extends Component<props>{
   //   }
   // }
 
-
+  sortByBrand(cart){
+    cart.map
+  }
 
   render() {
-
     Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.allowFontScaling = false;
-
+    Text.defaultProps.allowFontScaling = false;
 
     const state = this.state;
     const { navigation } = this.props;
     const noOfPieces = navigation.getParam('noOfPieces', 'NO-ID');
     const fabricOptionValue = navigation.getParam('fabricOptionValue', 'NO-ID');
     const deliveryOptionValue = navigation.getParam('deliveryOptionValue', 'NO-ID');
-    const delivery_date = navigation.getParam('delivery_date', 'NO-ID')
+    const delivery_date = navigation.getParam('delivery_date', 'NO-ID');
+    // const inHomeCount = navigation.getParam('inHomeCount', 0);
+    // const inHomeTotal = 0;
     console.log(delivery_date);
     const total = 12 * noOfPieces + fabricOptionValue + deliveryOptionValue;
 
@@ -221,12 +221,12 @@ Text.defaultProps.allowFontScaling = false;
           if (i == 0 && j == 1) {
             rowData.push(`${12 * noOfPieces}`);
           }
-          if (i == 1 && j == 0) {
-            rowData.push(`Total`);
-          }
-          if (i == 1 && j == 1) {
-            rowData.push(`${total}`);
-          }
+          // if (i == 1 && j == 0) {
+          //   rowData.push(`Total`);
+          // }
+          // if (i == 1 && j == 1) {
+          //   rowData.push(`${total}`);
+          // }
         }
         tableData.push(rowData);
       }
@@ -248,12 +248,12 @@ Text.defaultProps.allowFontScaling = false;
             if (i == 1 && j == 1) {
               rowData.push(`${fabricOptionValue}`);
             }
-            if (i == 2 && j == 0) {
-              rowData.push(`Total`);
-            }
-            if (i == 2 && j == 1) {
-              rowData.push(`${total}`);
-            }
+            // if (i == 2 && j == 0) {
+            //   rowData.push(`Total`);
+            // }
+            // if (i == 2 && j == 1) {
+            //   rowData.push(`${total}`);
+            // }
           }
           tableData.push(rowData);
         }
@@ -275,12 +275,12 @@ Text.defaultProps.allowFontScaling = false;
               if (i == 1 && j == 1) {
                 rowData.push(`${deliveryOptionValue}`);
               }
-              if (i == 2 && j == 0) {
-                rowData.push(`Total`);
-              }
-              if (i == 2 && j == 1) {
-                rowData.push(`${total}`);
-              }
+              // if (i == 2 && j == 0) {
+              //   rowData.push(`Total`);
+              // }
+              // if (i == 2 && j == 1) {
+              //   rowData.push(`${total}`);
+              // }
             }
             tableData.push(rowData);
           }
@@ -308,12 +308,12 @@ Text.defaultProps.allowFontScaling = false;
               if (i == 2 && j == 1) {
                 rowData.push(`${deliveryOptionValue}`);
               }
-              if (i == 3 && j == 0) {
-                rowData.push(`Total`);
-              }
-              if (i == 3 && j == 1) {
-                rowData.push(`${total}`);
-              }
+              // if (i == 3 && j == 0) {
+              //   rowData.push(`Total`);
+              // }
+              // if (i == 3 && j == 1) {
+              //   rowData.push(`${total}`);
+              // }
             }
             tableData.push(rowData);
           }
@@ -379,6 +379,12 @@ Text.defaultProps.allowFontScaling = false;
                         />
                       ))
                     }
+                    <Row
+                        data={['Total', total]}
+                        widthArr={state.widthArr}
+                        style={[styles.row, { backgroundColor: '#F7F6E7' }]}
+                        textStyle={styles.text}
+                    />
                   </Table>
                 </ScrollView>
               </View>

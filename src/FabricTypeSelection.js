@@ -7,6 +7,7 @@ import RadioGroup from './components/RadioGroupCustom';
 // import Brands from "./fabrics/brands/brands";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {fabricStrings} from "./Strings";
+import Loader from "./components/Loader";
 
 const { width, height } = Dimensions.get('window');
 // var fabric = {
@@ -62,25 +63,14 @@ export default class FabricTypeSelection extends Component<Props>{
       outsideCount: this.props.navigation.getParam('outsideCount', null),
       selectedFabricType: null,
 
-      selectedBrand: 0,
-      selectedPattern: 0,
-      selectedColor: 0,
-      patternOverlayHeight: 0,
-      cartVisible: false,
-      productBox: false,
+      selectedBrand: 0, selectedPattern: 0, selectedColor: 0,
+      patternOverlayHeight: 0, cartVisible: false, productBox: false,
       brands: null,
-      cart : [
-        // {brand : 0, pattern    : 0, color   : 0},
-        // {brand : 2, pattern    : 2, color   : 1},
-        // {brand : 1, pattern    : 3, color   : 1},
-        // {brand : 2, pattern    : 1, color   : 3},
-        // {brand : 2, pattern    : 0, color   : 0},
-      ],
-      totalCartItems: 0,
-      selectionChanged: false,
-      changeType: null,
-
-      shouldBrandShow: false, shouldPatternShow: false,shouldColorShow: false,
+      cart : [],
+      totalCartItems: 0, selectionChanged: false, changeType: null,
+      shouldBrandShow: true, shouldPatternShow: true,shouldColorShow: true,
+       colorLoader: false,
+      fabricPreview: false, previewTitle: 'Preview', previewPath: null,
     };
     this.showCart = this.showCart.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
@@ -96,7 +86,10 @@ export default class FabricTypeSelection extends Component<Props>{
         .then(response=>{
             this.setState({brands: response.brands})
         })
-        .then(()=>this.timeCaller())
+        .then(()=>{
+          this.setState({isLoading:false})
+          this.timeCaller();
+        })
         .catch(error=>alert("Something went wrong!"))}
         catch (e) {
           console.log("We got some error : ", e)
@@ -104,10 +97,9 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   timeCaller(){
-    this.setState({isLoading:false});
-    setTimeout(()=>{this.setState({shouldBrandShow:true});setTimeout(()=>{this.setState({shouldPatternShow:true});setTimeout(()=>this.setState({shouldColorShow:true}), 1000);}, 1000);}, 1000);
+    //setTimeout(()=>{this.setState({shouldBrandShow:true});setTimeout(()=>{this.setState({shouldPatternShow:true});setTimeout(()=>this.setState({shouldColorShow:true}), 1000);}, 1000);}, 1000);
     // setTimeout(()=>this.setState({shouldPatternShow:true}), 1000);
-    // setTimeout(()=>this.setState({shouldColorShow:true}), 1000);
+    // setTimeout(()=>this.setState({shouldColorShow:true}), 2000);
     //For showing brands
     //For showing patterns
     //For showing colors
@@ -193,17 +185,16 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   doCheckout(){
-    //alert("Something went wrong!");
     const inHomeCount = this.state.inHomeCount;
     const outsideCount= this.state.outsideCount;
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
     const customerName= this.props.navigation.getParam('customerName', null);
-    const cart = this.state.cart;
+    const cart        = this.state.cart;
     this.state.totalCartItems>inHomeCount?alert('Items on cart are more than selected in-home dishdashas i.e.' + inHomeCount +' . Please remove some items.'):
         this.state.totalCartItems<inHomeCount?alert('Items on cart are less than selected in-home dishdashas i.e.' + inHomeCount +' . Please add some items.'):
             this.state.totalCartItems==inHomeCount?
                 this.props.navigation.navigate('delivery',
-                    {inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart}):
+                    {inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart, noOfPieces: this.state.noOfPieces}):
                 alert("Something went wrong");
   }
 
@@ -215,10 +206,11 @@ export default class FabricTypeSelection extends Component<Props>{
   temp(){
     this.setState({selectionChanged: false, changedType: null});
   }
+
   render() {
 
     Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.allowFontScaling = false;
+    Text.defaultProps.allowFontScaling = false;
 
 
     const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
@@ -229,13 +221,14 @@ Text.defaultProps.allowFontScaling = false;
     // debugger
     return (
       <SafeAreaView>
-        {/*this.state.isLoading?
+        {this.state.isLoading?
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
-        </View>:*/}
+        </View>:
         <ScrollView>
-          <ProductModal brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
+          <ProductModal price={this.state.brands[this.state.selectedBrand].price + " KD"} brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
           <CartModal brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+          <FabricPreview title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
@@ -280,7 +273,14 @@ Text.defaultProps.allowFontScaling = false;
                   type={'pattern'}
                   isImage={true}
                   selected={this.state.selectedPattern}
-                  onSelect={(index)=>{this.setState({selectedPattern: index, selectedColor: 0})}}
+                  onSelect={(index)=>{
+                    this.previewPath = this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path;
+                    this.setState({
+                    selectedPattern: index,
+                    selectedColor: 0,
+                    fabricPreview: true,
+                    previewTitle:'Pattern Preview',
+                  })}}
                   isSelectionChanged={this.state.selectionChanged}
                   changeType={this.state.changeType}
               />
@@ -288,25 +288,31 @@ Text.defaultProps.allowFontScaling = false;
               </View>:null}
 
               {this.state.shouldColorShow ?
-
                   <View>
-            <View style={{ marginTop: 50, marginBottom: 10}}>
-              <Text style={{ fontSize: 20, textAlign: 'center' }}>Choose fabric color </Text>
-            </View>
+                    <View style={{marginTop: 50, marginBottom: 10}}>
+                      <Text style={{fontSize: 20, textAlign: 'center'}}>Choose fabric color </Text>
+                    </View>
 
-
-            <View>
-              <RadioGroup
-                  data={(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
-                  type={'color'}
-                  isImage={true}
-                  isColor={false}
-                  selected={this.state.selectedColor}
-                  onSelect={(index)=>{this.setState({selectedColor: index})}}
-                  changeType={this.state.changedType}
-              />
-            </View>
-              </View>:null}
+                    <View>
+                      <RadioGroup
+                          data={(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors}
+                          type={'color'}
+                          isImage={true}
+                          selected={this.state.selectedColor}
+                          onSelect={(index) =>{
+                            this.previewPath = this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path;
+                            this.setState({
+                              selectedColor: index,
+                              previewTitle:'Color Preview',
+                              fabricPreview: true,
+                            })}
+                          }
+                          changeType={this.state.changedType}
+                      />
+                    </View>
+                  </View> :
+                  <ActivityIndicator style={{marginTop: 10}} size={'small'} color={'#0451A5'}/>
+              }
             <View style={{ marginTop: 20, marginBottom: 20, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
@@ -322,11 +328,10 @@ Text.defaultProps.allowFontScaling = false;
               </Button>
             </View>
           </View>
-          :
-          <View>
-              </View>:null
+          :null:null
           }
         </ScrollView>
+        }
       </SafeAreaView>
     );
   }
@@ -353,8 +358,9 @@ const ProductModal = (props) => {
                 </Text>
               </View>
               <View style={{padding: 10}}>
-              <Text style={{fontSize: 18}}>Fabric Brand: {props.selected.brand}</Text>
+                <Text style={{fontSize: 18}}>Fabric Brand: {props.selected.brand}</Text>
                 <Text style={{fontSize: 18}}>Fabric Pattern and Color:</Text>
+                <Text style={{fontSize: 18}}>Price : {props.price}</Text>
               </View>
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
                 <View style={{ alignItems : 'center', justifyContent: 'center', }}>
@@ -384,6 +390,7 @@ const ProductModal = (props) => {
   )
 }
 const CartModal = (props) => {
+  cartTotal = 0;
   return(
       <Modal
           style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
@@ -404,20 +411,63 @@ const CartModal = (props) => {
                 </View>
                 <View style={{height: height*0.5}}>
                   {props.cartItems.length>0?
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                    <View onStartShouldSetResponder={()=>true}>
-                      {
-                        props.cartItems.map((item, index)=>{
-                          return <CartItem quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
-                        })
-                      }
+                    <View style={{flex:1}}>
+                      <ScrollView showsVerticalScrollIndicator={false}>
+                        <View style={{flex:1}} onStartShouldSetResponder={()=>true}>
+                          {
+                            props.cartItems.map((item, index)=>{
+                              cartTotal += item.quantity*props.brands[item.brand].price;
+                              return <CartItem quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
+                            })
+                          }
+                        </View>
+                      </ScrollView>
+                      <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+                    <Text style={{fontSize: 20, color: 'white'}}>Cart Total : {cartTotal} KD</Text>
                     </View>
-                  </ScrollView>:
+                      </View>
+                      :
                   <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{color: 'grey', fontSize: 20}}>Cart is empty!</Text>
                   </View>
                   }
                 </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+  )
+}
+const FabricPreview = (props) => {
+  console.log(    {src: props.source});
+  return(
+      <Modal
+          style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
+          animationType='fade'
+          transparent={true}
+          onRequestClose={()=>props.close()}
+          visible={props.visible}
+          // onShow={()=>console.log("CAAART", cart)}
+      >
+        <TouchableWithoutFeedback onPress={()=>props.close()}>
+          <View style={{flex:1 ,alignItems: 'center', justifyContent: 'center', backgroundColor:'#00000069'}}>
+            <TouchableWithoutFeedback onPress={()=>{}}>
+              <View  style={{width: width*0.8, backgroundColor:'#fff', borderRadius: 10}}>
+                <View style={{padding: 8,borderTopLeftRadius:10, borderTopRightRadius: 10,backgroundColor: '#0451A5',justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={{fontSize: 20, color: 'white'}}>{props.title}</Text>
+                </View>
+                <View style={{height: height*0.4}}>
+                  {/*<View style={{flex:1, backgroundColor: 'black'}}>*/}
+                  <Image source={{uri: props.source}} style={{flex:1, resizeMode: 'stretch', height: null, width: null}}/>
+                  {/*</View>*/}
+                </View>
+                <TouchableOpacity onPress={()=>props.close()}>
+                  <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+                    <Text style={{fontSize: 20, color: 'white'}}>OK</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
           </View>

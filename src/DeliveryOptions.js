@@ -41,12 +41,12 @@ export default class customerAgree extends Component<Props>{
             d_area: '', d_street: '', d_jada: '', d_floor: '', d_block: '', d_apartment: '',
             d_extra_Number: '', d_house: '',
             area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
-            itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
+            itemSelected: 'itemTwo', noOfPieces: props.navigation.getParam('noOfPieces'), mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
             deliveryOptionPickUpFormStore: 'one', delivery_date: '',
 
-            inHomeCount : props.navigation.getParam('inHomeCount', null),
-            outsideCount: props.navigation.getParam('outsideCount', null),
-            products: props.navigation.getParam('cart', []),
+            inHomeCount : props.navigation.getParam('inHomeCount', 0),
+            outsideCount: props.navigation.getParam('outsideCount', 0),
+            cart: props.navigation.getParam('cart', []),
             fabrics : props.navigation.getParam('fabrics', null)
         };
     }
@@ -58,11 +58,14 @@ export default class customerAgree extends Component<Props>{
         products = [];
         const url = deliveryStrings.order_now;
         brands = this.state.fabrics;
+        cart = this.state.cart;
+        others = {cart: cart, fabrics: brands}
         if(this.state.inHomeCount>0){
-            products = this.state.products.map((item,index)=>{
+            products = this.state.cart.map((item,index)=>{
                 return (
-                    {brandID: brands[item.brand].id,
-                    patternID: brands[item.brand].patterns[item.pattern].id,
+                    {
+                        brandID: brands[item.brand].id,
+                        patternID: brands[item.brand].patterns[item.pattern].id,
                         colorID: brands[item.brand].patterns[item.pattern].colors[item.color].id,
                         quantity: item.quantity
                     }
@@ -135,8 +138,7 @@ export default class customerAgree extends Component<Props>{
                                     mobileNo: this.state.mobileNo,
                                     delivery_date: responseData.delivery_date,
                                     emailID: emailAddr,
-
-
+                                    ...others
                                 });
                             })
                         })
@@ -193,7 +195,8 @@ export default class customerAgree extends Component<Props>{
                             measurementDate: measurementDate,
                             mobileNo: this.state.mobileNo,
                             delivery_date: responseData.delivery_date,
-                            emailID: emailAddr
+                            emailID: emailAddr,
+                            ...others
                         });
 
                     })
@@ -259,7 +262,8 @@ export default class customerAgree extends Component<Props>{
                                         measurementDate: measurementDate,
                                         mobileNo: this.state.mobileNo,
                                         delivery_date: responseData.delivery_date,
-                                        emailID: emailAddr
+                                        emailID: emailAddr,
+                                        ...others
                                     });
                                 })
                             })
@@ -318,7 +322,8 @@ export default class customerAgree extends Component<Props>{
                                     measurementDate: measurementDate,
                                     mobileNo: this.state.mobileNo,
                                     delivery_date: responseData.delivery_date,
-                                    emailID: emailAddr
+                                    emailID: emailAddr,
+                                    ...others
                                 });
                             })
 
