@@ -274,7 +274,7 @@ export default class FabricTypeSelection extends Component<Props>{
                   isImage={true}
                   selected={this.state.selectedPattern}
                   onSelect={(index)=>{
-                    this.previewPath = this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path;
+                    this.previewPath = this.state.brands[this.state.selectedBrand].patterns[index].path;
                     this.setState({
                     selectedPattern: index,
                     selectedColor: 0,
@@ -300,7 +300,7 @@ export default class FabricTypeSelection extends Component<Props>{
                           isImage={true}
                           selected={this.state.selectedColor}
                           onSelect={(index) =>{
-                            this.previewPath = this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path;
+                            this.previewPath = this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[index].path;
                             this.setState({
                               selectedColor: index,
                               previewTitle:'Color Preview',
@@ -422,9 +422,10 @@ const CartModal = (props) => {
                           }
                         </View>
                       </ScrollView>
-                      <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
-                    <Text style={{fontSize: 20, color: 'white'}}>Cart Total : {cartTotal} KD</Text>
-                    </View>
+                      <View style={{ backgroundColor: '#0451A5', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+                        <Text style={{fontSize: 20, color: 'white', flex:2}}>Cart Total : {cartTotal} KD</Text>
+                        <Text style={{fontSize: 20, color: 'white', flex:2}}>Checkout</Text>
+                      </View>
                       </View>
                       :
                   <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
