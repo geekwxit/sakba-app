@@ -73,6 +73,7 @@ export default class FabricTypeSelection extends Component<Props>{
       fabricPreview: false, previewTitle: 'Preview', previewPath: null,
     };
     this.showCart = this.showCart.bind(this);
+    this.doCheckout = this.doCheckout.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
   }
   componentDidMount() {
@@ -185,6 +186,7 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   doCheckout(){
+      this.setState({cartVisible : false});
     const inHomeCount = this.state.inHomeCount;
     const outsideCount= this.state.outsideCount;
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
@@ -227,7 +229,7 @@ export default class FabricTypeSelection extends Component<Props>{
         </View>:
         <ScrollView>
           <ProductModal price={this.state.brands[this.state.selectedBrand].price + " KD"} brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].path:null, color: this.state.brands?this.state.brands[this.state.selectedBrand].patterns[this.state.selectedPattern].colors[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
-          <CartModal brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+          <CartModal checkout={this.doCheckout} brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <FabricPreview title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
@@ -323,7 +325,7 @@ export default class FabricTypeSelection extends Component<Props>{
             <View style={{ marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() =>this.doCheckout()}>
+                  onPress={() =>this.showCart()}>
                 <Text style={{ fontSize: 18, color: 'white' }}>CHECKOUT</Text>
               </Button>
             </View>
@@ -417,15 +419,25 @@ const CartModal = (props) => {
                           {
                             props.cartItems.map((item, index)=>{
                               cartTotal += item.quantity*props.brands[item.brand].price;
-                              return <CartItem quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
+                              return <CartItem price={item.quantity*props.brands[item.brand].price} quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                             })
                           }
                         </View>
                       </ScrollView>
-                      <View style={{ backgroundColor: '#0451A5', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
-                        <Text style={{fontSize: 20, color: 'white', flex:2}}>Cart Total : {cartTotal} KD</Text>
-                        <Text style={{fontSize: 20, color: 'white', flex:2}}>Checkout</Text>
-                      </View>
+                        <View style={{
+                            borderTopColor: '#0451A5', borderBottomColor: '#fff', borderLeftColor: '#fff', borderRightColor: '#fff',
+                            borderWidth:2,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding:10}}>
+                            <Text style={{fontSize: 20, color: '#0451A5', alignSelf: 'center'}}>Cart Total : {cartTotal} KD</Text>
+                        </View>
+                        <TouchableOpacity onPress={props.checkout}>
+                          <View style={{ backgroundColor: '#0451A5', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+                            <Text style={{fontSize: 20, color: 'white', alignSelf: 'center'}}>Confirm Checkout</Text>
+                          </View>
+                        </TouchableOpacity>
                       </View>
                       :
                   <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
@@ -489,6 +501,7 @@ const CartItem = (props) =>{
               <View style={{flex: 2}}>
                 <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>Quantity: {props.quantity}</Text>
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Price: {props.price}</Text>
                 {/*<Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>*/}
               </View>
             </View>

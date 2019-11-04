@@ -60,6 +60,7 @@
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
 		EFA9C71B27CD424083AAED15 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB7BAEA4BD4C4A9B9ADCD253 /* Ionicons.ttf */; };
 		F51460F7ADFB4671B5D7CE7E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1807004F8B924411871F68E0 /* Zocial.ttf */; };
+		75321A774F934BBA845C2559 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09D6F983FBA8424FA72EE87D /* Fontisto.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -394,6 +395,7 @@
 		E5ABC9BB46EB40B5B8F8191C /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		09D6F983FBA8424FA72EE87D /* Fontisto.ttf */ = {isa = PBXFileReference; name = "Fontisto.ttf"; path = "../node_modules/native-base/Fonts/Fontisto.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -702,6 +704,7 @@
 				48165F33CFAB49F1A107F578 /* rubicon-icon-font.ttf */,
 				970F0372706545E5B4AC3FC9 /* SimpleLineIcons.ttf */,
 				1807004F8B924411871F68E0 /* Zocial.ttf */,
+				09D6F983FBA8424FA72EE87D /* Fontisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1197,6 +1200,7 @@
 				6E59FE8C7D6349F89E04CBA1 /* rubicon-icon-font.ttf in Resources */,
 				CD30F8B0BAA04764BFAB131B /* SimpleLineIcons.ttf in Resources */,
 				F51460F7ADFB4671B5D7CE7E /* Zocial.ttf in Resources */,
+				75321A774F934BBA845C2559 /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

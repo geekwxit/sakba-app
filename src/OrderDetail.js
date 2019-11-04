@@ -39,7 +39,8 @@ export default class OrderDetail extends Component<props>{
       tableHead: ['Product / Service', 'Total'],
       widthArr: [ WIDTH,WIDTH ],
       page: 'OrderDetail', emailId: '',
-      id: id, isLoading: false,
+      id: id, isLoading: false, cart: this.props.navigation.getParam('cart'),
+      fabrics: this.props.navigation.getParam('fabrics')
     };
     this.url = "http://sakba.net/payment.php?Sid=" + id + "&&token=" + token;
 
@@ -190,6 +191,15 @@ export default class OrderDetail extends Component<props>{
     cart.map
   }
 
+  filterCart(cart, brands){
+    let tempCart = [];
+    cart.forEach(item=>{
+      y = tempCart.find(fItem=>{return fItem.brand==item.brand})
+      y?y.quantity += item.quantity:tempCart.push({brand: item.brand, name: brands[item.brand].name, quantity: item.quantity, price: brands[item.brand].price})
+    })
+    return tempCart.length?tempCart:null;
+  }
+
   render() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
@@ -203,13 +213,24 @@ export default class OrderDetail extends Component<props>{
     // const inHomeCount = navigation.getParam('inHomeCount', 0);
     // const inHomeTotal = 0;
     console.log(delivery_date);
-    const total = 12 * noOfPieces + fabricOptionValue + deliveryOptionValue;
+    var total = 12 * noOfPieces + fabricOptionValue + deliveryOptionValue;
 
     const customerName = navigation.getParam('customerName', '');
     const measurementDate = navigation.getParam('measurementDate', '');
 
+    userCart = this.filterCart(state.cart, state.fabrics);
     const tableData = [];
+    const fabrics = [];
 
+    userCart?userCart.map(item=>{
+      total += item.quantity*item.price;
+      fabrics.push([`${item.name} * `+item.quantity, `${item.quantity*item.price} KD`]);
+    }):null;
+
+    tableData.push([`Classic Dishdasha * ${noOfPieces}`, `${noOfPieces*12} KD`]);
+    fabricOptionValue?tableData.push([`Pickup`, `${fabricOptionValue} KD`]):null;
+    deliveryOptionValue?tableData.push([`Delivery`, `${deliveryOptionValue} KD`]):null;
+    /*
     if (fabricOptionValue == 0 && deliveryOptionValue == 0) {
       for (let i = 0; i < 2; i += 1) {
         const rowData = [];
@@ -230,95 +251,95 @@ export default class OrderDetail extends Component<props>{
         }
         tableData.push(rowData);
       }
-    } else
-      if (deliveryOptionValue == 0) {
-        for (let i = 0; i < 3; i += 1) {
-          const rowData = [];
-          for (let j = 0; j < 2; j += 1) {
+    }
+    else if (deliveryOptionValue == 0) {
+      for (let i = 0; i < 3; i += 1) {
+        const rowData = [];
+        for (let j = 0; j < 2; j += 1) {
 
-            if (i == 0 && j == 0) {
-              rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-            }
-            if (i == 0 && j == 1) {
-              rowData.push(`${12 * noOfPieces}`);
-            }
-            if (i == 1 && j == 0) {
-              rowData.push(`Pickup`);
-            }
-            if (i == 1 && j == 1) {
-              rowData.push(`${fabricOptionValue}`);
-            }
-            // if (i == 2 && j == 0) {
-            //   rowData.push(`Total`);
-            // }
-            // if (i == 2 && j == 1) {
-            //   rowData.push(`${total}`);
-            // }
+          if (i == 0 && j == 0) {
+            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
           }
-          tableData.push(rowData);
-        }
-      } else
-        if (fabricOptionValue == 0) {
-          for (let i = 0; i < 3; i += 1) {
-            const rowData = [];
-            for (let j = 0; j < 2; j += 1) {
-
-              if (i == 0 && j == 0) {
-                rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-              }
-              if (i == 0 && j == 1) {
-                rowData.push(`${12 * noOfPieces}`);
-              }
-              if (i == 1 && j == 0) {
-                rowData.push(`Delivery`);
-              }
-              if (i == 1 && j == 1) {
-                rowData.push(`${deliveryOptionValue}`);
-              }
-              // if (i == 2 && j == 0) {
-              //   rowData.push(`Total`);
-              // }
-              // if (i == 2 && j == 1) {
-              //   rowData.push(`${total}`);
-              // }
-            }
-            tableData.push(rowData);
+          if (i == 0 && j == 1) {
+            rowData.push(`${12 * noOfPieces}`);
           }
-        }
-        else {
-          for (let i = 0; i < 4; i += 1) {
-            const rowData = [];
-            for (let j = 0; j < 2; j += 1) {
-
-              if (i == 0 && j == 0) {
-                rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-              }
-              if (i == 0 && j == 1) {
-                rowData.push(`${12 * noOfPieces}`);
-              }
-              if (i == 1 && j == 0) {
-                rowData.push(`Pickup`);
-              }
-              if (i == 1 && j == 1) {
-                rowData.push(`${fabricOptionValue}`);
-              }
-              if (i == 2 && j == 0) {
-                rowData.push(`Delivery`);
-              }
-              if (i == 2 && j == 1) {
-                rowData.push(`${deliveryOptionValue}`);
-              }
-              // if (i == 3 && j == 0) {
-              //   rowData.push(`Total`);
-              // }
-              // if (i == 3 && j == 1) {
-              //   rowData.push(`${total}`);
-              // }
-            }
-            tableData.push(rowData);
+          if (i == 1 && j == 0) {
+            rowData.push(`Pickup`);
           }
+          if (i == 1 && j == 1) {
+            rowData.push(`${fabricOptionValue}`);
+          }
+          // if (i == 2 && j == 0) {
+          //   rowData.push(`Total`);
+          // }
+          // if (i == 2 && j == 1) {
+          //   rowData.push(`${total}`);
+          // }
         }
+        tableData.push(rowData);
+      }
+    }
+    else if (fabricOptionValue == 0) {
+      for (let i = 0; i < 3; i += 1) {
+        const rowData = [];
+        for (let j = 0; j < 2; j += 1) {
 
+          if (i == 0 && j == 0) {
+            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
+          }
+          if (i == 0 && j == 1) {
+            rowData.push(`${12 * noOfPieces}`);
+          }
+          if (i == 1 && j == 0) {
+            rowData.push(`Delivery`);
+          }
+          if (i == 1 && j == 1) {
+            rowData.push(`${deliveryOptionValue}`);
+          }
+          // if (i == 2 && j == 0) {
+          //   rowData.push(`Total`);
+          // }
+          // if (i == 2 && j == 1) {
+          //   rowData.push(`${total}`);
+          // }
+        }
+        tableData.push(rowData);
+      }
+    }
+    else {
+      for (let i = 0; i < 4; i += 1) {
+        const rowData = [];
+        for (let j = 0; j < 2; j += 1) {
+
+          if (i == 0 && j == 0) {
+            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
+          }
+          if (i == 0 && j == 1) {
+            rowData.push(`${12 * noOfPieces}`);
+          }
+          if (i == 1 && j == 0) {
+            rowData.push(`Pickup`);
+          }
+          if (i == 1 && j == 1) {
+            rowData.push(`${fabricOptionValue}`);
+          }
+          if (i == 2 && j == 0) {
+            rowData.push(`Delivery`);
+          }
+          if (i == 2 && j == 1) {
+            rowData.push(`${deliveryOptionValue}`);
+          }
+          // if (i == 3 && j == 0) {
+          //   rowData.push(`Total`);
+          // }
+          // if (i == 3 && j == 1) {
+          //   rowData.push(`${total}`);
+          // }
+        }
+        tableData.push(rowData);
+      }
+    }
+*/
 
     return (
       <Container>
@@ -379,8 +400,22 @@ export default class OrderDetail extends Component<props>{
                         />
                       ))
                     }
+                    <TableWrapper style={{flexDirection: 'row'}}>
+                      <Col data={['FABRICS FROM OUR SHOP']} style={{backgroundColor: '#0451A5',height:userCart?null:0}} textStyle={{padding:5,color:'white', alignSelf: 'center'}} />
+                    </TableWrapper>
+                    {
+                      fabrics.map((item,index)=>(
+                          <Row
+                              key={index}
+                              data={item}
+                              widthArr={state.widthArr}
+                              style={[styles.row, index % 2 && { backgroundColor: '#F7F6E7' }]}
+                              textStyle={styles.text}
+                          />
+                      ))
+                    }
                     <Row
-                        data={['Total', total]}
+                        data={['Total', total+' KD']}
                         widthArr={state.widthArr}
                         style={[styles.row, { backgroundColor: '#F7F6E7' }]}
                         textStyle={styles.text}
