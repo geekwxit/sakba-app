@@ -62,8 +62,8 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    // if (!this.state.timePassed) {
-      if(0){
+    if (!this.state.timePassed) {
+      // if(0){
       return <SplashScreen />;
     } else {
       return <AppContainer />;

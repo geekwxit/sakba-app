@@ -4,35 +4,29 @@ import { Form, Item, Input, Container, Content, Button, Radio, Icon, Textarea } 
 import renderIf from 'render-if';
 import PayPal from 'react-native-paypal-wrapper';
 import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+// import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import RadioForm from "./components/RadioForm";
 import axios from 'axios';
 import {deliveryStrings} from './Strings';
 
-
 const { width, height } = Dimensions.get('window');
 
-const deliveryRadio = [
-    { label: 'Pick up from our store', value: 0 },
-    { label: 'Home delivery pay " 3 kd"', value: 1 }
-];
-const fabricRadio = [
-    { label: 'Send your fabric to us', value: 0 },
-    { label: 'Pick up Pay "3kd" ', value: 1 }
-];
-
-
-export default class customerAgree extends Component<Props>{
+export default class DeliveryOptions extends Component<Props>{
 
     static navigationOptions = ({ navigation }) => {
+        others = navigation.getParam('language').isRTL?
+            {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').deliveryScreen.screenTitle}</Text>}:
+            {title: navigation.getParam('language').deliveryScreen.screenTitle}
         return {
             headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
             headerTintColor: '#fff',
-            title: 'Delivery Options'
+            ...others
         };
     };
     constructor(props) {
         super(props)
         this.state = {
+            language: props.navigation.getParam('language'),
             isLoading: false,
             pickupStore: null,
             sendFabric: true, homeDelivery: true,
@@ -51,15 +45,17 @@ export default class customerAgree extends Component<Props>{
         };
     }
     componentDidMount() {
+        this.setState({language: this.props.navigation.getParam('language')});
         PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
     }
     submitForm() {
+        var screen = this.state.language.deliveryScreen;
         console.log('in submit form');
         products = [];
         const url = deliveryStrings.order_now;
         brands = this.state.fabrics;
         cart = this.state.cart;
-        others = {cart: cart, fabrics: brands}
+        others = {measurement: this.props.navigation.getParam('measurement'), cart: cart, fabrics: brands, language: this.state.language}
         if(this.state.inHomeCount>0){
             products = this.state.cart.map((item,index)=>{
                 return (
@@ -149,14 +145,13 @@ export default class customerAgree extends Component<Props>{
                             console.warn('error');
                         });
                 } else {
-                    alert('All Details Are Required');
+                    alert(screen.detailsRequired);
                 }
             } else {
                 console.log('2 two');
                 deliveryOptionValue = 0;
                 delivery_type = "self";
                 if (deliveryOptionPickUpFormStore == 'one') {
-
                     whichStore = "Awquaf Complex"
                 } else {
                     whichStore = "Qurain Shop"
@@ -273,7 +268,7 @@ export default class customerAgree extends Component<Props>{
                                 this.setState({isLoading: false})
                             });
                     } else {
-                        alert('All Details Are Required');
+                        alert(screen.detailsRequired);
                     }
 
 
@@ -337,26 +332,27 @@ export default class customerAgree extends Component<Props>{
                 }
 
             } else {
-                alert('All Details Are Required');
+                alert(screen.detailsRequired);
             }
         }
     }
 
     getComponent(){
+        var screen = this.state.language.deliveryScreen;
         if (this.state.deliveryOption == 'itemTwo') {
             return (<View style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                <Text style={{ fontSize: 18 }}>Address :</Text>
+                <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                     <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                         <Input
-                            placeholder='Area'
+                            placeholder={screen.pArea}
                             onChangeText={(text) => this.setState({ area: text })}
                             value={this.state.area}
                         />
                     </Item>
                     <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                         <Input
-                            placeholder='Block'
+                            placeholder={screen.pBlock}
                             keyboardType='numeric'
                             onChangeText={(text) => this.setState({ block: text })}
                             value={this.state.block}
@@ -366,14 +362,14 @@ export default class customerAgree extends Component<Props>{
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                     <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                         <Input
-                            placeholder='Street'
+                            placeholder={screen.pStreet}
                             onChangeText={(text) => this.setState({ street: text })}
                             value={this.state.street}
                         />
                     </Item>
                     <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                         <Input
-                            placeholder='Jada'
+                            placeholder={screen.pJada}
                             onChangeText={(text) => this.setState({ jada: text })}
                             value={this.state.jada}
                         />
@@ -382,14 +378,14 @@ export default class customerAgree extends Component<Props>{
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                     <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                         <Input
-                            placeholder='House'
+                            placeholder={screen.pHouse}
                             onChangeText={(text) => this.setState({ house: text })}
                             value={this.state.house}
                         />
                     </Item>
                     <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                         <Input
-                            placeholder='Floor'
+                            placeholder={screen.pFloor}
                             keyboardType='numeric'
                             onChangeText={(text) => this.setState({ floor: text })}
                             value={this.state.floor}
@@ -399,14 +395,14 @@ export default class customerAgree extends Component<Props>{
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                     <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                         <Input
-                            placeholder='Apartment'
+                            placeholder={screen.pApartment}
                             onChangeText={(text) => this.setState({ apartment: text })}
                             value={this.state.apartment}
                         />
                     </Item>
                     <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                         <Input
-                            placeholder='Extra Number'
+                            placeholder={screen.pExtra}
                             keyboardType='numeric'
                             onChangeText={(text) => this.setState({ extra_Number: text })}
                             value={this.state.extra_Number}
@@ -422,11 +418,9 @@ export default class customerAgree extends Component<Props>{
     }
 
     render() {
-
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
-
-
+        var screen = this.state.language.deliveryScreen;
         const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
         console.log(deliveryOption);
         const sizeCtrl = {width: 40, height: 40}
@@ -438,13 +432,14 @@ export default class customerAgree extends Component<Props>{
                     </View>
                     <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                            <Text style={{ fontSize: 20 }}>Choose delivery option </Text>
+                            <Text style={{ fontSize: 20 }}>{screen.text1}</Text>
                         </View>
                         <View style={{ marginTop: 40 }}>
-                            <Text style={{ fontSize: 20 }}>Fabrics</Text>
-                            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                            <Text style={{ fontSize: 20 }}>{screen.fabricLabel}</Text>
+                            <View style={{ marginTop: 10 }}>
 
                                 <RadioForm
+                                    isRTL={this.state.language.isRTL}
                                     buttonSize={10}
                                     buttonColor={'#0451A5'}
                                     buttonInnerColor={'#0451A5'}
@@ -456,7 +451,8 @@ export default class customerAgree extends Component<Props>{
                                     buttonStyle={{ marginTop: 20 }}
 
 
-                                    radio_props={fabricRadio}
+                                    radio_props={[{ label: screen.sendFabric, value: 0 },
+                                        { label: screen.pickup, value: 1 }]}
                                     initial={0}
                                     onPress={(value) => {
                                         (value == 0)
@@ -468,18 +464,18 @@ export default class customerAgree extends Component<Props>{
 
                             {renderIf(this.state.itemSelected == 'itemOne')(
                                 <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                    <Text style={{ fontSize: 18 }}>Address :</Text>
+                                    <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
                                     <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                placeholder='Area'
+                                                placeholder={screen.pArea}
                                                 onChangeText={(text) => this.setState({ area: text })}
                                                 value={this.state.area}
                                             />
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                placeholder='Block'
+                                                placeholder={screen.pBlock}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ block: text })}
                                                 value={this.state.block}
@@ -489,14 +485,14 @@ export default class customerAgree extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                placeholder='Street'
+                                                placeholder={screen.pStreet}
                                                 onChangeText={(text) => this.setState({ street: text })}
                                                 value={this.state.street}
                                             />
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                placeholder='Jada'
+                                                placeholder={screen.pJada}
                                                 onChangeText={(text) => this.setState({ jada: text })}
                                                 value={this.state.jada}
                                             />
@@ -505,14 +501,14 @@ export default class customerAgree extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                placeholder='House'
+                                                placeholder={screen.pHouse}
                                                 onChangeText={(text) => this.setState({ house: text })}
                                                 value={this.state.house}
                                             />
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                placeholder='Floor'
+                                                placeholder={screen.pFloor}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ floor: text })}
                                                 value={this.state.floor}
@@ -522,14 +518,14 @@ export default class customerAgree extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                placeholder='Apartment'
+                                                placeholder={screen.pApartment}
                                                 onChangeText={(text) => this.setState({ apartment: text })}
                                                 value={this.state.apartment}
                                             />
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                placeholder='Extra Number'
+                                                placeholder={screen.pExtra}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ extra_Number: text })}
                                                 value={this.state.extra_Number}
@@ -541,46 +537,48 @@ export default class customerAgree extends Component<Props>{
                         </View>
 
                         <View style={{ marginTop: 20, }}>
-                            <Text style={{ fontSize: 20 }}>Choose delivery option </Text>
+                            <Text style={{ fontSize: 20 }}>{screen.deliveryLabel}</Text>
 
                             <View style={{ flex: 1, marginTop: 10 }}>
 
-                                <View>
+                                <View style={{alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemOne' })} >
+                                        {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                         {deliveryOption == 'itemOne'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                         }
-                                        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Pick up from our store</Text>
+                                        {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                     </TouchableOpacity>
                                 </View>
-                                <View>
+                                <View style={{alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
+                                        {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
                                         {deliveryOption === 'itemTwo'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                         }
-                                        <Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>Home delivery pay " 3 kd "</Text>
+                                        {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
                                     </TouchableOpacity>
                                 </View>
                                 {renderIf(deliveryOption == 'itemTwo')(
                                     <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                        <Text style={{ fontSize: 18 }}>Address :</Text>
+                                        <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
                                         <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
-                                                    placeholder='Area'
+                                                    placeholder={screen.pArea}
                                                     onChangeText={(text) => this.setState({ area: text })}
                                                     value={this.state.area}
                                                 />
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
-                                                    placeholder='Block'
+                                                    placeholder={screen.pBlock}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ block: text })}
                                                     value={this.state.block}
@@ -590,14 +588,14 @@ export default class customerAgree extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
-                                                    placeholder='Street'
+                                                    placeholder={screen.pStreet}
                                                     onChangeText={(text) => this.setState({ street: text })}
                                                     value={this.state.street}
                                                 />
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
-                                                    placeholder='Jada'
+                                                    placeholder={screen.pJada}
                                                     onChangeText={(text) => this.setState({ jada: text })}
                                                     value={this.state.jada}
                                                 />
@@ -606,14 +604,14 @@ export default class customerAgree extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
-                                                    placeholder='House'
+                                                    placeholder={screen.pHouse}
                                                     onChangeText={(text) => this.setState({ house: text })}
                                                     value={this.state.house}
                                                 />
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
-                                                    placeholder='Floor'
+                                                    placeholder={screen.pFloor}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ floor: text })}
                                                     value={this.state.floor}
@@ -623,14 +621,14 @@ export default class customerAgree extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
-                                                    placeholder='Apartment'
+                                                    placeholder={screen.pApartment}
                                                     onChangeText={(text) => this.setState({ apartment: text })}
                                                     value={this.state.apartment}
                                                 />
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
-                                                    placeholder='Extra Number'
+                                                    placeholder={screen.pExtra}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ extra_Number: text })}
                                                     value={this.state.extra_Number}
@@ -642,39 +640,38 @@ export default class customerAgree extends Component<Props>{
                             </View>
                             <View style={{ flex: 1, marginTop: 10 }}>
                                 {renderIf(deliveryOption == 'itemOne')(
-                                    <View style={{ marginLeft: 25, flex: 1 }}>
+                                    <View style={{ marginLeft: 25, flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
                                         <TouchableOpacity
                                             style={{ flexDirection: 'row', marginTop: 10 }}
                                             onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-
+                                            {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
                                             {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
                                                 ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                 : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                             }
-                                            <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Awqaf Complex</Text>
+                                            {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
                                             style={{ flexDirection: 'row', marginTop: 5 }}>
-
+                                            {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
                                             {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
                                                 ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                 : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                             }
-                                            <Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>Qurain Shop</Text>
+                                            {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
                                         </TouchableOpacity>
                                     </View>
                                 )}
 
                             </View>
-
                         </View>
 
                         <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                             <Button
                                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                                 onPress={() => this.submitForm()}>
-                                <Text style={{ fontSize: 18, color: 'white' }}>Order Now !</Text>
+                                <Text style={{ fontSize: 18, color: 'white' }}>{screen.orderNowButton}</Text>
                             </Button>
                         </View>
                         {renderIf(this.state.msg)(

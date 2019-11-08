@@ -30,17 +30,20 @@ const resetAction = StackActions.reset({
 
 export default class ReviewOrder extends Component<props>{
   static navigationOptions = ({ navigation }) => {
+    others = navigation.getParam('language').isRTL?
+        {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').reviewScreen.screenTitle}</Text>}:
+        {title: navigation.getParam('language').reviewScreen.screenTitle}
     return {
       headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
       headerTintColor: '#fff',
-      title: 'Order Review',
-      headerLeft: null
+      headerLeft: null,
+      ...others
     };
   };
   constructor(props) {
     super(props);
     this.state = {
-        tableHead: ['Order Details'],
+      language: props.navigation.getParam('language'),
       widthArr: [ WIDTH,WIDTH ],
       ordersAvailable: false,
       idLoading: true,
@@ -54,10 +57,13 @@ export default class ReviewOrder extends Component<props>{
     });
   }
   componentDidMount() {
+    this.setState({language: this.props.navigation.getParam('language')})
     this.getOrder().then(()=>this.setState({isLoading:false}));
   }
 
   async getOrder(){
+    var screen = this.state.language.reviewScreen;
+    var isRTL = this.state.language.isRTL;
     this.setState({isLoading:true});
     var url = 'https://sakba.net/mobileApi/get_order.php';
     var data = JSON.stringify({order_id : this.state.orderID});
@@ -72,14 +78,14 @@ export default class ReviewOrder extends Component<props>{
               var o = response.order_detail;
               console.log("ooooo", o);
               var rows = [
-                ['Order ID', o.o_id],
-                ['Item Name','Classic Dishdasha'],
-                ['Quantity', o.o_pieces],
-                ['Item Price', o.o_total + " KD"],
-                o.o_pickup=='pickup'?['Pick Up Charges', '3 KD']:null,
-                o.o_delivery=='home'?['Delivery Charges', '3 KD']:null,
-                o.o_delivery=='home'?['Expected Delivery Date ', this.state.deliveryDate]:null,
-                ['Total', o.o_subtotal + " KD"]
+                !isRTL?[screen.oID, o.o_id]:[o.o_id, screen.oID],
+                !isRTL?[screen.item_name,screen.classic]:[screen.classic, screen.item_name],
+                !isRTL?[screen.quantity, o.o_pieces]:[ o.o_pieces, screen.quantity],
+                !isRTL?[screen.item_price, o.o_total + " KD"]:[o.o_total + " KD", screen.item_price],
+                o.o_pickup=='pickup'?!isRTL?[screen.pickup, screen.pickupCharge]:[screen.pickupCharge, screen.pickup]:null,
+                o.o_delivery=='home'?!isRTL?[screen.delivery, screen.deliveryCharge]:[screen.deliveryCharge, screen.delivery]:null,
+                o.o_delivery=='home'?!isRTL?[screen.expected, this.state.deliveryDate]:[this.state.deliveryDate, screen.expected]:null,
+                !isRTL?[screen.total, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.total]
               ];
               this.setState({tableData: rows})
               this.setState({ordersAvailable: true});
@@ -89,12 +95,13 @@ export default class ReviewOrder extends Component<props>{
               {console.log(e);this.setState({ordersAvailable: false})})
     }
     else{
-      alert("Something went wrong. Please retry again later!");
+      alert(screen.error);
     }
   }
 
 
   render() {
+    var screen = this.state.language.reviewScreen;
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
 
@@ -114,7 +121,7 @@ export default class ReviewOrder extends Component<props>{
             <ScrollView style={[styles.dataWrapper, {height:height}]}>
               <View style={{alignItems: 'center', marginTop: 40}}>
                 <View style={[styles.header, {width: WIDTH*2, justifyContent: 'center'}]}>
-                  <Text style={[styles.textHeader, {fontSize: 20}]}>Order Details</Text>
+                  <Text style={[styles.textHeader, {fontSize: 20}]}>{screen.tableHeadTitle}</Text>
                 </View>
                   <Table borderStyle={{ borderColor: '#C1C0B9' }}>
 
@@ -134,10 +141,10 @@ export default class ReviewOrder extends Component<props>{
             </ScrollView>
           </SafeAreaView>:
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{fontSize: 20}}>Unable to load any orders</Text>
+            <Text style={{fontSize: 20}}>{screen.orderUnable}</Text>
             <TouchableOpacity onPress={()=>this.getOrder().then(()=>this.setState({isLoading: false}))}>
               <View style={{padding: 10,paddingLeft: 20,marginTop: 20, paddingRight: 20, alignItem:'center',justifyContent:'center', borderRadius: 10, backgroundColor: '#0451A5'}}>
-                <Text style={{color: 'white', fontSize: 20}}>RETRY</Text>
+                <Text style={{color: 'white', fontSize: 20}}>{screen.retryButton}</Text>
               </View>
             </TouchableOpacity>
           </View>

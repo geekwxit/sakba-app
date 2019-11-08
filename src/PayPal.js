@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Modal, WebView, ActivityIndicator, BackHandler } from "react-native";
+import { View, Text, TouchableOpacity, Modal, Dimensions, WebView, ActivityIndicator, BackHandler } from "react-native";
 import { Icon } from 'native-base';
 import { StackActions, NavigationActions } from 'react-navigation';
-
+const {width, height} =  Dimensions.get('window');
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -10,28 +10,33 @@ const resetAction = StackActions.reset({
 });
 
 export default class PayPal extends React.Component {
-    static navigationOptions = ({ navigation }) => {
+    static navigationOptions = ({ navigation }) =>{
+        others = navigation.getParam('language').isRTL?
+            {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').paypal.screenTitle}</Text>}:
+            {title: navigation.getParam('language').paypal.screenTitle}
         return {
-            title: 'Checkout',
             // headerLeft:(<TouchableOpacity onPress={()=>{navigation.dispatch(resetAction)}}>
             //     <Icon name="md-arrow-back" size={20} style={{paddingLeft:20 , color:'#fff'}}/>
             // </TouchableOpacity>),
             headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
-            headerTintColor: '#fff',
+            headerTintColor: '#fff',...others
         };
     };
 
-    state = {
-        showModal: false,
-        status: "Pending",
-        isLoading: false
-    };
+
     constructor(props) {
         super(props);
+        this.state = {
+            language: props.navigation.getParam('language'),
+            showModal: false,
+            status: "Pending",
+            isLoading: false
+        };
     }
 
 
     componentDidMount() {
+        this.setState({language: this.props.navigation.getParam('language')})
         this.setState({ isLoading: true })
         // this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
         //     this.props.navigation.dispatch(resetAction);

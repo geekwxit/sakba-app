@@ -7,21 +7,36 @@ import { View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacit
 import { Form, Item, Container, Content, Button,} from 'native-base';
 import Axios from 'axios';
 const { width, height } = Dimensions.get('window');
-
+import {strings} from '../../locales/Language'
+import {Language} from '../components/ChangeLanguage';
 
 export default class Login extends Component {
 
   static navigationOptions = {
     header: null,
   };
-  constructor(props) {
+
+  componentDidMount(){
+      this.setLanguage();
+  }
+  async setLanguage(){
+      const lang = await Language.get();
+      lang!=null?this.setState({language: lang}):null;
+      lang?strings.setLanguage(lang):null;
+      this.setState({page: strings.login});
+  }
+
+    constructor(props) {
     super(props);
     //modalValue = props.navigation.getParam('shouldShow', false);
     this.state = {
+      mobileNo: 995566332,
+      page : strings.login,
+      language: 'en',
       itemSelected: 'itemOne',
       flag: false, boardAddModalShow: false,
       itemSelected2: 'itemOne2',
-      noOfPieces: 0, mobileNo: null,
+      noOfPieces: 0,
       mobileNumberFromDataBase: [],
       customerName: '', measurementDate: '',
       status: '', count: 0, notFound: false
@@ -40,6 +55,18 @@ export default class Login extends Component {
       alert(err);
       console.log("Error fetching data-----------", err);
     }
+  }
+
+  async _onLanguageChange(language){
+      const prevLanguage = await Language.get()
+      if(language!=prevLanguage){
+         const status = await Language.change(language);
+         if(status) {
+             this.setState({language: language});
+             strings.setLanguage(language);
+            this.setState({page: strings.login});
+         }
+      }
   }
 
   minus() {
@@ -70,11 +97,11 @@ export default class Login extends Component {
   submitForm() {
     var reg = /^[0-9]+$/
     if (this.state.mobileNo == null) {
-      alert('Pls Enter the Mobile No.')
+      alert(this.state.page.validation.mobileError)
     } else if (this.state.mobileNo.length < 8) {
-      alert('Pls Enter the Mobile No. with minimum length of Eight Number')
+      alert(this.state.page.validation.lengthError)
     } else if (!reg.test(this.state.mobileNo)) {
-      alert('Please Enter Only Numbers')
+      alert(this.state.page.validation.others)
     } else {
       this.checkMobileNo();
     }
@@ -103,15 +130,17 @@ export default class Login extends Component {
         // );
         this.setState({ mobileNo: '' })
         this.props.navigation.navigate('welcome_customer', {
-          mobileNo: mobile,
-          customerName: mobileNumberFromDataBase[i].n_name,
-          measurementDate: mobileNumberFromDataBase[i].n_last_mesurement_date,
-          emailID: mobileNumberFromDataBase[i].n_email
+            measurement: mobileNumberFromDataBase[i].n_metere,
+            language: strings,
+            mobileNo: mobile,
+            customerName: mobileNumberFromDataBase[i].n_name,
+            measurementDate: mobileNumberFromDataBase[i].n_last_mesurement_date,
+            emailID: mobileNumberFromDataBase[i].n_email
         });
         break;
       } else {
         this.setState({ mobileNo: '' })
-        this.props.navigation.navigate('visit_page');
+        this.props.navigation.navigate('visit_page', {language: strings});
       }
     }
     // console.log(mobileNumberFromDataBase);
@@ -135,17 +164,15 @@ export default class Login extends Component {
     // this.props.navigation.navigate('welcome_customer');
   }
   requestExecutiveVisit() {
-    this.props.navigation.navigate('executive_visitpage');
+    this.props.navigation.navigate('executive_visitpage', {language: strings});
   }
   visitToShop() {
-    this.props.navigation.navigate('visit_to_shoppage');
+    this.props.navigation.navigate('visit_to_shoppage', {language: strings});
   }
   render() {
-
-    Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.allowFontScaling = false;
-
-
+      screen = this.state.page;
+      Text.defaultProps = Text.defaultProps || {};
+      Text.defaultProps.allowFontScaling = false;
     return (
       <Container>
         <Content keyboardShouldPersistTaps={'always'} >
@@ -156,53 +183,56 @@ Text.defaultProps.allowFontScaling = false;
             </View>
             <View style={{ marginTop: 50, justifyContent: 'center', alignItems: 'center', marginLeft: 40, marginRight: 40 }}>
               <View>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Enter your mobile number</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.enterMobile}</Text>
               </View>
               <Form>
                 <Item style={{ marginLeft: 0, marginTop: 25, height: 40, width: '100%', backgroundColor: '#d1e2ff' }}>
-                  <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />
+                  {!strings.isRTL?
+                  <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />:null}
                   <TextInput
-                    style={{ width: width - 110, height: 50, fontSize: 15 }}
+                    style={{ textAlign: strings.isRTL?'right':'left',width: width - 110, height: 50, fontSize: 15 }}
                     keyboardType='numeric'
                     value={this.state.mobileNo}
                     onChangeText={(text) => this.setState({ mobileNo: text })}
                     maxLength={9}
                   />
+                  {strings.isRTL?
+                      <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />:null}
                 </Item>
               </Form>
               <View style={{ marginTop: 25 }}>
                 <Button
                   style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                   onPress={() => this.submitForm()}>
-                  <Text style={{ fontSize: 18, color: 'white' }}>Submit</Text>
+                  <Text style={{ fontSize: 18, color: 'white' }}>{screen.submitButton}</Text>
                 </Button>
               </View>
             </View>
 
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>OR</Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.or}</Text>
               </View>
               <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
 
                 <View>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Please Select Your Choice </Text>
+                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.choiceSelect}</Text>
                 </View>
                 <View style={{ marginTop: 25, flexDirection: 'column' }}>
                   <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                     onPress={() => this.requestExecutiveVisit()}>
-                    <Text style={{ fontSize: 18, color: 'white' }}>Request Executive Visit </Text>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{screen.reqExecVisit}</Text>
                   </Button>
                   <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center', marginTop: 20 }}
                     onPress={() => this.visitToShop()}>
-                    <Text style={{ fontSize: 18, color: 'white' }}>Visit to Shop</Text>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{screen.visitToShopPage}</Text>
                   </Button>
                   <TouchableOpacity style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }} onPress={() => {
                     Linking.canOpenURL('https://wa.me/96566333116')
                       .then(supported => {
                         if (!supported) {
                           alert(
-                            'Please install whats app to send direct message'
+                            screen.installWhatsApp
                           );
                         } else {
                           return Linking.openURL('https://wa.me/96566333116');
@@ -220,6 +250,15 @@ Text.defaultProps.allowFontScaling = false;
                 </View>
               </View>
             </View>
+              <View style={{alignSelf: 'center',flexDirection: 'row'}}>
+                <Text style={{fontSize: 15}}>Change lanugage to : </Text>
+                <TouchableOpacity onPress={()=>this._onLanguageChange('en')}>
+                  <Text style={{color: this.state.language=='en'?'#0451A5':'#a2a2a2',fontSize: 15}}>English  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>this._onLanguageChange('ar')}>
+                  <Text style={{color: this.state.language=='ar'?'#0451A5':'#a2a2a2',fontSize: 15}}>Arabic</Text>
+                </TouchableOpacity>
+              </View>
             </ScrollView>
           </SafeAreaView>
         </Content>

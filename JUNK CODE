@@ -463,3 +463,32 @@
 ------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+{renderIf(this.state.page == 'OrderConfirm')(
+
+              <View>
+                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
+                  <View>
+                    <Text style={{ fontSize: 18 }}>{screen.thankyou} {customerName}</Text>
+                    <Text style={{ fontSize: 18 }}> {screen.thankyou2} </Text>
+                    <Text style={{ fontSize: 18 }}> {screen.thankyou3} {measurementDate} </Text>
+                  </View>
+                </View>
+                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
+                  <Text style={{ fontSize: 18 }}>{screen.orderNumber}</Text>
+                  <Text style={{ fontSize: 18 }}>{this.state.orderId}</Text>
+                </View>
+                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
+                  <Text style={{ fontSize: 18 }}>{screen.useremail}</Text>
+                  <Text style={{ fontSize: 18 }}>{this.state.emailId}</Text>
+                </View>
+                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
+                  <View>
+                    <Text style={{ fontSize: 20 }}>Order Details </Text>
+                  </View>
+                </View>
+              </View>
+
+            )}

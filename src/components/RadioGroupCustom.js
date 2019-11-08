@@ -31,7 +31,7 @@ export default class RadioGroupCustom extends Component{
         var data = this.props.data;
         var length = data?data.length:0;
         var fontSizeLabel = 15;
-        var rows = () => {
+        var rows = (isRTL) => {
             // console.log("PRINTING LIST STARTED ");
             var stack = [];
             isOdd = length%2==0;
@@ -44,9 +44,9 @@ export default class RadioGroupCustom extends Component{
             <View key={row} style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
                 <TouchableWithoutFeedback onPress={()=>this.select(j)}>
                     <View style={{flexDirection: 'row', flex:1 ,alignItems: 'center'}}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        {!isRTL?<View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <RadioButton name={this.props.selected===j?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
-                        </View>
+                        </View>:null}
                         {isImage?
                             <View>
                                 <Image
@@ -56,14 +56,18 @@ export default class RadioGroupCustom extends Component{
                                 <Text>{data[i].name + '(' +data[i].price + ' KD)'}</Text>
                             </View>
                         }
+                        {isRTL?<View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <RadioButton name={this.props.selected===j?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
+                        </View>:null}
                     </View>
                 </TouchableWithoutFeedback>
 
                 <TouchableWithoutFeedback onPress={()=>this.select(j+1)}>
                     <View style={{flexDirection: 'row', flex:1 ,alignItems: 'center'}}>
+                        {!isRTL?
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <RadioButton name={this.props.selected===j+1?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
-                        </View>
+                        </View>:null}
                         {isImage?
                             <View>
                                 <Image
@@ -73,6 +77,10 @@ export default class RadioGroupCustom extends Component{
                                 <Text>{data[i+1].name + '(' +data[i+1].price + ' KD)'}</Text>
                             </View>
                         }
+                        {isRTL?
+                            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                <RadioButton name={this.props.selected===j+1?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
+                            </View>:null}
                     </View>
                 </TouchableWithoutFeedback>
 
@@ -84,12 +92,13 @@ export default class RadioGroupCustom extends Component{
                     <TouchableWithoutFeedback onPress={() => this.select(j)}>
                         <View
                             style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                            {!isRTL?
                             <View
                                 style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                                 <RadioButton
                                     name={this.props.selected === j ? "radiobox-marked" : "checkbox-blank-circle-outline"}
                                     size={25} color={'#0451A5'}/>
-                            </View>
+                            </View>:null}
                             {isImage?
                                 <View>
                                     <Image
@@ -99,6 +108,13 @@ export default class RadioGroupCustom extends Component{
                                     <Text>{data[i].name + '(' +data[i].price + ' KD)'}</Text>
                                 </View>
                             }
+                            {isRTL?
+                                <View
+                                    style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                    <RadioButton
+                                        name={this.props.selected === j ? "radiobox-marked" : "checkbox-blank-circle-outline"}
+                                        size={25} color={'#0451A5'}/>
+                                </View>:null}
                         </View>
                     </TouchableWithoutFeedback>
                 </View>)
@@ -111,7 +127,7 @@ export default class RadioGroupCustom extends Component{
         return(
             <View>
                 {
-                    rows()
+                    rows(this.props.isRTL)
                 }
             </View>
         )

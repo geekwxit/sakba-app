@@ -1,45 +1,5 @@
 /** Define string constants for the app here */
 import LocalizedStrings from 'react-native-localization';
-import {Text} from "react-native";
-//Login screen
-export const loginStrings = {
-    allNumberLink   : "https://sakba.net/mobileApi/all-number.php",
-    en:{
-        validation: {
-            lengthError : 'Pls Enter the Mobile No. with minimum length of Eight Number',
-            mobileError : 'Pls Enter the Mobile No.',
-            others      : 'Please Enter Only Numbers'
-        },
-        noWhatsApp      : 'Please install whats app to send direct message',
-    },
-    ar: {
-
-    }
-}
-
-//Order Confirm screen
-export const oConfirm = {
-    screenTitle     : "Checkout",
-    sendEmailLink   : "https://sakba.net/mobileApi/request_paymentemail.php",
-    reviewError     : "Please enter an email and send to continue!"
-}
-
-/**Fabric Screen**/
-
-export const fabricStrings = {
-    getAllFabrics: 'https://sakba.net/mobileApi/get_fabrics.php',
-}
-
-/**Delivery Screen*/
-export const deliveryStrings = {
-    order_now  : 'https://sakba.net/mobileApi/order_test.php',
-}
-
-export const visitToShopPage = {
-    awqaf_location_url: 'https://goo.gl/maps/M4YDSRUrgARVrmoQ9',
-    view_on_map       : 'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9',
-}
-
 export const strings = new LocalizedStrings({
     en: {
         isRTL: false,
@@ -358,43 +318,3 @@ export const strings = new LocalizedStrings({
         }
     },
 })
-
-
-
-//https://sakba.net/mobileApi/order.php'
-// ar: {
-//     isRTL: false,
-//         login: {
-//         enterMobile: "Enter youasdfasdfar mobile number",
-//             validation: {
-//             lengthError: "Pls Enterfasdfasdf the Mobile No. with minimum length of Eight Number",
-//                 mobileError: "Pls Enter the Mobile No.",
-//                 others: "Please Enter Only Numbers"
-//         },
-//         noWhatsApp: "Please install whats app to send direct message",
-//             visitToShopPage: "Visit to Shop",
-//             reqExecVisit: "Request Executive Visit",
-//             choiceSelect: "Please Select Your Choice",
-//             submitButton: "Submit",
-//             or: "OR",
-//             installWhatsApp: "Please install whats app to send direct message",
-//     },
-//     oConfirm: {
-//         alertOnEmailSent: "Our team will contact you for the payment link.",
-//             regularError: "Something Went Wrong!",
-//             emailError: "Invalid email address!",
-//             screenTitle: "Checkout",
-//             reviewError: "Please enter an email and send to continue!"
-//     },
-//     fabricStrings: {
-//         getAllFabrics: "https://sakba.net/mobileApi/get_fabrics.php"
-//     },
-//     deliveryStrings: {
-//         order_now: "https://sakba.net/mobileApi/order_test.php"
-//     },
-//     visitToShopPage: {
-//         first: "arabbrabr",
-//             second: "Aararawqaf Complex",
-//             button: "arararView On Map"
-//     }
-// },

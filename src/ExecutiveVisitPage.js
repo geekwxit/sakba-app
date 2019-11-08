@@ -9,35 +9,40 @@ const { width, height } = Dimensions.get('window');
 export default class ExecutiveVisitPage extends Component<Props>{
   static navigationOptions = ({ navigation }) => {
     return {
-      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
+      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0},
       headerTintColor: '#fff',
     };
   };
   constructor(props) {
     super(props)
     this.state = {
+      language: this.props.navigation.getParam('language'),
+      page: this.props.navigation.getParam('language').requestExecutiveVisit,
       name: '', number: '',
       area: '', block: '', street: '', jada: '', house: '', floor: '', apartment: '', extra_Number: ''
     };
   }
-  request() {
 
+  componentDidMount(){
+    lang = this.props.navigation.getParam('language');
+    this.setState({language: lang, page: lang.requestExecutiveVisit});
+  }
+
+  request() {
     Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
-
     const { name , number , area , block, street, jada ,house ,floor ,apartment ,extra_Number } = this.state
-
     // var time = this.state.selectedTime;
     // var date = this.state.selectedDate;
 
     var address = area+block+street+jada+house+floor+apartment+extra_Number
 
     if (name == '') {
-      alert('Please Enter The User Name')
+      alert(this.state.page.enterUserName)
     } else if (number == '') {
-      alert('Please Enter the Number')
+      alert(this.state.page.enterNum)
     } else if (address == '') {
-      alert('Please enter atleast one address field')
+      alert(this.state.page.addressField)
     }
     // else if (time=='Select Time'){
     //   alert('Pls Select the Date')
@@ -56,7 +61,7 @@ Text.defaultProps.allowFontScaling = false;
         .then((responseData) => {
           console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
           if (responseData.mssg == 'Data Added') {
-            alert('We Will Send Executive soon')
+            alert(this.state.page.sendExec)
             this.props.navigation.navigate('login');
           }
         })
@@ -68,6 +73,7 @@ Text.defaultProps.allowFontScaling = false;
   }
 
   render() {
+    var screen = this.state.page;
     return (
       <Container>
         <Content>
@@ -77,12 +83,12 @@ Text.defaultProps.allowFontScaling = false;
                 <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Details for Executive Visit </Text>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.title}</Text>
               </View>
               <Form style={{ marginLeft: 40, marginRight: 40 }}>
                 <Item regular style={{ marginTop: 20 }}>
                   <Input
-                    placeholder='Name'
+                    placeholder={screen.pName}
                     placeholderTextColor='#aaa'
                     style={{ height: 40 }}
                     value={this.state.name}
@@ -91,7 +97,7 @@ Text.defaultProps.allowFontScaling = false;
                 </Item>
                 <Item regular style={{ marginTop: 15 }}>
                   <Input
-                    placeholder='Number'
+                    placeholder={screen.pNumber}
                     keyboardType='numeric'
                     maxLength={10}
                     placeholderTextColor='#aaa'
@@ -100,18 +106,18 @@ Text.defaultProps.allowFontScaling = false;
                     onChangeText={(value) => { this.setState({ number: value }) }}
                   />
                 </Item>
-                <Text style={{ fontSize: 18, marginTop: 15 }}>Address :</Text>
+                <Text style={{ fontSize: 18, marginTop: 15 }}>{screen.addressLabel}</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                      placeholder='Area'
+                      placeholder={screen.pArea}
                       onChangeText={(text) => this.setState({ area: text })}
                       value={this.state.area}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                      placeholder='Block'
+                      placeholder={screen.pBlock}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ block: text })}
                       value={this.state.block}
@@ -121,14 +127,14 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                      placeholder='Street'
+                      placeholder={screen.pStreet}
                       onChangeText={(text) => this.setState({ street: text })}
                       value={this.state.street}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                      placeholder='Jada'
+                      placeholder={screen.pJada}
                       onChangeText={(text) => this.setState({ jada: text })}
                       value={this.state.jada}
                     />
@@ -137,7 +143,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                      placeholder='House'
+                      placeholder={screen.pHouse}
 
                       onChangeText={(text) => this.setState({ house: text })}
                       value={this.state.house}
@@ -145,7 +151,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                      placeholder='Floor'
+                      placeholder={screen.pFloor}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ floor: text })}
                       value={this.state.floor}
@@ -155,14 +161,14 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                      placeholder='Apartment'
+                      placeholder={screen.pApartment}
                       onChangeText={(text) => this.setState({ apartment: text })}
                       value={this.state.apartment}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                      placeholder='Extra Number'
+                      placeholder={screen.pExtra}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ extra_Number: text })}
                       value={this.state.extra_Number}
@@ -193,7 +199,7 @@ Text.defaultProps.allowFontScaling = false;
               </Form>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                 <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={() => this.request()}>
-                  <Text style={{ fontSize: 20, color: 'white' }}>Request</Text>
+                  <Text style={{ fontSize: 20, color: 'white' }}>{screen.requestButton}</Text>
                 </Button>
               </View>
             </View>

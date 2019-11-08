@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, Linking, SafeAreaView } from 'react-native';
+import { View, Text, Image, Dimensions, Linking, SafeAreaView, ScrollView } from 'react-native';
 import { Radio, Container, Contain } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
-
+// import RadioForm from 'react-native-simple-radio-button';
+import RadioButton from './components/RadioButton'
+import RadioForm from './components/RadioForm'
 
 const { width, height } = Dimensions.get('window');
-
-const radio_props = [
-  { label: 'I agree', value: 0 },
-  { label: 'I need new mesurments', value: 1 }
-];
 export default class WelcomeCustomer extends Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -20,6 +16,7 @@ export default class WelcomeCustomer extends Component {
     };
   };
   state = {
+      language: this.props.navigation.getParam('language'),
     email : this.props.navigation.getParam('emailID'),
   }
 
@@ -28,6 +25,8 @@ export default class WelcomeCustomer extends Component {
     email = this.props.navigation.state.params.emailID;
     if (value == 0) {
       this.props.navigation.navigate('customer_agree', {
+          measurement: this.props.navigation.getParam('measurement'),
+        language: this.state.language,
         mobileNo: mobileNo,
         customerName: customerName,
         measurementDate: measurementDate,
@@ -35,16 +34,13 @@ export default class WelcomeCustomer extends Component {
       });
     }
     else {
-      this.props.navigation.navigate('visit_page');
+      this.props.navigation.navigate('visit_page', {language: this.state.language});
     }
   }
 
 
-
-
-
   render() {
-
+    var screen = this.state.language.welcomeCustomer;
     Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 
@@ -58,17 +54,20 @@ Text.defaultProps.allowFontScaling = false;
     return (
 
       <SafeAreaView>
+          <ScrollView>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
           <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
         </View>
+
+
         <View style={{ flexDirection: 'column', marginHorizontal: 40, paddingHorizontal: 0 }}>
           <View style={{ marginTop: 50, flexDirection: 'column', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 20, }}>Welcome <Text style={{ fontWeight: '500' }}>{customerName}</Text>,</Text>
-            <Text style={{ fontSize: 20, marginTop: 10 }}>Your last mesurment in {measurementDate}</Text>
+            <Text style={{ fontSize: 20, }}>{screen.wText1}<Text style={{ fontWeight: '500' }}>{customerName}</Text></Text>
+            <Text style={{ fontSize: 20, marginTop: 10 }}>{screen.wTextMeasure}{measurementDate}</Text>
 
           </View>
           <View style={{ marginTop: 20, marginTop: 30 }}>
-            <Text style={{ fontSize: 20, textAlign: 'left', }}>Do you accept this mesurment</Text>
+            <Text style={{ fontSize: 20, textAlign: 'left', }}>{screen.acceptText}</Text>
 
             {/* <TouchableOpacity 
             onPress={()=>this.radio1(customerName,measurementDate)}
@@ -92,27 +91,40 @@ Text.defaultProps.allowFontScaling = false;
  */}
 
             <View style={{ marginTop: 15 }}>
+              {/*<RadioForm*/}
+              {/*    isRTL={this.state.language.isRTL}*/}
+              {/*  style={{alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}*/}
+              {/*  buttonSize={10}*/}
+              {/*  buttonColor={'#0451A5'}*/}
+              {/*  buttonInnerColor={'#0451A5'}*/}
+              {/*  buttonOuterColor={'#0451A5'}*/}
+              {/*  buttonWrapStyle={{ marginTop: 10 }}*/}
+              {/*  selectedButtonColor={'#0451A5'}*/}
+              {/*  labelStyle={{ fontSize: 20, marginTop: 0, }}*/}
+              {/*  buttonOuterSize={20}*/}
+              {/*  buttonStyle={{ marginTop: 20 }}*/}
+              {/*  radio_props={[*/}
+              {/*      { label: screen.agree, value: 0 },*/}
+              {/*      { label: screen.needNew, value: 1 }*/}
+              {/*  ]}*/}
+              {/*  initial={0}*/}
+              {/*  onPress={(value) => this.moveFunction(value, customerName, measurementDate , mobileNo)}*/}
+              {/*/>*/}
+                <RadioForm
+                    isRTL={this.state.language.isRTL}
+                    radio_props={[
+                        { label: screen.agree, value: 0 },
+                        { label: screen.needNew, value: 1 }
+                    ]}
+                    buttonColor='#0451A5'
+                    radioSize={22}
+                    onPress={(value) => this.moveFunction(value, customerName, measurementDate , mobileNo)}
+                />
 
-              <RadioForm
-                buttonSize={10}
-                buttonColor={'#0451A5'}
-                buttonInnerColor={'#0451A5'}
-                buttonOuterColor={'#0451A5'}
-                buttonWrapStyle={{ marginTop: 10 }}
-                selectedButtonColor={'#0451A5'}
-                labelStyle={{ fontSize: 20, marginTop: 0, }}
-                buttonOuterSize={20}
-                buttonStyle={{ marginTop: 20 }}
-
-                radio_props={radio_props}
-                initial={0}
-                onPress={(value) => this.moveFunction(value, customerName, measurementDate , mobileNo)}
-
-              />
             </View>
-
           </View>
         </View>
+          </ScrollView>
       </SafeAreaView>
     );
   }

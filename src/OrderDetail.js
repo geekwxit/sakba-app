@@ -22,21 +22,24 @@ const WIDTH = width/2-20;
 
 
 export default class OrderDetail extends Component<props>{
-
   cart = [];
   static navigationOptions = ({ navigation }) => {
+    others = navigation.getParam('language').isRTL?
+        {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').orderDetail.screenTitle}</Text>}:
+        {title: navigation.getParam('language').orderDetail.screenTitle}
     return {
       headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
       headerTintColor: '#fff',
+      ...others
     };
   };
   constructor(props) {
     super(props)
-
     var id = this.props.navigation.state.params.id;
     var token = this.props.navigation.state.params.token;
     this.state = {
-      tableHead: ['Product / Service', 'Total'],
+      measurement: props.navigation.getParam('measurement'),
+      language: props.navigation.getParam('language'),
       widthArr: [ WIDTH,WIDTH ],
       page: 'OrderDetail', emailId: '',
       id: id, isLoading: false, cart: this.props.navigation.getParam('cart'),
@@ -46,6 +49,7 @@ export default class OrderDetail extends Component<props>{
 
   }
   componentDidMount() {
+    this.setState({language: this.props.navigation.getParam('language')});
     var mobileNo = this.props.navigation.state.params.mobileNo;
     console.warn('mobileNo', mobileNo);
     this.getEmailAddress(mobileNo);this.getOrderID(mobileNo);
@@ -95,6 +99,7 @@ export default class OrderDetail extends Component<props>{
 
     this.sendApiRequest(data).then(()=>{
       this.props.navigation.navigate('order_confirm', {
+        language: this.state.language,
           token: token,
           customerName: fullname,
           emailID: email,
@@ -116,6 +121,7 @@ export default class OrderDetail extends Component<props>{
   }
 
   async sendApiRequest(data) {
+    var screen = this.state.language.orderDetail;
     //this.setState({ isLoading: true })
     //try {
     //Assign the promise unresolved first then get the data using the json method.
@@ -140,8 +146,8 @@ export default class OrderDetail extends Component<props>{
         })
         .catch(e=>{
           this.setState({ isLoading: false });
-          Alert.alert('Alert', "Something wrong in your network.", [
-            {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
+          Alert.alert(screen.alertTitle, screen.error, [
+            {text: screen.alertButton, onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
           ])
         });
 
@@ -157,9 +163,8 @@ export default class OrderDetail extends Component<props>{
   submitForm(total, noOfPieces) {
 
     // Linking.openURL(this.url);
-
-
-    this.props.navigation.navigate('paypal', { url: this.url })
+    var url = this.url + "&lang=" + this.state.language.getLanguage();
+    this.props.navigation.navigate('paypal', { url: url, language: this.state.language})
 
     //  PayPal.pay({
     //       price: total+'',
@@ -187,10 +192,6 @@ export default class OrderDetail extends Component<props>{
   //   }
   // }
 
-  sortByBrand(cart){
-    cart.map
-  }
-
   filterCart(cart, brands){
     let tempCart = [];
     cart.forEach(item=>{
@@ -203,8 +204,10 @@ export default class OrderDetail extends Component<props>{
   render() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
-
+    var isRTL = this.state.language.isRTL;
+    var screen = this.state.language.orderDetail;
     const state = this.state;
+    const m = this.state.measurement;
     const { navigation } = this.props;
     const noOfPieces = navigation.getParam('noOfPieces', 'NO-ID');
     const fabricOptionValue = navigation.getParam('fabricOptionValue', 'NO-ID');
@@ -223,13 +226,13 @@ export default class OrderDetail extends Component<props>{
     const fabrics = [];
 
     userCart?userCart.map(item=>{
-      total += item.quantity*item.price;
-      fabrics.push([`${item.name} * `+item.quantity, `${item.quantity*item.price} KD`]);
+      total += item.quantity*item.price*m;
+      fabrics.push([!isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`), isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`)]);
     }):null;
 
-    tableData.push([`Classic Dishdasha * ${noOfPieces}`, `${noOfPieces*12} KD`]);
-    fabricOptionValue?tableData.push([`Pickup`, `${fabricOptionValue} KD`]):null;
-    deliveryOptionValue?tableData.push([`Delivery`, `${deliveryOptionValue} KD`]):null;
+    tableData.push(!isRTL?([`${screen.tableDishdasha} ${noOfPieces}`, `${noOfPieces*12} KD`]):([`${noOfPieces*12} KD`, `${screen.tableDishdasha} ${noOfPieces}`]));
+    fabricOptionValue?tableData.push(!isRTL?([`${screen.tablePickup}`, `${fabricOptionValue} KD`]):([`${fabricOptionValue} KD`, `${screen.tablePickup}`])):null;
+    deliveryOptionValue?tableData.push(!isRTL?([`${screen.tableDelivery}`, `${deliveryOptionValue} KD`]):([`${deliveryOptionValue} KD`, `${screen.tableDelivery}`])):null;
     /*
     if (fabricOptionValue == 0 && deliveryOptionValue == 0) {
       for (let i = 0; i < 2; i += 1) {
@@ -352,40 +355,14 @@ export default class OrderDetail extends Component<props>{
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 50 }}>
                 <View>
-                  <Text style={{ fontSize: 22 }}>Order Details </Text>
+                  <Text style={{ fontSize: 22 }}>{screen.title}</Text>
                 </View>
               </View>
-            )}
-            {renderIf(this.state.page == 'OrderConfirm')(
-
-              <View>
-                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 40 }}>
-                  <View>
-                    <Text style={{ fontSize: 18 }}>Thank you for your order {customerName}</Text>
-                    <Text style={{ fontSize: 18 }}> you confirmed the measurement </Text>
-                    <Text style={{ fontSize: 18 }}> of {measurementDate} </Text>
-                  </View>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-                  <Text style={{ fontSize: 18 }}>Your order number :</Text>
-                  <Text style={{ fontSize: 18 }}>{this.state.orderId}</Text>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-                  <Text style={{ fontSize: 18 }}>Your E-mail ID :</Text>
-                  <Text style={{ fontSize: 18 }}>{this.state.emailId}</Text>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-                  <View>
-                    <Text style={{ fontSize: 20 }}>Order Details </Text>
-                  </View>
-                </View>
-              </View>
-
             )}
             <View style={styles.container}>
               <View style={{width:width-40,}}>
                 <Table borderStyle={{ borderColor: '#C1C0B9' }}>
-                  <Row data={state.tableHead} widthArr={state.widthArr} style={styles.header} textStyle={styles.textHeader} />
+                  <Row data={[isRTL?`${screen.tableTotal}`:`${screen.tableHeadTitle}`, !isRTL?`${screen.tableTotal}`:`${screen.tableHeadTitle}`]} widthArr={state.widthArr} style={styles.header} textStyle={styles.textHeader} />
                 </Table>
                 <ScrollView style={styles.dataWrapper}>
                   <Table borderStyle={{ borderColor: '#C1C0B9' }}>
@@ -400,9 +377,13 @@ export default class OrderDetail extends Component<props>{
                         />
                       ))
                     }
+                  </Table>
+                  {fabrics?fabrics.length?<Table borderStyle={{ borderColor: '#C1C0B9' }}>
                     <TableWrapper style={{flexDirection: 'row'}}>
-                      <Col data={['FABRICS FROM OUR SHOP']} style={{backgroundColor: '#0451A5',height:userCart?null:0}} textStyle={{padding:5,color:'white', alignSelf: 'center'}} />
+                      <Col data={[`${screen.fabricsText}`]} style={{backgroundColor: '#0451A5',height:userCart?null:0}} textStyle={{padding:5,color:'white', alignSelf: 'center'}} />
                     </TableWrapper>
+                  </Table>:null:null}
+                  <Table borderStyle={{ borderColor: '#C1C0B9' }}>
                     {
                       fabrics.map((item,index)=>(
                           <Row
@@ -415,7 +396,7 @@ export default class OrderDetail extends Component<props>{
                       ))
                     }
                     <Row
-                        data={['Total', total+' KD']}
+                        data={!isRTL?([`${screen.tableTotal}`, total+' KD']):([total+' KD', `${screen.tableTotal}`])}
                         widthArr={state.widthArr}
                         style={[styles.row, { backgroundColor: '#F7F6E7' }]}
                         textStyle={styles.text}
@@ -426,20 +407,20 @@ export default class OrderDetail extends Component<props>{
             </View>
 
             <View>
-              <Text style={{ fontSize: 20, textAlign: 'center' }}> Expected Delivery on {delivery_date}</Text>
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
             </View>
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 80, justifyContent: 'center', }}
                   onPress={() => this.submitForm(total, noOfPieces)}>
-                  <Text style={{ fontSize: 18, color: 'white' }}>Paypal (Visa/Mastercard)</Text>
+                  <Text style={{ fontSize: 18, color: 'white' }}>{screen.paypal}</Text>
                 </Button>
               </View>
             )}
             <View style={{marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button style={{ borderRadius: 15,  minWidth: width - 80, minHeight: 40, borderWidth: 2, backgroundColor: '#0451A5', paddingRight: 5, paddingLeft: 5, justifyContent: 'center' }}
                       onPress={() => { this.sendDetails(total, delivery_date)}}>
-                <Text style={{ fontSize: 18, color: 'white' }}>Request K-Net Link</Text>
+                <Text style={{ fontSize: 18, color: 'white' }}>{screen.knet}</Text>
               </Button>
             </View>
 

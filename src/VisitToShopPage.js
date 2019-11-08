@@ -21,6 +21,7 @@ export default class VisitToShopPage extends Component<Props> {
     render() {
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
+        const screen = this.props.navigation.getParam('language').visitToShopPage;
         return (
             <SafeAreaView style={{flex: 1, marginLeft: 40, marginRight: 40, alignItems: 'center'}}>
                 <ScrollView>
@@ -30,7 +31,7 @@ export default class VisitToShopPage extends Component<Props> {
                         </View>
                         <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
                             <View style={{flexDirection: 'row'}}>
-                                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>Aswaq Al Qurain</Text>
+                                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>{screen.first}</Text>
                             </View>
                             {/* <View style={{ flexDirection: 'row' }}>
             <Text style={{ fontSize: 18, fontWeight: 'normal' }}>سكبه </Text><Text style={{ fontSize: 18, fontWeight: 'normal' }}>{' '} - SAKBA</Text>
@@ -41,14 +42,14 @@ export default class VisitToShopPage extends Component<Props> {
           <Text style={{ fontSize: 18, fontWeight: 'normal' }}>6633 3116</Text> */}
                             <View style={{marginTop: 30}}>
                                 <Button onPress={() => Linking.openURL(url1)} style={{backgroundColor: '#0451A5', justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
-                                    <Text style={{fontSize: 20, color: 'white'}}> View On Map </Text>
+                                    <Text style={{fontSize: 20, color: 'white'}}>{screen.button}</Text>
                                 </Button>
                             </View>
                         </View>
 
                         <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: 40}}>
                             <View style={{flexDirection: 'row'}}>
-                                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>Awqaf Complex</Text>
+                                <Text style={{fontSize: 20, fontWeight: 'bold', marginBottom: 10}}>{screen.second}</Text>
                             </View>
                             {/* <View style={{ flexDirection: 'row' }}>
             <Text style={{ fontSize: 18, fontWeight: 'normal' }}>سكبه </Text><Text style={{ fontSize: 18, fontWeight: 'normal' }}>{' '} - SAKBA</Text>
@@ -59,7 +60,7 @@ export default class VisitToShopPage extends Component<Props> {
           <Text style={{ fontSize: 18, fontWeight: 'normal' }}>+965 6633 3116</Text> */}
                             <View style={{marginTop: 30}}>
                                 <Button onPress={() => Linking.openURL(url2)} style={{backgroundColor: '#0451A5', justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 20}}>
-                                    <Text style={{fontSize: 20, color: 'white'}}> View On Map </Text>
+                                    <Text style={{fontSize: 20, color: 'white'}}>{screen.button}</Text>
                                 </Button>
                             </View>
                         </View>
