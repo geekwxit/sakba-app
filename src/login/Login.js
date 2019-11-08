@@ -17,16 +17,16 @@ export default class Login extends Component {
   };
 
   componentDidMount(){
-      this.setLanguage();
+    this.setLanguage(strings.getLanguage());
   }
-  async setLanguage(){
-      const lang = await Language.get();
-      lang!=null?this.setState({language: lang}):null;
-      lang?strings.setLanguage(lang):null;
-      this.setState({page: strings.login});
+  async setLanguage(deviceDefault){
+    const lang = await Language.get();
+    lang!=null?this.setState({language: lang}):this.setState({language:deviceDefault});
+    lang?strings.setLanguage(lang):null;
+    this.setState({page: strings.login});
   }
 
-    constructor(props) {
+  constructor(props) {
     super(props);
     //modalValue = props.navigation.getParam('shouldShow', false);
     this.state = {
