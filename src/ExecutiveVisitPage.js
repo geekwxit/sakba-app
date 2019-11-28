@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, ScrollView } from 'react-native';
+import {View, Text, Image, Dimensions, ScrollView, Alert} from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Icon, Textarea } from 'native-base';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import axios from 'axios';
@@ -38,11 +38,14 @@ Text.defaultProps.allowFontScaling = false;
     var address = area+block+street+jada+house+floor+apartment+extra_Number
 
     if (name == '') {
-      alert(this.state.page.enterUserName)
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterUserName, [{text: this.state.language.commonFields.okButton}]);
+      // alert(this.state.page.enterUserName)
     } else if (number == '') {
-      alert(this.state.page.enterNum)
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterNum, [{text: this.state.language.commonFields.okButton}]);
+      // alert(this.state.page.enterNum)
     } else if (address == '') {
-      alert(this.state.page.addressField)
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.addressField, [{text: this.state.language.commonFields.okButton}]);
+      // alert(this.state.page.addressField)
     }
     // else if (time=='Select Time'){
     //   alert('Pls Select the Date')
@@ -61,7 +64,8 @@ Text.defaultProps.allowFontScaling = false;
         .then((responseData) => {
           console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
           if (responseData.mssg == 'Data Added') {
-            alert(this.state.page.sendExec)
+            Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.sendExec, [{text: this.state.language.commonFields.okButton}]);
+            // alert(this.state.page.sendExec)
             this.props.navigation.navigate('login');
           }
         })
@@ -77,7 +81,7 @@ Text.defaultProps.allowFontScaling = false;
     return (
       <Container>
         <Content>
-          <ScrollView>
+          <ScrollView style={{paddingBottom:30}}>
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
                 <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />

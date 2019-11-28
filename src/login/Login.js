@@ -3,7 +3,7 @@
  @Date  19/04/2019
 */
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking,ScrollView } from 'react-native';
+import {Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking,ScrollView } from 'react-native';
 import { Form, Item, Container, Content, Button,} from 'native-base';
 import Axios from 'axios';
 const { width, height } = Dimensions.get('window');
@@ -17,12 +17,13 @@ export default class Login extends Component {
   };
 
   componentDidMount(){
-    this.setLanguage(strings.getLanguage());
+    // this.setLanguage(strings.getLanguage());
+    this.setLanguage();
   }
-  async setLanguage(deviceDefault){
+  async setLanguage(){
     const lang = await Language.get();
-    lang!=null?this.setState({language: lang}):this.setState({language:deviceDefault});
-    lang?strings.setLanguage(lang):null;
+    lang!=null?this.setState({language: lang}):this.setState({language:'ar'});
+    lang?strings.setLanguage(lang):strings.setLanguage('ar');
     this.setState({page: strings.login});
   }
 
@@ -30,7 +31,7 @@ export default class Login extends Component {
     super(props);
     //modalValue = props.navigation.getParam('shouldShow', false);
     this.state = {
-      mobileNo: 995566332,
+      mobileNo: '',
       page : strings.login,
       language: 'en',
       itemSelected: 'itemOne',
@@ -52,7 +53,8 @@ export default class Login extends Component {
       const mobileNumberList = mobileNumberApiCall.data;
       this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
     } catch (err) {
-      alert(err);
+      Alert.alert(strings.commonFields.alertTitle, err, [{text: strings.commonFields.okButton}]);
+      // alert(err);
       console.log("Error fetching data-----------", err);
     }
   }
@@ -78,56 +80,29 @@ export default class Login extends Component {
   plus() {
     this.setState({ noOfPieces: this.state.noOfPieces + 1 });
   }
-  // onChanged(text) {
 
-  //   let newText = '';
-  //   let numbers = '0123456789';
-
-  //   for (var i = 0; i < text.length; i++) {
-  //     if (numbers.indexOf(text[i]) > -1) {
-  //       newText = newText + text[i];
-  //     }
-  //     else {
-  //       alert("please enter numbers only");
-  //     }
-  //   }
-
-  //   this.setState({ mobileNo: newText });
-  // }
   submitForm() {
     var reg = /^[0-9]+$/
     if (this.state.mobileNo == null) {
-      alert(this.state.page.validation.mobileError)
+      Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.mobileError, [{text: strings.commonFields.okButton}]);
+      // alert(this.state.page.validation.mobileError)
     } else if (this.state.mobileNo.length < 8) {
-      alert(this.state.page.validation.lengthError)
+      // Alert.alert(this.state.page.screenTitle, "fas");
+      Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.lengthError, [{text: strings.commonFields.okButton}]);
+      //alert(this.state.page.validation.lengthError)
     } else if (!reg.test(this.state.mobileNo)) {
-      alert(this.state.page.validation.others)
+      // alert(this.state.page.validation.others)
+      Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.others, [{text: strings.commonFields.okButton}]);
     } else {
       this.checkMobileNo();
     }
-    //  this._stateUpdated();
-
-  }
-  _stateUpdated() {
-    // console.warn('Avaniiiiiiiii',this.state.boardAddModalShow);
   }
 
-  openAddBoardModal() {
-    this.setState(
-      { boardAddModalShow: true },
-      this._stateUpdated.bind(this)
-    );
-  }
   checkMobileNo() {
-    // var selected = this.props.navigation.state.params.selected;
     const { mobileNumberFromDataBase, mobileNo } = this.state;
     const mobile = mobileNo
     for (var i = 0; i < mobileNumberFromDataBase.length; i++) {
       if (mobile == mobileNumberFromDataBase[i].n_phone) {
-        // this.setState(
-        //   { boardAddModalShow: true },
-        //   this._stateUpdated.bind(this)
-        // );
         this.setState({ mobileNo: '' })
         this.props.navigation.navigate('welcome_customer', {
             measurement: mobileNumberFromDataBase[i].n_metere,
@@ -143,25 +118,6 @@ export default class Login extends Component {
         this.props.navigation.navigate('visit_page', {language: strings});
       }
     }
-    // console.log(mobileNumberFromDataBase);
-    // mobileNumberFromDataBase.map((data, key) => {
-    //   if (mobileNo == data.n_phone) {
-    //     console.log(mobileNo, data.n_phone)
-    //     this.props.navigation.navigate('welcome_customer', {
-    //       mobileNo: mobileNo,
-    //       customerName: data.n_name,
-    //       measurementDate: data.n_last_mesurement_date,
-    //     });
-    //     this.setState({ mobileNo: '' });
-
-    //   } else {
-    //     this.setState({ mobileNo: '' })
-    //     this.props.navigation.navigate('visit_page');
-    //   }
-    // });
-
-
-    // this.props.navigation.navigate('welcome_customer');
   }
   requestExecutiveVisit() {
     this.props.navigation.navigate('executive_visitpage', {language: strings});
@@ -169,6 +125,16 @@ export default class Login extends Component {
   visitToShop() {
     this.props.navigation.navigate('visit_to_shoppage', {language: strings});
   }
+  // gotoreview(e){
+  //     e.navigate('review',
+  //         {
+  //           language: strings,
+  //           measurement: 3.5,
+  //           order_id: 932,
+  //           deliveryDate: "12-12-2019"
+  //         }
+  //         );
+  // }
   render() {
       screen = this.state.page;
       Text.defaultProps = Text.defaultProps || {};
@@ -177,7 +143,7 @@ export default class Login extends Component {
       <Container>
         <Content keyboardShouldPersistTaps={'always'} >
           <SafeAreaView>
-            <ScrollView>
+            <ScrollView style={{paddingBottom:30}}>
             <View style={{ flex: 1 / 6, flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
               <Image style={{ width: 80, height: 80 }} source={require('../../img/om.png')} />
             </View>
@@ -190,6 +156,7 @@ export default class Login extends Component {
                   {!strings.isRTL?
                   <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />:null}
                   <TextInput
+                      selectionColor={'rgba(4,101,227,0.44)'}
                     style={{ textAlign: strings.isRTL?'right':'left',width: width - 110, height: 50, fontSize: 15 }}
                     keyboardType='numeric'
                     value={this.state.mobileNo}
@@ -231,9 +198,7 @@ export default class Login extends Component {
                     Linking.canOpenURL('https://wa.me/96566333116')
                       .then(supported => {
                         if (!supported) {
-                          alert(
-                            screen.installWhatsApp
-                          );
+                          Alert.alert(strings.commonFields.alertTitle, screen.installWhatsApp, [{text: strings.commonFields.okButton}]);
                         } else {
                           return Linking.openURL('https://wa.me/96566333116');
                         }
@@ -244,9 +209,8 @@ export default class Login extends Component {
                     <Image style={{width: 90, height: 90}} source={require('../../img/whatsapp.png')}/>
                     </View>
                     {/*<Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{fontSize:50,marginTop:20,   paddingRight: 10, color: 'green' }} />*/}
-                    {/* <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text> */}
+                    {/* <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text>*/}
                   </TouchableOpacity>
-
                 </View>
               </View>
             </View>
@@ -256,9 +220,11 @@ export default class Login extends Component {
                   <Text style={{color: this.state.language=='en'?'#0451A5':'#a2a2a2',fontSize: 15}}>English  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=>this._onLanguageChange('ar')}>
-                  <Text style={{color: this.state.language=='ar'?'#0451A5':'#a2a2a2',fontSize: 15}}>Arabic</Text>
+                  {/**Language Arabic - العربية**/}
+                  <Text style={{color: this.state.language=='ar'?'#0451A5':'#a2a2a2',fontSize: 15}}>العربية</Text>
                 </TouchableOpacity>
               </View>
+              <View/>
             </ScrollView>
           </SafeAreaView>
         </Content>

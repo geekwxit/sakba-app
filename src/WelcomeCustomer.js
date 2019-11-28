@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, Linking, SafeAreaView, ScrollView } from 'react-native';
-import { Radio, Container, Contain } from 'native-base';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, Image, Dimensions, Linking, SafeAreaView, ScrollView, Alert } from 'react-native';
+
 // import RadioForm from 'react-native-simple-radio-button';
-import RadioButton from './components/RadioButton'
+import  RadioButton from './components/RadioButton'
 import RadioForm from './components/RadioForm'
+import {Button, Content} from "native-base";
 
 const { width, height } = Dimensions.get('window');
 export default class WelcomeCustomer extends Component {
@@ -16,26 +16,47 @@ export default class WelcomeCustomer extends Component {
     };
   };
   state = {
-      language: this.props.navigation.getParam('language'),
-    email : this.props.navigation.getParam('emailID'),
+      language: this.props.navigation.getParam('language') ,
+      email : this.props.navigation.getParam('emailID')   ,
+      customerName: '',
+      measurementDate: '' ,
+      mobileNo: '',value: 0,
   }
 
   moveFunction(value, customerName, measurementDate , mobileNo) {
     console.log("sakba data to renew: " , this.state)
     email = this.props.navigation.state.params.emailID;
-    if (value == 0) {
-      this.props.navigation.navigate('customer_agree', {
-          measurement: this.props.navigation.getParam('measurement'),
-        language: this.state.language,
-        mobileNo: mobileNo,
-        customerName: customerName,
-        measurementDate: measurementDate,
-        emailID: this.state.email
-      });
-    }
-    else {
-      this.props.navigation.navigate('visit_page', {language: this.state.language});
-    }
+    this.setState({value, customerName, measurementDate, mobileNo})
+    // if (value == 0) {
+    //   this.props.navigation.navigate('customer_agree', {
+    //       measurement: this.props.navigation.getParam('measurement'),
+    //     language: this.state.language,
+    //     mobileNo: mobileNo,
+    //     customerName: customerName,
+    //     measurementDate: measurementDate,
+    //     emailID: this.state.email
+    //   });
+    // }
+    // else {
+    //   this.props.navigation.navigate('visit_page', {language: this.state.language});
+    // }
+  }
+
+  _onPressOK(){
+      const {value, customerName, measurementDate, mobileNo} = this.state;
+      if (value == 0) {
+          this.props.navigation.navigate('customer_agree', {
+              measurement: this.props.navigation.getParam('measurement'),
+              language: this.state.language,
+              mobileNo: mobileNo,
+              customerName: customerName,
+              measurementDate: measurementDate,
+              emailID: this.state.email
+          });
+      }
+      else {
+          this.props.navigation.navigate('visit_page', {language: this.state.language});
+      }
   }
 
 
@@ -52,9 +73,9 @@ Text.defaultProps.allowFontScaling = false;
 
     console.log(customerName , measurementDate , mobileNo)
     return (
-
-      <SafeAreaView>
-          <ScrollView>
+        <Content>
+      <SafeAreaView >
+          <ScrollView style={{paddingBottom:30}}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
           <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
         </View>
@@ -69,7 +90,7 @@ Text.defaultProps.allowFontScaling = false;
           <View style={{ marginTop: 20, marginTop: 30 }}>
             <Text style={{ fontSize: 20, textAlign: 'left', }}>{screen.acceptText}</Text>
 
-            {/* <TouchableOpacity 
+            {/* <TouchableOpacity
             onPress={()=>this.radio1(customerName,measurementDate)}
             style={{flexDirection:'row',marginTop:10}}>
               <Radio onPress={() => this.radio1(customerName,measurementDate) }
@@ -78,9 +99,9 @@ Text.defaultProps.allowFontScaling = false;
               <Text style={{marginLeft: 10}}>I agree</Text>
             </TouchableOpacity>
 
-           
 
-            <TouchableOpacity 
+
+            <TouchableOpacity
             onPress={()=>this.radio2()}
             style={{flexDirection:'row'}}>
               <Radio onPress={() => this.radio2() }
@@ -124,8 +145,16 @@ Text.defaultProps.allowFontScaling = false;
             </View>
           </View>
         </View>
+              <View style={{ paddingTop: 100 }}>
+                  <Button
+                      style={{ backgroundColor: '#0451A5', alignSelf:'center', width: width - 100, height: 40, justifyContent: 'center' }}
+                      onPress={()=>this._onPressOK()}>
+                      <Text style={{ fontSize: 18, color: 'white' }}>{screen.okButton}</Text>
+                  </Button>
+              </View>
           </ScrollView>
       </SafeAreaView>
+        </Content>
     );
   }
 }

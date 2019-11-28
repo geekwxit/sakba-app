@@ -37,6 +37,7 @@ export default class OrderDetail extends Component<props>{
     super(props)
     var id = this.props.navigation.state.params.id;
     var token = this.props.navigation.state.params.token;
+
     this.state = {
       measurement: props.navigation.getParam('measurement'),
       language: props.navigation.getParam('language'),
@@ -99,6 +100,7 @@ export default class OrderDetail extends Component<props>{
 
     this.sendApiRequest(data).then(()=>{
       this.props.navigation.navigate('order_confirm', {
+        measurement: this.props.navigation.getParam('measurement',null),
         language: this.state.language,
           token: token,
           customerName: fullname,
@@ -180,17 +182,6 @@ export default class OrderDetail extends Component<props>{
     //   })
     //   .catch(error => console.log(error));
   }
-  // async secondCallForPayment(data) {
-  //   this.setState({isLoading: true});
-  //   try {
-  //     const requestPaymentApiCall = await Axios.post('http://sakba.net/mobileApi/all-number.php',);
-  //     const mobileNumberList = requestPaymentApiCall.data.error;
-  //     this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
-  //   } catch (err) {
-  //     alert(err);
-  //     console.log("Error fetching data-----------", err);
-  //   }
-  // }
 
   filterCart(cart, brands){
     let tempCart = [];
@@ -227,7 +218,7 @@ export default class OrderDetail extends Component<props>{
 
     userCart?userCart.map(item=>{
       total += item.quantity*item.price*m;
-      fabrics.push([!isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`), isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`)]);
+      fabrics.push([!isRTL?(`${item.name} * `+ item.quantity*m + " m " + `(${item.price} KD/m)`):(`${item.quantity*item.price*m} KD`), isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`)]);
     }):null;
 
     tableData.push(!isRTL?([`${screen.tableDishdasha} ${noOfPieces}`, `${noOfPieces*12} KD`]):([`${noOfPieces*12} KD`, `${screen.tableDishdasha} ${noOfPieces}`]));
@@ -362,7 +353,7 @@ export default class OrderDetail extends Component<props>{
             <View style={styles.container}>
               <View style={{width:width-40,}}>
                 <Table borderStyle={{ borderColor: '#C1C0B9' }}>
-                  <Row data={[isRTL?`${screen.tableTotal}`:`${screen.tableHeadTitle}`, !isRTL?`${screen.tableTotal}`:`${screen.tableHeadTitle}`]} widthArr={state.widthArr} style={styles.header} textStyle={styles.textHeader} />
+                  <Row data={isRTL?[`${screen.tableTotal}`,`${screen.tableHeadTitle}`]:[`${screen.tableHeadTitle}`,`${screen.tableTotal}`]} widthArr={state.widthArr} style={styles.header} textStyle={styles.textHeader}/>
                 </Table>
                 <ScrollView style={styles.dataWrapper}>
                   <Table borderStyle={{ borderColor: '#C1C0B9' }}>

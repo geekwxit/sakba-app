@@ -26,6 +26,8 @@ export default class DeliveryOptions extends Component<Props>{
     constructor(props) {
         super(props)
         this.state = {
+            charcount:0,
+            remarks: '',
             language: props.navigation.getParam('language'),
             isLoading: false,
             pickupStore: null,
@@ -49,15 +51,19 @@ export default class DeliveryOptions extends Component<Props>{
         PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
     }
     submitForm() {
+        var cartTotal = 0;
         var screen = this.state.language.deliveryScreen;
         console.log('in submit form');
         products = [];
         const url = deliveryStrings.order_now;
         brands = this.state.fabrics;
         cart = this.state.cart;
-        others = {measurement: this.props.navigation.getParam('measurement'), cart: cart, fabrics: brands, language: this.state.language}
+        others = {
+            measurement: this.props.navigation.getParam('measurement'), cart: cart, fabrics: brands, language: this.state.language,
+        }
         if(this.state.inHomeCount>0){
             products = this.state.cart.map((item,index)=>{
+                cartTotal += item.quantity*item.price*others.measurement;
                 return (
                     {
                         brandID: brands[item.brand].id,
@@ -94,12 +100,12 @@ export default class DeliveryOptions extends Component<Props>{
                 console.log('2 one');
                 delivery_type = 'home';
                 deliveryOptionValue = 3;
-                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
                 if (area && block && house && street) {
 
                     var data = JSON.stringify({
                         o_pieces: this.state.noOfPieces,
-                        o_total: this.state.noOfPieces * 12,
+                        o_total: (this.state.noOfPieces * 12) + cartTotal,
                         o_number: this.state.mobileNo,
                         o_subtotal: subTotal,
                         o_pickup_charge: fabricOptionValue,
@@ -112,7 +118,7 @@ export default class DeliveryOptions extends Component<Props>{
                         d_extra_number: extra_Number,
                         d_floor: floor,
                         d_house: house, d_jada: jada, d_street: street,
-                        products
+                        products,remarks: this.state.remarks
                     })
 
                     // if default condition will occur
@@ -145,7 +151,8 @@ export default class DeliveryOptions extends Component<Props>{
                             console.warn('error');
                         });
                 } else {
-                    alert(screen.detailsRequired);
+                    Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
+                    // alert(screen.detailsRequired);
                 }
             } else {
                 console.log('2 two');
@@ -157,11 +164,11 @@ export default class DeliveryOptions extends Component<Props>{
                     whichStore = "Qurain Shop"
                 }
 
-                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue +cartTotal;
 
                 var data = JSON.stringify({
                     o_pieces: this.state.noOfPieces,
-                    o_total: this.state.noOfPieces * 12,
+                    o_total: (this.state.noOfPieces * 12) + cartTotal,
                     o_number: this.state.mobileNo,
                     o_subtotal: subTotal,
                     o_pickup_charge: fabricOptionValue,
@@ -169,7 +176,7 @@ export default class DeliveryOptions extends Component<Props>{
                     pickup_type: pickup_type,
                     delivery_type: delivery_type,
                     d_store_name: whichStore,
-                    products
+                    products,remarks: this.state.remarks
                 })
                 this.setState({isLoading: true});
                 axios.post(url, data)
@@ -210,12 +217,12 @@ export default class DeliveryOptions extends Component<Props>{
                 if (deliveryOption == "itemTwo") {
                     delivery_type = 'home';
                     deliveryOptionValue = 3;
-                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
                     if (area && block && house && street) {
                         var data = JSON.stringify({
 
                             o_pieces: this.state.noOfPieces,
-                            o_total: this.state.noOfPieces * 12,
+                            o_total: (this.state.noOfPieces*12) + cartTotal,
                             o_number: this.state.mobileNo,
                             o_subtotal: subTotal,
                             o_pickup_charge: fabricOptionValue,
@@ -235,7 +242,7 @@ export default class DeliveryOptions extends Component<Props>{
                             p_extra_number: extra_Number,
                             p_floor: floor,
                             p_house: house, p_jada: jada, p_street: street,
-                            products
+                            products,remarks: this.state.remarks
                         })
 
                         // if default condition will occur
@@ -268,7 +275,8 @@ export default class DeliveryOptions extends Component<Props>{
                                 this.setState({isLoading: false})
                             });
                     } else {
-                        alert(screen.detailsRequired);
+                        Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
+                        // alert(screen.detailsRequired);
                     }
 
 
@@ -279,11 +287,11 @@ export default class DeliveryOptions extends Component<Props>{
                         whichStore = "Qurain Shop"
                     }
                     deliveryOptionValue = 0;
-                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue
+                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
                     var data = JSON.stringify({
 
                         o_pieces: this.state.noOfPieces,
-                        o_total: this.state.noOfPieces * 12,
+                        o_total: (this.state.noOfPieces * 12) + cartTotal,
                         o_number: this.state.mobileNo,
                         o_subtotal: subTotal,
                         o_pickup_charge: fabricOptionValue,
@@ -297,7 +305,7 @@ export default class DeliveryOptions extends Component<Props>{
                         p_floor: floor, p_house: house,
                         p_jada: jada, p_street: street,
                         d_store_name: whichStore,
-                        products
+                        products, remarks: this.state.remarks
                     })
                     this.setState({isLoading: true});
                     axios.post(url, data)
@@ -332,7 +340,8 @@ export default class DeliveryOptions extends Component<Props>{
                 }
 
             } else {
-                alert(screen.detailsRequired);
+                Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
+                // alert(screen.detailsRequired);
             }
         }
     }
@@ -431,9 +440,9 @@ export default class DeliveryOptions extends Component<Props>{
                         <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
                     </View>
                     <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                            <Text style={{ fontSize: 20 }}>{screen.text1}</Text>
-                        </View>
+                        {/*<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>*/}
+                        {/*    <Text style={{ fontSize: 20 }}>{screen.text1}</Text>*/}
+                        {/*</View>*/}
                         <View style={{ marginTop: 40 }}>
                             <Text style={{ fontSize: 20 }}>{screen.fabricLabel}</Text>
                             <View style={{ marginTop: 10 }}>
@@ -553,7 +562,34 @@ export default class DeliveryOptions extends Component<Props>{
                                         {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                     </TouchableOpacity>
                                 </View>
-                                <View style={{alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
+                                <View>
+                                    {renderIf(deliveryOption == 'itemOne')(
+                                        <View style={{ marginLeft: 25, flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
+                                            <TouchableOpacity
+                                                style={{ flexDirection: 'row', marginTop: 10 }}
+                                                onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
+                                                {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
+                                                {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
+                                                    ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
+                                                    : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
+                                                }
+                                                {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
+                                                style={{ flexDirection: 'row', marginTop: 5 }}>
+                                                {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
+                                                {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
+                                                    ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
+                                                    : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
+                                                }
+                                                {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
+
+                                </View>
+                                <View style={{marginTop:5,alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
@@ -638,35 +674,34 @@ export default class DeliveryOptions extends Component<Props>{
                                     </Form>
                                 )}
                             </View>
-                            <View style={{ flex: 1, marginTop: 10 }}>
-                                {renderIf(deliveryOption == 'itemOne')(
-                                    <View style={{ marginLeft: 25, flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
-                                        <TouchableOpacity
-                                            style={{ flexDirection: 'row', marginTop: 10 }}
-                                            onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-                                            {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
-                                            {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
-                                                ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                                : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                            }
-                                            {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
-                                            style={{ flexDirection: 'row', marginTop: 5 }}>
-                                            {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
-                                            {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
-                                                ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                                : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                            }
-                                            {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
 
-                            </View>
                         </View>
 
+                        {/*<View style={{marginTop:10,alignSelf:'center',alignItems: 'center', justifyContent:'center',borderColor:'#0451A5',borderRadius:5,padding:5,borderWidth:1}}>*/}
+                            {/*<Text style={{color: 'black',fontSize:15}}>Remarks (Optional) : </Text>*/}
+                            <TextInput
+                                selectionColor={'rgba(4,101,227,0.44)'}
+                                multiline={true}
+                                style={{
+                                    borderColor:'#abbee9',
+                                    borderWidth:1,
+                                    marginTop:10,
+                                    borderRadius:5,
+                                    padding:15,
+                                    backgroundColor:'#d1e2ff',
+                                    textAlign: this.state.language.isRTL?'right':'left',
+                                    width: (width / 2 - 40)*2,
+                                    minHeight: 40,
+                                    fontSize: 15 }}
+                                placeholder={screen.pRemarks}
+                                onChangeText={(remarks) => {
+                                    this.setState({remarks, charcount: remarks.length})
+                                }}
+                            />
+                            {/*<View style={{backgroundColor: '#d1e2ff', alignItems: 'flex-end',width: width - 110}}>*/}
+                            {/*    <Text style={{color:'#878787',backgroundColor: '#d1e2ff'}}>{this.state.charcount}/200</Text>*/}
+                            {/*</View>*/}
+                        {/*</View>*/}
                         <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                             <Button
                                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}

@@ -29,7 +29,7 @@ const AppNavigator = createStackNavigator(
     order_detail: OrderDetail,
     order_confirm: OrderConfirm,
     paypal: Paypal,
-    sign_up:SignUpScreen,
+    sign_up:SignUpScreen,  //Not using this screen (SignUpScreen) in project
     review: Review,
     fabric: FabricTypeSelection,
     delivery: DeliveryOptions,

@@ -1,7 +1,7 @@
 //This is the code to have a screen for 2 second and then navigate to another page
 
 import React,{Component}from 'react';
-import {ScrollView, View, Text, Image, Dimensions, TouchableOpacity, BackHandler} from 'react-native';
+import {ScrollView, View, Text, Image, Dimensions, TouchableOpacity, BackHandler, Alert} from 'react-native';
 import {Button} from 'native-base';
 import {NavigationActions, StackActions} from "react-navigation";
 import { TextInput } from 'react-native-gesture-handler';
@@ -56,18 +56,23 @@ export default class  OrderConfirm extends Component<Props>{
             .then(response=>response.data)
             .then(response=>{
                 if(!response.error){
-                    alert(screen.alertOnEmailSent);
+                    Alert.alert(this.state.language.commonFields.alertTitle, screen.alertOnEmailSent, [{text: this.state.language.commonFields.okButton}]);
+                    // alert(screen.alertOnEmailSent);
                 }
-                else{alert(screen.regularError);
+                else{
+                    Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{text: this.state.language.commonFields.okButton}]);
+                    // alert(screen.regularError);
                 }
             })
             .catch(error=>{
                 console.log("LOG ERROR: ", error);
-                alert(screen.regularError);
+                Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{text: this.state.language.commonFields.okButton}]);
+                // alert(screen.regularError);
             })
         }
         else{
-            alert(screen.emailError);
+            Alert.alert(this.state.language.commonFields.alertTitle, screen.emailError, [{text: this.state.language.commonFields.okButton}]);
+            // alert(screen.emailError);
         }
     }
 
@@ -99,7 +104,7 @@ export default class  OrderConfirm extends Component<Props>{
                         <View style={{width: width, marginTop: 10, justifyContent:'center', alignItems:'center'}}>
                                 <View style={{width: width*0.65, alignItems:'center', flexDirection: 'row', height: 50,borderRadius:30, borderWidth: 3,borderColor: '#D8D8D8'}}>
                                     {!isRTL?<View style={{flex:1}}>
-                                        <TextInput placeholder={screen.pEmail} style={{fontSize: 15, paddingLeft:10, paddingRight: 10}} onChangeText={(email)=>this.setState({email})}/>
+                                        <TextInput selectionColor={'rgba(4,101,227,0.44)'} placeholder={screen.pEmail} style={{fontSize: 15, paddingLeft:10, paddingRight: 10}} onChangeText={(email)=>this.setState({email})}/>
                                     </View>:null}
                                     <View style={{width: 40, height: 40, paddingRight:10}}>
                                         <TouchableOpacity style={{flex:1}} onPress={()=>this.sendMail()}>
@@ -107,7 +112,7 @@ export default class  OrderConfirm extends Component<Props>{
                                         </TouchableOpacity>
                                     </View>
                                     {isRTL?<View style={{flex:1}}>
-                                        <TextInput placeholder={screen.pEmail} style={{fontSize: 15, paddingLeft:10, paddingRight: 10}} onChangeText={(email)=>this.setState({email})}/>
+                                        <TextInput selectionColor={'rgba(4,101,227,0.44)'} placeholder={screen.pEmail} style={{textAlign:'right',fontSize: 15, paddingLeft:10, paddingRight: 10}} onChangeText={(email)=>this.setState({email})}/>
                                     </View>:null}
                                 </View>
                         </View>
@@ -131,7 +136,11 @@ export default class  OrderConfirm extends Component<Props>{
 
     reviewOrder(){
         // this.state.emailSent?
-        this.props.navigation.navigate('review', {language: this.state.language, order_id: this.state.orderID, deliveryDate: this.props.navigation.getParam('deliveryDate', null)})
+        this.props.navigation.navigate('review', {
+            measurement: this.props.navigation.getParam('measurement',null),
+            language: this.state.language,
+            order_id: this.state.orderID,
+            deliveryDate: this.props.navigation.getParam('deliveryDate', null)})
         // : alert(oConfirm.reviewError);
     }
 }

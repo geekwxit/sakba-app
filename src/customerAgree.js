@@ -1,5 +1,5 @@
 import  React, { Component } from 'react';
-import { View, Text, Image, Dimensions, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, Image, Dimensions, SafeAreaView,Alert, ScrollView, TouchableOpacity} from 'react-native';
 import { Button,Icon} from 'native-base';
 import renderIf from 'render-if';
 const { width, height } = Dimensions.get('window');
@@ -62,7 +62,11 @@ export default class customerAgree extends Component<Props>{
           this.setState({inHomeCount: quantity+home});
           this.setState({outsideCount: total-(quantity+home)});
         }
-        else{alert(this.state.language.customerAgree.maxInHome);}}
+        else{
+          Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.customerAgree.maxInHome, [{text: this.state.language.commonFields.okButton}]);
+          // alert(this.state.language.customerAgree.maxInHome);
+        }
+        }
       }
       else if(type==='outside'){
         if(out+quantity>=0){
@@ -72,7 +76,11 @@ export default class customerAgree extends Component<Props>{
           this.setState({outsideCount: quantity+out});
           this.setState({inHomeCount: total-(quantity+out)});
         }
-        else{alert(this.state.language.customerAgree.maxOutside);}}
+        else{
+          Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.customerAgree.maxOutside, [{text: this.state.language.commonFields.okButton}]);
+
+          // alert(this.state.language.customerAgree.maxOutside);
+        }}
       }
   }
 

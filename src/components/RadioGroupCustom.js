@@ -8,12 +8,12 @@ export default class RadioGroupCustom extends Component{
 
     constructor(props){
         super(props);
-        this.state = {
-            fabricTypes: props.data,
-            length: props.data.length,
-            selectedFabricIndex : props.default,
-            loaderStates: [],
-        }
+        // this.state = {
+        //     fabricTypes: props.data,
+        //     length: props.data?props.data.length:0,
+        //     selectedFabricIndex : props.default,
+        //     loaderStates: [],
+        // }
     }
 
     select(index){
@@ -21,10 +21,10 @@ export default class RadioGroupCustom extends Component{
     }
 
     componentDidMount(){
-        length = this.state.length;
-        array = new Array(length);
-        array.fill(true);
-        this.setState({loaderStates: array});
+        // length = this.state.length;
+        // array = new Array(length);
+        // array.fill(true);
+        // this.setState({loaderStates: array});
     }
 
     render() {
@@ -32,18 +32,16 @@ export default class RadioGroupCustom extends Component{
         var length = data?data.length:0;
         var fontSizeLabel = 15;
         var rows = (isRTL) => {
-            // console.log("PRINTING LIST STARTED ");
             var stack = [];
             isOdd = length%2==0;
             maxRow = isOdd?length-1/2:length/2;
             isImage = this.props.isImage;
     for(var i=0, row = 1; i<length;i){
         const j = i;
-        // console.log("Printing the list ", i);
         row<=maxRow?stack.push(
-            <View key={row} style={{flexDirection: 'row', alignItems: 'center', marginTop: 5}}>
+            <View key={row} style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
                 <TouchableWithoutFeedback onPress={()=>this.select(j)}>
-                    <View style={{flexDirection: 'row', flex:1 ,alignItems: 'center'}}>
+                    <View style={[{flexDirection: 'row', flex:1 ,alignItems: 'center'}, (isRTL && {justifyContent:'flex-end'})]}>
                         {!isRTL?<View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <RadioButton name={this.props.selected===j?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
                         </View>:null}
@@ -56,14 +54,14 @@ export default class RadioGroupCustom extends Component{
                                 <Text>{data[i].name + '(' +data[i].price + ' KD)'}</Text>
                             </View>
                         }
-                        {isRTL?<View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        {isRTL?<View style={{marginLeft:5,flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <RadioButton name={this.props.selected===j?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
                         </View>:null}
                     </View>
                 </TouchableWithoutFeedback>
 
                 <TouchableWithoutFeedback onPress={()=>this.select(j+1)}>
-                    <View style={{flexDirection: 'row', flex:1 ,alignItems: 'center'}}>
+                    <View style={[{flexDirection: 'row', flex:1 ,alignItems: 'center'}, (isRTL && {justifyContent:'flex-end'})]}>
                         {!isRTL?
                         <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <RadioButton name={this.props.selected===j+1?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
@@ -78,7 +76,7 @@ export default class RadioGroupCustom extends Component{
                             </View>
                         }
                         {isRTL?
-                            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <View style={{marginLeft:5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                                 <RadioButton name={this.props.selected===j+1?"radiobox-marked":"checkbox-blank-circle-outline"} size={25} color={'#0451A5'} />
                             </View>:null}
                     </View>
@@ -88,10 +86,10 @@ export default class RadioGroupCustom extends Component{
             ):
 
             stack.push(
-                <View key={row} style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View key={row} style={{marginTop: 10,flexDirection: 'row', alignItems: 'center'}}>
                     <TouchableWithoutFeedback onPress={() => this.select(j)}>
                         <View
-                            style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
+                            style={[{flexDirection: 'row', flex: 1, alignItems: 'center'}, (isRTL && {justifyContent:'flex-end'})]}>
                             {!isRTL?
                             <View
                                 style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
@@ -110,7 +108,7 @@ export default class RadioGroupCustom extends Component{
                             }
                             {isRTL?
                                 <View
-                                    style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                    style={{marginLeft:5, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                                     <RadioButton
                                         name={this.props.selected === j ? "radiobox-marked" : "checkbox-blank-circle-outline"}
                                         size={25} color={'#0451A5'}/>
@@ -121,13 +119,16 @@ export default class RadioGroupCustom extends Component{
         i+=2;
         row++;
     }
-    console.log("Printing list completed ");
     return stack;
 }
         return(
             <View>
                 {
-                    rows(this.props.isRTL)
+                    data?
+                        rows(this.props.isRTL):
+                        <View style={{backgroundColor: '#ff6b62',borderRadius:10, height:35}}>
+                        <Text style={{fontSize: 20, alignSelf:'center'}}>This fabric has no {this.props.type}</Text>
+                        </View>
                 }
             </View>
         )
