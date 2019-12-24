@@ -11,7 +11,7 @@ import Brands from "./fabrics/brands/brands";
 
 const { width, height } = Dimensions.get('window');
 
-export default class Fabs extends Component<Props>{
+export default class _UNUSED_Fabs extends Component<Props>{
 
   static navigationOptions = ({ navigation }) => {
     return {

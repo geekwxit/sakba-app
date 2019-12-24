@@ -73,6 +73,8 @@ export const strings = new LocalizedStrings({
             addToCartButton: "ADD TO CART",
             checkoutButton: "CHECKOUT",
 
+            noFabric: "This fabric has no",
+
             selectPTitle: "Selected Product", selectPButton: "Add to Cart", selectPBrand: "Fabric Brand: ", selectPPattern: "Fabric Pattern and Color: ", selectPPrice: "Price: ",
             selectPerMeter: 'KD per meter', selectPFinalPrice: "Final Price: ",
             cartEmpty: "Cart is Empty!", cartTitle: "Cart", cartQuantity: "Quantity: ", cartPrice: "Final Price: ", cartRemove: "Remove", cartTotal: "Cart Total", cartConfirm: "Confirm Checkout",
@@ -243,6 +245,8 @@ export const strings = new LocalizedStrings({
             addToCartButton: "اضافه القطعة",
             checkoutButton: "انتقل لاختيارات التسليم والاستلام",
 
+            noFabric: "This fabric has no",
+
             selectPTitle: "الخامة اللي اخترتها", selectPButton: "ضيف القطعة", selectPBrand: "نوع الخام:", selectPPattern: "النقشة واللون:", selectPPrice: "السعر:",
             selectPerMeter: "سعر المتر", selectPFinalPrice: "المجموع:",
             cartEmpty: "ما ضفت شي!!", cartTitle: "الطلب", cartQuantity: "العدد:", cartPrice: "المجموع:", cartRemove: "الغي", cartTotal: "المجموع الكلي", cartConfirm: "تأكيد الطلب",
@@ -341,3 +345,14 @@ export const strings = new LocalizedStrings({
         }
     },
 })
+
+
+/**
+ * A helpful function to get all keys of an object excluding arrays
+   function getKeys(object){
+      for(key in object){
+         typeof (eval('object.'+key))== 'object'?getKeys(eval('object.'+key)):ar.push(key);
+      }
+   }
+ */
+

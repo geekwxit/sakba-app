@@ -58,8 +58,9 @@ export default class DeliveryOptions extends Component<Props>{
         const url = deliveryStrings.order_now;
         brands = this.state.fabrics;
         cart = this.state.cart;
-        others = {
-            measurement: this.props.navigation.getParam('measurement'), cart: cart, fabrics: brands, language: this.state.language,
+        var others = {
+            measurement: this.props.navigation.getParam('measurement'),
+            cart: cart, fabrics: brands, language: this.state.language,
         }
         if(this.state.inHomeCount>0){
             products = this.state.cart.map((item,index)=>{
@@ -477,6 +478,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pArea}
                                                 onChangeText={(text) => this.setState({ area: text })}
                                                 value={this.state.area}
@@ -484,6 +486,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pBlock}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ block: text })}
@@ -494,6 +497,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pStreet}
                                                 onChangeText={(text) => this.setState({ street: text })}
                                                 value={this.state.street}
@@ -501,6 +505,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pJada}
                                                 onChangeText={(text) => this.setState({ jada: text })}
                                                 value={this.state.jada}
@@ -510,6 +515,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pHouse}
                                                 onChangeText={(text) => this.setState({ house: text })}
                                                 value={this.state.house}
@@ -517,6 +523,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pFloor}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ floor: text })}
@@ -527,6 +534,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pApartment}
                                                 onChangeText={(text) => this.setState({ apartment: text })}
                                                 value={this.state.apartment}
@@ -534,6 +542,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
+                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
                                                 placeholder={screen.pExtra}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ extra_Number: text })}
@@ -554,7 +563,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemOne' })} >
-                                        {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
+                                        {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                         {deliveryOption == 'itemOne'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
@@ -564,11 +573,11 @@ export default class DeliveryOptions extends Component<Props>{
                                 </View>
                                 <View>
                                     {renderIf(deliveryOption == 'itemOne')(
-                                        <View style={{ marginLeft: 25, flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
+                                        <View style={{ marginLeft: 25, marginRight:25,flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
                                             <TouchableOpacity
                                                 style={{ flexDirection: 'row', marginTop: 10 }}
                                                 onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-                                                {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
+                                                {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
                                                 {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
                                                     ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                     : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
@@ -578,7 +587,7 @@ export default class DeliveryOptions extends Component<Props>{
                                             <TouchableOpacity
                                                 onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
                                                 style={{ flexDirection: 'row', marginTop: 5 }}>
-                                                {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
+                                                {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
                                                 {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
                                                     ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                     : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
@@ -593,7 +602,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
-                                        {this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
+                                        {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
                                         {deliveryOption === 'itemTwo'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />

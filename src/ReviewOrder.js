@@ -64,20 +64,6 @@ export default class ReviewOrder extends Component<props>{
     });
   }
 
-  showMore(index){
-      this.hideOther();
-      setTimeout(()=>{
-      if(!(index==this.state.showMoreIndex)){
-        this.setState({showMoreIndex: index});
-        Animated.timing(this.state.heightController,
-            {toValue: 20, duration: 500}).start();
-      }}, 200);
-  }
-  hideOther(){
-    Animated.timing(this.state.heightController,
-        {toValue: 0, duration: 200}).start();
-  }
-
   componentDidMount() {
     this.setState({language: this.props.navigation.getParam('language')})
     this.getOrder().then(()=>this.setState({isLoading:false}));
@@ -87,7 +73,7 @@ export default class ReviewOrder extends Component<props>{
     var screen = this.state.language.reviewScreen;
     var isRTL = this.state.language.isRTL;
     this.setState({isLoading:true});
-    var url = 'https://sakba.net/mobileApi/get_order_copy.php';
+    var url = 'https://sakba.net/mobileApi/get_order_copy.php?lang='+this.state.language.getLanguage();
     var data = JSON.stringify({order_id : this.state.orderID});
     if(this.state.orderID!=null && this.state.orderID!=undefined){
       await axios.post(url,data)
@@ -223,7 +209,22 @@ const styles = StyleSheet.create({
 
 
 {/**When click to expand functionality is used, use this component**/
-  /*<TouchableWithoutFeedback onPress={()=>this.showMore(index)}>
+  /*
+  showMore(index){
+      this.hideOther();
+      setTimeout(()=>{
+      if(!(index==this.state.showMoreIndex)){
+        this.setState({showMoreIndex: index});
+        Animated.timing(this.state.heightController,
+            {toValue: 20, duration: 500}).start();
+      }}, 200);
+  }
+  hideOther(){
+    Animated.timing(this.state.heightController,
+        {toValue: 0, duration: 200}).start();
+  }
+
+  <TouchableWithoutFeedback onPress={()=>this.showMore(index)}>
           <View>
           <Row
               key={index}

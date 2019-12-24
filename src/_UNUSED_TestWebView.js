@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {WebView,View ,Text} from 'react-native';
 
-const source = require('./test.html');
+const source = require('./_UNUSED_test.html');
 
 export default class Test extends Component{
   render(){

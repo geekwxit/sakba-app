@@ -28,6 +28,7 @@ export default class RadioGroupCustom extends Component{
     }
 
     render() {
+        const {noFabric} = this.props.text;
         var data = this.props.data;
         var length = data?data.length:0;
         var fontSizeLabel = 15;
@@ -127,7 +128,7 @@ export default class RadioGroupCustom extends Component{
                     data?
                         rows(this.props.isRTL):
                         <View style={{backgroundColor: '#ff6b62',borderRadius:10, height:35}}>
-                        <Text style={{fontSize: 20, alignSelf:'center'}}>This fabric has no {this.props.type}</Text>
+                        <Text style={{fontSize: 20, alignSelf:'center', textAlign: this.props.isRTL?'right':'left'}}>{noFabric} {this.props.type}</Text>
                         </View>
                 }
             </View>

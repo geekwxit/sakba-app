@@ -4,7 +4,7 @@ export const loginStrings = {
     allNumberLink   : "https://sakba.net/mobileApi/all-number.php",
 }
 
-//Order Confirm screen
+//Order Confirm screenf
 export const oConfirm = {
     sendEmailLink   : "https://sakba.net/mobileApi/request_paymentemail.php",
 }

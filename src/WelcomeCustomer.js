@@ -42,8 +42,8 @@ export default class WelcomeCustomer extends Component {
     // }
   }
 
-  _onPressOK(){
-      const {value, customerName, measurementDate, mobileNo} = this.state;
+  _onPressOK(mobileNo){
+      const {value, customerName, measurementDate} = this.state;
       if (value == 0) {
           this.props.navigation.navigate('customer_agree', {
               measurement: this.props.navigation.getParam('measurement'),
@@ -87,7 +87,7 @@ Text.defaultProps.allowFontScaling = false;
             <Text style={{ fontSize: 20, marginTop: 10 }}>{screen.wTextMeasure}{measurementDate}</Text>
 
           </View>
-          <View style={{ marginTop: 20, marginTop: 30 }}>
+          <View style={{marginTop: 30}}>
             <Text style={{ fontSize: 20, textAlign: 'left', }}>{screen.acceptText}</Text>
 
             {/* <TouchableOpacity
@@ -148,7 +148,7 @@ Text.defaultProps.allowFontScaling = false;
               <View style={{ paddingTop: 100 }}>
                   <Button
                       style={{ backgroundColor: '#0451A5', alignSelf:'center', width: width - 100, height: 40, justifyContent: 'center' }}
-                      onPress={()=>this._onPressOK()}>
+                      onPress={()=>this._onPressOK(mobileNo)}>
                       <Text style={{ fontSize: 18, color: 'white' }}>{screen.okButton}</Text>
                   </Button>
               </View>

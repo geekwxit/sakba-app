@@ -16,7 +16,6 @@ import SignUpScreen from './src/SignUpScreen';
 import Review from './src/ReviewOrder';
 import FabricTypeSelection from "./src/FabricTypeSelection";
 import DeliveryOptions from "./src/DeliveryOptions";
-//import Fabs from "./src/Fabs";
 
 const AppNavigator = createStackNavigator(
   {

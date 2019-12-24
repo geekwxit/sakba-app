@@ -8,6 +8,7 @@ import RadioGroup from './components/RadioGroupCustom';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {fabricStrings} from "./Strings";
 import Loader from "./components/Loader";
+import {B, I, U} from "./components/TextStyles";
 
 const { width, height } = Dimensions.get('window');
 // var fabric = {
@@ -92,7 +93,7 @@ export default class FabricTypeSelection extends Component<Props>{
   async getAllFabrics(){
     var screen = this.state.language.fabricScreen;
     // try{
-      axios.get(fabricStrings.getAllFabrics)
+      axios.get(fabricStrings.getAllFabrics+'?lang='+this.state.language.getLanguage())
         .then(response=>response.data)
         .then(response=>{
             this.setState({brands: response.brands})
@@ -131,7 +132,7 @@ export default class FabricTypeSelection extends Component<Props>{
     this.setState({productBox:false});
     var productFound = false;
     const {selectedPattern, selectedBrand, selectedColor} = this.state;
-    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: this.state.brands[selectedBrand].price};
+    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: parseInt(this.state.brands[selectedBrand].price)};
     this.state.cart.map((item,index)=>{
       if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
         Alert.alert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]);
@@ -232,7 +233,7 @@ export default class FabricTypeSelection extends Component<Props>{
           <ProductModal isRTL={this.state.language.isRTL} measurement={this.state.measurement} text={screen} price={this.state.brands[this.state.selectedBrand].price} brands={this.state.brands} onAdd={()=>this.addToCart()} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.getPatternData()?(this.getPatternData())[this.state.selectedPattern].path:null, color: this.getColorData()?(this.getColorData())[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
           <CartModal
               //showDetail={(product)=>this.setState({cartVisible: false, productDetail: product, productDetailVisible: true})}
-              measurement={this.state.measurement} isRTL={this.state.language.isRTL} text={screen} checkout={this.doCheckout} brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+              measurement={this.state.measurement}   isRTL={this.state.language.isRTL} text={screen} checkout={this.doCheckout} brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <FabricPreview ok={screen.previewOKButton} title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
           {/*<ProductDetail close={()=>this.setState({productDetailVisible: false})} visible={this.state.productDetailVisible} product={this.state.productDetail} ok={screen.previewOKButton} title="Product Detail" />*/}
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
@@ -251,6 +252,7 @@ export default class FabricTypeSelection extends Component<Props>{
 
                     <View>
                       <RadioGroup
+                          text={screen}
                           isRTL={this.state.language.isRTL}
                           data={this.state.brands}
                           type={'brands'}
@@ -276,6 +278,7 @@ export default class FabricTypeSelection extends Component<Props>{
               {/*  <View style={{ alignSelf: 'center', zIndex:10,height: this.state.patternOverlayHeight, width:width-50 , position: 'absolute', backgroundColor: 'rgba(255,255,255,0.85)'}}/>*/}
               {/*</TouchableWithoutFeedback>*/}
               <RadioGroup
+                  text={screen}
                   isRTL={this.state.language.isRTL}
                   data={this.getPatternData()}
                   type={'patterns'}
@@ -303,6 +306,7 @@ export default class FabricTypeSelection extends Component<Props>{
 
                     <View>
                       <RadioGroup
+                          text={screen}
                           isRTL={this.state.language.isRTL}
                           // data={this.state.brands?(this.state.selectedColor!==null?(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors:null):null}
                           data={this.getColorData()}
@@ -370,14 +374,11 @@ const ProductModal = (props) => {
               </View>
               <View style={{padding: 10}}>
                 <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
-                    {props.isRTL?<Text style={{fontSize: 18}}> {props.selected.brand}</Text>:null}
-                    <Text style={{fontSize: 18, fontWeight: 'bold'}}>{texts.selectPBrand}</Text>
-                    {!props.isRTL?<Text style={{fontSize: 18}}> {props.selected.brand}</Text>:null}
+                  <Text style={{fontSize: 18}}><B>{texts.selectPBrand}</B>{props.selected.brand}</Text>
                 </View>
                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>{texts.selectPPattern}</Text>
                   <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
-                      <Text style={{fontSize: 18, fontWeight: 'bold'}}>{texts.selectPPrice}</Text>
-                      <Text style={{fontSize: 18}}> {props.price} {texts.selectPerMeter}</Text>
+                    <Text style={{fontSize: 18}}><B>{texts.selectPPrice}</B> {props.price} {texts.selectPerMeter}</Text>
                   </View>
                   <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
                       {props.isRTL?<Text style={{fontSize: 18}}> {(props.price*props.measurement)!=0?(props.price*props.measurement):props.price + texts.kd}</Text>:null}
@@ -442,8 +443,19 @@ const CartModal = (props) => {
                         <View style={{flex:1}} onStartShouldSetResponder={()=>true}>
                           {
                             props.cartItems.map((item, index)=>{
-                              cartTotal += (item.quantity*props.brands[item.brand].price)*props.measurement;
-                              return <CartItem rate={props.brands[item.brand].price} showDetail={(product)=>{props.showDetail(product)}} isRTL={isRTL} text={props.text} price={(item.quantity*props.brands[item.brand].price)*props.measurement} quantity={item.quantity} key={index} onRemove={()=>props.removeItem(item.quantity,index)} name={props.brands[item.brand].name} pattern={props.brands[item.brand].patterns[item.pattern].path} color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
+                              cartTotal += (item.quantity*item.price)*props.measurement;
+                              return <CartItem
+                                  rate={item.price}
+                                  showDetail={(product)=>{props.showDetail(product)}}
+                                  isRTL={isRTL}
+                                  text={props.text}
+                                  price={(item.quantity*item.price)*props.measurement}
+                                  quantity={item.quantity}
+                                  key={index}
+                                  onRemove={()=>props.removeItem(item.quantity,index)}
+                                  name={props.brands[item.brand].name}
+                                  pattern={props.brands[item.brand].patterns[item.pattern].path}
+                                  color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                             })
                           }
                         </View>
@@ -490,52 +502,52 @@ const CartModal = (props) => {
       </Modal>
   )
 }
-const ProductDetail = (props) => {
-  return(
-      <Modal
-          style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
-          animationType='fade'
-          transparent={true}
-          onRequestClose={()=>props.close()}
-          visible={props.visible}>
-        <TouchableWithoutFeedback onPress={()=>props.close()}>
-          <View style={{flex:1 ,alignItems: 'center', justifyContent: 'center', backgroundColor:'#00000069'}}>
-            <TouchableWithoutFeedback onPress={()=>{}}>
-              <View  style={{width: width*0.8, backgroundColor:'#fff', borderRadius: 10}}>
-                <View style={{padding: 8,borderTopLeftRadius:10, borderTopRightRadius: 10,backgroundColor: '#0451A5',justifyContent: 'center', alignItems: 'center'}}>
-                  <Text style={{fontSize: 20, color: 'white'}}>{props.title}</Text>
-                </View>
-                <View style={{alignItems: 'center', padding: 10}}>
-                  {props.product &&
-                    <Image source={{uri: props.product}}
-                           style={{height: height*0.3, width: width*0.6}}/>
-                  }
-                </View>
-                <View>
-                  <Text style={{fontSize: 20, alignSelf: 'center', fontWeight: 'bold'}}>Toyobo</Text>
-                  <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Your Measurement:</Text><Text style={{fontSize: 18}}> 3.5 meters</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Rate :</Text><Text style={{fontSize: 18}}> 3 KD per meter</Text>
-                  </View>
-                  <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Final Price :</Text><Text style={{fontSize: 18}}>{`${3.5*3} KD per meter`}</Text>
-                  </View>
-
-                </View>
-                <TouchableOpacity onPress={()=>props.close()}>
-                  <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
-                    <Text style={{fontSize: 20, color: 'white'}}>{props.ok?"OK":"OK"}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-  )
-}
+// const ProductDetail = (props) => {
+//   return(
+//       <Modal
+//           style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
+//           animationType='fade'
+//           transparent={true}
+//           onRequestClose={()=>props.close()}
+//           visible={props.visible}>
+//         <TouchableWithoutFeedback onPress={()=>props.close()}>
+//           <View style={{flex:1 ,alignItems: 'center', justifyContent: 'center', backgroundColor:'#00000069'}}>
+//             <TouchableWithoutFeedback onPress={()=>{}}>
+//               <View  style={{width: width*0.8, backgroundColor:'#fff', borderRadius: 10}}>
+//                 <View style={{padding: 8,borderTopLeftRadius:10, borderTopRightRadius: 10,backgroundColor: '#0451A5',justifyContent: 'center', alignItems: 'center'}}>
+//                   <Text style={{fontSize: 20, color: 'white'}}>{props.title}</Text>
+//                 </View>
+//                 <View style={{alignItems: 'center', padding: 10}}>
+//                   {props.product &&
+//                     <Image source={{uri: props.product}}
+//                            style={{height: height*0.3, width: width*0.6}}/>
+//                   }
+//                 </View>
+//                 <View>
+//                   <Text style={{fontSize: 20, alignSelf: 'center', fontWeight: 'bold'}}>Toyobo</Text>
+//                   <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+//                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>Your Measurement:</Text><Text style={{fontSize: 18}}> 3.5 meters</Text>
+//                   </View>
+//                   <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+//                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>Rate :</Text><Text style={{fontSize: 18}}> 3 KD per meter</Text>
+//                   </View>
+//                   <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+//                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>Final Price :</Text><Text style={{fontSize: 18}}>{`${3.5*3} KD per meter`}</Text>
+//                   </View>
+//
+//                 </View>
+//                 <TouchableOpacity onPress={()=>props.close()}>
+//                   <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
+//                     <Text style={{fontSize: 20, color: 'white'}}>{props.ok?"OK":"OK"}</Text>
+//                   </View>
+//                 </TouchableOpacity>
+//               </View>
+//             </TouchableWithoutFeedback>
+//           </View>
+//         </TouchableWithoutFeedback>
+//       </Modal>
+//   )
+// }
 const FabricPreview = (props) => {
   console.log({src: props.source});
   return(
@@ -610,7 +622,8 @@ const CartItem = (props) =>{
               <View style={{flex:2, flexDirection: 'row', width: 400}}>
                 <View style={{flex: 2}}>
                   <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
-                  <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartQuantity} {props.quantity}</Text>
+                  <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.rateLabel} {props.rate} {texts.kdPerMeter}</Text>
+                  {/*<Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartQuantity} {props.quantity}</Text>*/}
                   <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartPrice} {props.price}</Text>
                   {/*<Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>*/}
                 </View>
