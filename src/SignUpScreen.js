@@ -6,10 +6,6 @@ import {
 
 import { StackActions, NavigationActions } from 'react-navigation';
 
-// import Loader from '../components/Loader'
-
-
-
 const { width, height } = Dimensions.get('window');
 
 const resetAction = StackActions.reset({
@@ -18,6 +14,10 @@ const resetAction = StackActions.reset({
         NavigationActions.navigate({ routeName: 'login' }),
     ],
 });
+
+
+// import Loader from '../components/Loader'
+
 
 class SignUpScreen extends Component {
 

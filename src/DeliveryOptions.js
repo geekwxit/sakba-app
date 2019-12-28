@@ -50,6 +50,7 @@ export default class DeliveryOptions extends Component<Props>{
         this.setState({language: this.props.navigation.getParam('language')});
         PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
     }
+
     submitForm() {
         var cartTotal = 0;
         var screen = this.state.language.deliveryScreen;
@@ -92,261 +93,68 @@ export default class DeliveryOptions extends Component<Props>{
         var pickup_type, delivery_type, whichStore;
         var fabricOptionValue, deliveryOptionValue, subTotal;
 
+        whichStore = deliveryOptionPickUpFormStore == 'one'?"Awquaf Complex":"Qurain Shop";
+        pickup_type = itemSelected=="itemTwo"?'send':'pickup';
+        fabricOptionValue = itemSelected=="itemTwo"?0:3;
+        delivery_type = deliveryOption === 'itemTwo'?'home':'self';
+        deliveryOptionValue = deliveryOption == 'itemTwo'?3:0;
+        subTotal = (12 * this.state.noOfPieces);
 
-        if (itemSelected == "itemTwo") {
-            console.log('one');
-            pickup_type = 'send';
-            fabricOptionValue = 0;
-            if (deliveryOption == 'itemTwo') {
-                console.log('2 one');
-                delivery_type = 'home';
-                deliveryOptionValue = 3;
-                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
-                if (area && block && house && street) {
+        const data = {
+            o_pieces: this.state.noOfPieces,
+            o_total: subTotal + fabricOptionValue + deliveryOptionValue + cartTotal,
+            o_number: this.state.mobileNo,
+            o_subtotal: subTotal,
+            o_pickup_charge: fabricOptionValue,
+            o_delivery_charge: deliveryOptionValue,
+            pickup_type: pickup_type,
+            delivery_type: delivery_type,
+            d_apartment: apartment,
+            d_area: area,
+            d_block: block,
+            d_extra_number: extra_Number,
+            d_floor: floor,
+            d_house: house, d_jada: jada, d_street: street,
+            products,remarks: this.state.remarks,
+            p_apartment: apartment,
+            p_area: area,
+            p_block: block,
+            p_extra_number: extra_Number,
+            p_floor: floor,
+            p_house: house, p_jada: jada, p_street: street,
+            d_store_name: whichStore,
+        }
 
-                    var data = JSON.stringify({
-                        o_pieces: this.state.noOfPieces,
-                        o_total: (this.state.noOfPieces * 12) + cartTotal,
-                        o_number: this.state.mobileNo,
-                        o_subtotal: subTotal,
-                        o_pickup_charge: fabricOptionValue,
-                        o_delivery_charge: deliveryOptionValue,
-                        pickup_type: pickup_type,
-                        delivery_type: delivery_type,
-                        d_apartment: apartment,
-                        d_area: area,
-                        d_block: block,
-                        d_extra_number: extra_Number,
-                        d_floor: floor,
-                        d_house: house, d_jada: jada, d_street: street,
-                        products,remarks: this.state.remarks
-                    })
-
-                    // if default condition will occur
-                    this.setState({isLoading: true});
-                    axios.post(url, data)
-                        .then((response) => response.data)
-                        .then((responseData) => {
-
-                            console.log(responseData);
-                            this.setState({emailId: responseData.email, isLoading: false}, () => {
-                                this.props.navigation.navigate('order_detail', {
-                                    id: responseData.id,
-                                    token: responseData.token,
-                                    noOfPieces: this.state.noOfPieces,
-                                    fabricOptionValue: fabricOptionValue,
-                                    deliveryOptionValue: deliveryOptionValue,
-                                    customerName: customerName,
-                                    measurementDate: measurementDate,
-                                    mobileNo: this.state.mobileNo,
-                                    delivery_date: responseData.delivery_date,
-                                    emailID: emailAddr,
-                                    ...others
-                                });
-                            })
-                        })
-                        .catch((error) => {
-
-                            console.log(error);
-                            this.setState({isLoading: false})
-                            console.warn('error');
-                        });
-                } else {
-                    Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
-                    // alert(screen.detailsRequired);
-                }
-            } else {
-                console.log('2 two');
-                deliveryOptionValue = 0;
-                delivery_type = "self";
-                if (deliveryOptionPickUpFormStore == 'one') {
-                    whichStore = "Awquaf Complex"
-                } else {
-                    whichStore = "Qurain Shop"
-                }
-
-                subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue +cartTotal;
-
-                var data = JSON.stringify({
-                    o_pieces: this.state.noOfPieces,
-                    o_total: (this.state.noOfPieces * 12) + cartTotal,
-                    o_number: this.state.mobileNo,
-                    o_subtotal: subTotal,
-                    o_pickup_charge: fabricOptionValue,
-                    o_delivery_charge: deliveryOptionValue,
-                    pickup_type: pickup_type,
-                    delivery_type: delivery_type,
-                    d_store_name: whichStore,
-                    products,remarks: this.state.remarks
-                })
-                this.setState({isLoading: true});
-                axios.post(url, data)
-                    .then((response) => response.data)
-                    .then((responseData) => {
-
-                        this.setState({isLoading: false});
-                        console.log(responseData);
-
-                        this.setState({emailId: responseData.email, isLoading: false});
-                        this.props.navigation.navigate('order_detail', {
-                            id: responseData.id,
-                            token: responseData.token,
-                            noOfPieces: this.state.noOfPieces,
-                            fabricOptionValue: fabricOptionValue,
-                            deliveryOptionValue: deliveryOptionValue,
-                            customerName: customerName,
-                            measurementDate: measurementDate,
-                            mobileNo: this.state.mobileNo,
-                            delivery_date: responseData.delivery_date,
-                            emailID: emailAddr,
-                            ...others
-                        });
-
-                    })
-                    .catch((error) => {
-
-                        console.log(error);
-                        this.setState({isLoading: false})
-                        console.warn('error');
-                    });
-            }
+        if((fabricOptionValue!=0 || deliveryOptionValue!=0) && this.validateFields(area, street, jada, floor, block, apartment, extra_Number, house)){
+            Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
         } else {
-            console.log('two');
-            pickup_type = 'pickup';
-            fabricOptionValue = 3;
-            if (area && block && house && street) {
-                if (deliveryOption == "itemTwo") {
-                    delivery_type = 'home';
-                    deliveryOptionValue = 3;
-                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
-                    if (area && block && house && street) {
-                        var data = JSON.stringify({
-
-                            o_pieces: this.state.noOfPieces,
-                            o_total: (this.state.noOfPieces*12) + cartTotal,
-                            o_number: this.state.mobileNo,
-                            o_subtotal: subTotal,
-                            o_pickup_charge: fabricOptionValue,
-                            o_delivery_charge: deliveryOptionValue,
-
-
-                            pickup_type: pickup_type,
-                            delivery_type: delivery_type,
-                            d_apartment: apartment,
-                            d_area: area, d_block: block,
-                            d_extra_number: extra_Number,
-                            d_floor: floor, d_house: house,
-                            d_jada: jada, d_street: street
-                            , p_apartment: apartment,
-                            p_area: area,
-                            p_block: block,
-                            p_extra_number: extra_Number,
-                            p_floor: floor,
-                            p_house: house, p_jada: jada, p_street: street,
-                            products,remarks: this.state.remarks
-                        })
-
-                        // if default condition will occur
-                        this.setState({isLoading: true})
-                        axios.post(url, data)
-                            .then((response) => response.data)
-                            .then((responseData) => {
-
-                                console.log(responseData);
-
-                                this.setState({emailId: responseData.email, isLoading: false}, () => {
-                                    this.props.navigation.navigate('order_detail', {
-                                        id: responseData.id,
-                                        token: responseData.token,
-                                        noOfPieces: this.state.noOfPieces,
-                                        fabricOptionValue: fabricOptionValue,
-                                        deliveryOptionValue: deliveryOptionValue,
-                                        customerName: customerName,
-                                        measurementDate: measurementDate,
-                                        mobileNo: this.state.mobileNo,
-                                        delivery_date: responseData.delivery_date,
-                                        emailID: emailAddr,
-                                        ...others
-                                    });
-                                })
-                            })
-                            .catch((error) => {
-
-                                console.log(error);
-                                this.setState({isLoading: false})
-                            });
-                    } else {
-                        Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
-                        // alert(screen.detailsRequired);
-                    }
-
-
-                } else {
-                    if (deliveryOptionPickUpFormStore == 'one') {
-                        whichStore = "Awquaf Complex"
-                    } else {
-                        whichStore = "Qurain Shop"
-                    }
-                    deliveryOptionValue = 0;
-                    subTotal = 12 * this.state.noOfPieces + fabricOptionValue + deliveryOptionValue + cartTotal;
-                    var data = JSON.stringify({
-
-                        o_pieces: this.state.noOfPieces,
-                        o_total: (this.state.noOfPieces * 12) + cartTotal,
-                        o_number: this.state.mobileNo,
-                        o_subtotal: subTotal,
-                        o_pickup_charge: fabricOptionValue,
-                        o_delivery_charge: deliveryOptionValue,
-
-
-                        pickup_type: pickup_type,
-                        delivery_type: delivery_type,
-                        p_apartment: apartment, p_area: area,
-                        p_block: block, p_extra_number: extra_Number,
-                        p_floor: floor, p_house: house,
-                        p_jada: jada, p_street: street,
-                        d_store_name: whichStore,
-                        products, remarks: this.state.remarks
+            console.log(data);
+            axios.post(url, data)
+                .then((response) => response.data)
+                .then(responseData=>{
+                    this.setState({emailId: responseData.email},()=>this.props.navigation.navigate('order_detail', {
+                        id: responseData.id,
+                        token: responseData.token,
+                        noOfPieces: this.state.noOfPieces,
+                        fabricOptionValue: fabricOptionValue,
+                        deliveryOptionValue: deliveryOptionValue,
+                        customerName: customerName,
+                        measurementDate: measurementDate,
+                        mobileNo: this.state.mobileNo,
+                        delivery_date: responseData.delivery_date,
+                        emailID: emailAddr,
+                        ...others
                     })
-                    this.setState({isLoading: true});
-                    axios.post(url, data)
-                        .then((response) => response.data)
-                        .then((responseData) => {
-
-                            console.log(responseData);
-
-                            this.setState({emailId: responseData.email, isLoading: false}, () => {
-                                this.props.navigation.navigate('order_detail', {
-                                    id: responseData.id,
-                                    token: responseData.token,
-                                    noOfPieces: this.state.noOfPieces,
-                                    fabricOptionValue: fabricOptionValue,
-                                    deliveryOptionValue: deliveryOptionValue,
-                                    customerName: customerName,
-                                    measurementDate: measurementDate,
-                                    mobileNo: this.state.mobileNo,
-                                    delivery_date: responseData.delivery_date,
-                                    emailID: emailAddr,
-                                    ...others
-                                });
-                            })
-
-                        })
-                        .catch((error) => {
-
-                            console.log(error);
-                            this.setState({isLoading: false})
-                            console.warn('error');
-                        });
-                }
-
-            } else {
-                Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
-                // alert(screen.detailsRequired);
-            }
+                )})
         }
     }
 
+    validateFields(){
+        var empty =0;
+        var ar = Object.assign([], arguments);
+        ar.forEach(a=>a.trim().length==0?empty++:0);
+        return empty;
+    }
     getComponent(){
         var screen = this.state.language.deliveryScreen;
         if (this.state.deliveryOption == 'itemTwo') {

@@ -187,7 +187,7 @@ export default class OrderDetail extends Component<props>{
     let tempCart = [];
     cart.forEach(item=>{
       y = tempCart.find(fItem=>{return fItem.brand==item.brand})
-      y?y.quantity += item.quantity:tempCart.push({brand: item.brand, name: brands[item.brand].name, quantity: item.quantity, price: brands[item.brand].price})
+      y?(y.quantity += item.quantity):tempCart.push({brand: item.brand, name: brands[item.brand].name, quantity: item.quantity, price: brands[item.brand].price})
     })
     return tempCart.length?tempCart:null;
   }
