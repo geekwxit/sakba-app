@@ -179,6 +179,7 @@ export default class FabricTypeSelection extends Component<Props>{
     //             this.props.navigation.navigate('delivery',
     //                 {language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart, noOfPieces: this.state.noOfPieces, measurement: this.state.measurement}):
     //             alert(screen.commonError);
+    console.log("PLEASE CHECK:", screen.moreThan(inHomeCount));
     this.state.totalCartItems>inHomeCount?Alert.alert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
         this.state.totalCartItems<inHomeCount?Alert.alert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
             this.state.totalCartItems==inHomeCount?
@@ -255,7 +256,7 @@ export default class FabricTypeSelection extends Component<Props>{
                           text={screen}
                           isRTL={this.state.language.isRTL}
                           data={this.state.brands}
-                          type={'brands'}
+                          type={screen.brandLabel}
                           isImage={false}
                           selected={this.state.selectedBrand}
                           onSelect={(index) => {
@@ -281,7 +282,7 @@ export default class FabricTypeSelection extends Component<Props>{
                   text={screen}
                   isRTL={this.state.language.isRTL}
                   data={this.getPatternData()}
-                  type={'patterns'}
+                  type={screen.patternLabel}
                   isImage={true}
                   selected={this.state.selectedPattern}
                   onSelect={(index)=>{
@@ -310,7 +311,7 @@ export default class FabricTypeSelection extends Component<Props>{
                           isRTL={this.state.language.isRTL}
                           // data={this.state.brands?(this.state.selectedColor!==null?(this.state.brands[this.state.selectedBrand]).patterns[this.state.selectedPattern].colors:null):null}
                           data={this.getColorData()}
-                          type={'colors'}
+                          type={screen.colorsLabel}
                           isImage={true}
                           selected={this.state.selectedColor}
                           onSelect={(index) =>{

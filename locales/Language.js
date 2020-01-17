@@ -30,7 +30,7 @@ export const strings = new LocalizedStrings({
             wTextMeasure: "Your last measurement on ",
             acceptText: "Do you accept this measurement",
             agree: "I agree",
-            needNew: "I need new mesurments",
+            needNew: "I need new measurments",
         },
         customerAgree:{
             dishdashaCount: "How many dishdasha you want ?",
@@ -57,12 +57,12 @@ export const strings = new LocalizedStrings({
             pApartment: "Apartment",
             pExtra: "Extra Number",
             opPickup: "Pick up from our store",
-            opHomeDel: 'Home delivery "3kd Extra"',
+            opHomeDel: 'Home delivery "3 KD Extra"',
             opAwqaf: "Awqaf Complex",
             opQurain: "Qurain Shop",
             orderNowButton: "Order Now !",
             detailsRequired: "All Details Are Required",
-            pRemarks: "Enter remarks here (Optional)...",
+            pRemarks: "Remarks :",
         },
         fabricScreen: {
             title: "Select Fabric Options",
@@ -87,8 +87,9 @@ export const strings = new LocalizedStrings({
             lessThan: (inHomeCount)=>('Items on cart are less than selected in-home dishdashas i.e.' + inHomeCount +' . Please add some items.'),
             alreadyInCart: "Product is already in cart.", kd: "KD",
             noColorPattern: "This brand has no pattern or color", measureText: "Your measurement :",
-            kdPerMeter: "KD per meter", rateLabel: "Rate :", meters: "meters"
+            kdPerMeter: "KD per meter", rateLabel: "Rate :", meters: "meters",
 
+            brandLabel: "brands", patternLabel: "patterns", colorsLabel: "colors",
         },
         orderDetail:{
             title: "Order Details",
@@ -116,7 +117,7 @@ export const strings = new LocalizedStrings({
             confirmMsg2: "when you complete",
             confirmMsg3: "your payment",
             reviewButton: "REVIEW ORDER",
-            alertOnEmailSent: "Our team will contact you for the payment link.",
+            alertOnEmailSent: "Our team will contact you for the payment link. Please check your junk/spam email.",
             regularError    : "Something Went Wrong!",
             emailError      : "Invalid email address!",
             reviewError: "Please enter an email and send to continue!"
@@ -208,13 +209,12 @@ export const strings = new LocalizedStrings({
             outside: "برسل لكم خامي",
             inhome: "بشتري خام منكم",
             proceedButton: "كمّل",
-            maxInHome : "In home count value cannot exceed total no of dishdashas!",
-            maxOutside: "Outside count value cannot exceed total no of dishdashas!",
-
+            maxInHome : "ضفت اكثر من العدد",
+            maxOutside: "ضفت اكثر من العدد",
         },
         deliveryScreen: {
-            screenTitle: "Delivery Options",
-            text1: "Choose delivery option ",
+            screenTitle: "شلون تبي تعطينا خامك؟",
+            text1: "اختيار خيار التسليم ", //Googled it
             fabricLabel: "توصيل الخام",
             sendFabric: "اجيبه لكم / او اطرشه لكم المحل",
             pickup: 'طرشولي السايق يستلمه من عندي "ندفعك ٣ د.ك"',
@@ -234,7 +234,7 @@ export const strings = new LocalizedStrings({
             opQurain: "أسواق القرين",
             orderNowButton: "انتقل للدفع",
             detailsRequired: "كل البيانات مطلوبة",
-            pRemarks: "Enter remarks here (Optional)...",
+            pRemarks: "ملاحظات :",
         },
         fabricScreen: {
             title: "اختار الخامات",
@@ -245,7 +245,7 @@ export const strings = new LocalizedStrings({
             addToCartButton: "اضافه القطعة",
             checkoutButton: "انتقل لاختيارات التسليم والاستلام",
 
-            noFabric: "This fabric has no",
+            noFabric: "هذا الخام لا يوجد لديه",
 
             selectPTitle: "الخامة اللي اخترتها", selectPButton: "ضيف القطعة", selectPBrand: "نوع الخام:", selectPPattern: "النقشة واللون:", selectPPrice: "السعر:",
             selectPerMeter: "سعر المتر", selectPFinalPrice: "المجموع:",
@@ -255,11 +255,13 @@ export const strings = new LocalizedStrings({
             commonError: "في شي غلط",
             quantityInc: "عدد ال",
             addedToCart: "القطعة انضافت عالطلب",
-            moreThan: (inHomeCount)=>('Items on cart are more than selected in-home dishdashas i.e.' + inHomeCount +' . Please remove some items.'),
-            lessThan: (inHomeCount)=>('Items on cart are less than selected in-home dishdashas i.e.' + inHomeCount +' . Please add some items.'),
-            alreadyInCart: "Product is already in cart.", kd: "KD",
-            noColorPattern: "This brand has no pattern or color", measureText: "Your measurement :",
-            kdPerMeter: "KD per meter", rateLabel: "Rate :", meters: "meters"
+            moreThan: (inHomeCount)=>("العناصر الموجودة في العربة أكثر من "+ inHomeCount +" الدشداشة. يرجى إزالة بعض العناصر."),
+            lessThan: (inHomeCount)=>('العناصر الموجودة في العربة أقل من '+ inHomeCount +' دشداشة. الرجاء إضافة بعض العناصر.'),
+            alreadyInCart: "المنتج بالفعل في العربة", kd: "KD",
+            noColorPattern: "هذه العلامة التجارية ليس لها نمط أو لون", measureText: "القياس الخاص بك:",
+            kdPerMeter: "دينار كويتي لكل متر", rateLabel: "معدل :", meters: "متر",
+
+            brandLabel: "ركة", patternLabel: "أنماط", colorsLabel: "الألوان",
         },
         orderDetail:{
             title: "تفاصيل الطلب",
@@ -287,7 +289,7 @@ export const strings = new LocalizedStrings({
             confirmMsg2: "بعد ما تكمّل",
             confirmMsg3: "عملية الدفع",
             reviewButton: "عرض الطلب",
-            alertOnEmailSent: "راح نكلمك ونرسل لك رابط الدفع",
+            alertOnEmailSent: "راح نكلمك ونرسل لك رابط الدفع يرجى التحقق من البريد الإلكتروني غير الهام / البريد العشوائي الخاص بك",
             regularError    : "في شي غلط",
             emailError      : "الايميل غلط",
             reviewError: "اكتب ايميلك واضغط ارسال"
@@ -306,7 +308,7 @@ export const strings = new LocalizedStrings({
             addressLabel: "العنوان:",
             enterUserName: "اكتب اسمك",
             enterNum: "اكتب رقمك",
-            addressField: "Please enter atleast one address field",
+            addressField: "الرجاء إدخال حقل عنوان واحد على الأقل",
             sendExec: "راح يكلمك الموظف المختص",
             title: "تفاصيل الطلب",
             pName: "الاسم",
@@ -332,7 +334,7 @@ export const strings = new LocalizedStrings({
             item_name: "الصنف",
             item_price: "السعر",
             total: "المجموع",
-            subtotal: "Subtotal",
+            subtotal: "حاصل الجمع",
             quantity: "العدد",
             oID: "رقم الطلب",
             orderUnable: "مو قادر يعرض الطلب",

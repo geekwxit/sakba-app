@@ -45,7 +45,7 @@ export default class customerAgree extends Component<Props>{
       const outsideCount= this.state.outsideCount;
       const mobileNo    = this.props.navigation.getParam('mobileNo', null);
       const customerName= this.props.navigation.getParam('customerName', null);
-
+		console.log("customerName: ",customerName);
       this.props.navigation.navigate(inHomeCount>0?'fabric':'delivery',
           {measurement: this.props.navigation.getParam('measurement'),language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, noOfPieces: this.state.noOfPieces})
     }

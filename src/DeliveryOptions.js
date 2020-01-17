@@ -125,7 +125,7 @@ export default class DeliveryOptions extends Component<Props>{
             d_store_name: whichStore,
         }
 
-        if((fabricOptionValue!=0 || deliveryOptionValue!=0) && this.validateFields(area, street, jada, floor, block, apartment, extra_Number, house)){
+        if((fabricOptionValue!=0 || deliveryOptionValue!=0) && this.validateFields(area,block,house,street)){
             Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
         } else {
             console.log(data);
@@ -496,25 +496,28 @@ export default class DeliveryOptions extends Component<Props>{
 
                         {/*<View style={{marginTop:10,alignSelf:'center',alignItems: 'center', justifyContent:'center',borderColor:'#0451A5',borderRadius:5,padding:5,borderWidth:1}}>*/}
                             {/*<Text style={{color: 'black',fontSize:15}}>Remarks (Optional) : </Text>*/}
+                            <View style={{borderColor:'#abbee9',
+                                borderWidth:1,
+                                marginTop:10,
+                                borderRadius:5,
+                                padding:10,
+                                backgroundColor:'#d1e2ff',
+                                width: (width / 2 - 40)*2,
+                                minHeight: 30,}}>
+                                <Text style={{marginBottom:2,flex:1, justifyContent:this.state.language.isRTL?'flex-end':'flex-start'}}>{screen.pRemarks}</Text>
                             <TextInput
                                 selectionColor={'rgba(4,101,227,0.44)'}
                                 multiline={true}
                                 style={{
-                                    borderColor:'#abbee9',
-                                    borderWidth:1,
-                                    marginTop:10,
-                                    borderRadius:5,
-                                    padding:15,
-                                    backgroundColor:'#d1e2ff',
-                                    textAlign: this.state.language.isRTL?'right':'left',
-                                    width: (width / 2 - 40)*2,
-                                    minHeight: 40,
+                                    textAlign:this.state.language.isRTL?'right':'left',
+                                    borderBottomWidth:1,
+                                    flex:1,
                                     fontSize: 15 }}
-                                placeholder={screen.pRemarks}
                                 onChangeText={(remarks) => {
                                     this.setState({remarks, charcount: remarks.length})
                                 }}
                             />
+                            </View>
                             {/*<View style={{backgroundColor: '#d1e2ff', alignItems: 'flex-end',width: width - 110}}>*/}
                             {/*    <Text style={{color:'#878787',backgroundColor: '#d1e2ff'}}>{this.state.charcount}/200</Text>*/}
                             {/*</View>*/}

@@ -96,7 +96,7 @@ export default class OrderDetail extends Component<props>{
     var ph_number = user.mobileNo;
     var email = user.emailID;
     var amount = Number.parseInt(total);
-    var data = JSON.stringify({token, fullname, ph_number, email, amount});
+    var data = JSON.stringify({token, fullname, ph_number, email, amount, orderID: this.state.orderId});
 
     this.sendApiRequest(data).then(()=>{
       this.props.navigation.navigate('order_confirm', {

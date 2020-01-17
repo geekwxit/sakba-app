@@ -106,7 +106,7 @@ export default class  OrderConfirm extends Component<Props>{
                                     {!isRTL?<View style={{flex:1}}>
                                         <TextInput selectionColor={'rgba(4,101,227,0.44)'} placeholder={screen.pEmail} style={{fontSize: 15, paddingLeft:10, paddingRight: 10}} onChangeText={(email)=>this.setState({email})}/>
                                     </View>:null}
-                                    <View style={{width: 40, height: 40, paddingRight:10}}>
+                                    <View style={{width: 40, height: 40, paddingHorizontal:5}}>
                                         <TouchableOpacity style={{flex:1}} onPress={()=>this.sendMail()}>
                                              <Image style={{transform: [{ rotate: isRTL?'180deg':'0deg' }], resizeMode: 'contain', flex:1, width: null, height: null}} source={sendIconBlue} />
                                         </TouchableOpacity>

@@ -42,8 +42,8 @@ export default class WelcomeCustomer extends Component {
     // }
   }
 
-  _onPressOK(mobileNo){
-      const {value, customerName, measurementDate} = this.state;
+  _onPressOK(mobileNo, customerName){
+      const {value, measurementDate} = this.state;
       if (value == 0) {
           this.props.navigation.navigate('customer_agree', {
               measurement: this.props.navigation.getParam('measurement'),
@@ -148,7 +148,7 @@ Text.defaultProps.allowFontScaling = false;
               <View style={{ paddingTop: 100 }}>
                   <Button
                       style={{ backgroundColor: '#0451A5', alignSelf:'center', width: width - 100, height: 40, justifyContent: 'center' }}
-                      onPress={()=>this._onPressOK(mobileNo)}>
+                      onPress={()=>this._onPressOK(mobileNo, customerName)}>
                       <Text style={{ fontSize: 18, color: 'white' }}>{screen.okButton}</Text>
                   </Button>
               </View>

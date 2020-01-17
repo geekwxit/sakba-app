@@ -1,6 +1,6 @@
-/*
- @Authour Satyanarayan Gotherwal
- @Date  19/04/2019
+/**
+ * @Authour Satyanarayan Gotherwal
+ * @Date  19/04/2019
 */
 import React, { Component } from 'react';
 import {Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking,ScrollView } from 'react-native';
@@ -17,7 +17,6 @@ export default class Login extends Component {
   };
 
   componentDidMount(){
-    // this.setLanguage(strings.getLanguage());
     this.setLanguage();
   }
   async setLanguage(){
@@ -29,7 +28,6 @@ export default class Login extends Component {
 
   constructor(props) {
     super(props);
-    //modalValue = props.navigation.getParam('shouldShow', false);
     this.state = {
       mobileNo: '',
       page : strings.login,
@@ -49,13 +47,10 @@ export default class Login extends Component {
     try {
       //Assign the promise unresolved first then get the data using the json method.
       const mobileNumberApiCall = await Axios.get('http://sakba.net/mobileApi/all-number.php');
-      console.log("thisi sthe tdataa", mobileNumberApiCall)
       const mobileNumberList = mobileNumberApiCall.data;
       this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
     } catch (err) {
       Alert.alert(strings.commonFields.alertTitle, err, [{text: strings.commonFields.okButton}]);
-      // alert(err);
-      console.log("Error fetching data-----------", err);
     }
   }
 
@@ -85,13 +80,9 @@ export default class Login extends Component {
     var reg = /^[0-9]+$/
     if (this.state.mobileNo == null) {
       Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.mobileError, [{text: strings.commonFields.okButton}]);
-      // alert(this.state.page.validation.mobileError)
     } else if (this.state.mobileNo.length < 8) {
-      // Alert.alert(this.state.page.screenTitle, "fas");
       Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.lengthError, [{text: strings.commonFields.okButton}]);
-      //alert(this.state.page.validation.lengthError)
     } else if (!reg.test(this.state.mobileNo)) {
-      // alert(this.state.page.validation.others)
       Alert.alert(strings.commonFields.alertTitle, this.state.page.validation.others, [{text: strings.commonFields.okButton}]);
     } else {
       this.checkMobileNo();
@@ -125,16 +116,6 @@ export default class Login extends Component {
   visitToShop() {
     this.props.navigation.navigate('visit_to_shoppage', {language: strings});
   }
-  // gotoreview(e){
-  //     e.navigate('review',
-  //         {
-  //           language: strings,
-  //           measurement: 3.5,
-  //           order_id: 932,
-  //           deliveryDate: "12-12-2019"
-  //         }
-  //         );
-  // }
   render() {
       screen = this.state.page;
       Text.defaultProps = Text.defaultProps || {};
@@ -208,8 +189,6 @@ export default class Login extends Component {
                     <View>
                     <Image style={{width: 90, height: 90}} source={require('../../img/whatsapp.png')}/>
                     </View>
-                    {/*<Icon type="MaterialCommunityIcons" name={'whatsapp'} style={{fontSize:50,marginTop:20,   paddingRight: 10, color: 'green' }} />*/}
-                    {/* <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Contact us on 96566333116</Text>*/}
                   </TouchableOpacity>
                 </View>
               </View>
