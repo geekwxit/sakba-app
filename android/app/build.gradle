@@ -102,8 +102,8 @@ android {
         applicationId "com.sakba"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4330000    /** Here we need to change version every time **/
-        versionName "14.3.3"  /** Here we need to change version every time **/
+        versionCode 5000000    /** Here we need to change version every time **/
+        versionName "15.0"  /** Here we need to change version every time previous was 14.3.3**/
     }
     splits {
         abi {
