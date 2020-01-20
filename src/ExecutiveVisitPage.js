@@ -78,6 +78,7 @@ Text.defaultProps.allowFontScaling = false;
 
   render() {
     var screen = this.state.page;
+    const isRTL = this.state.language.isRTL;
     return (
       <Container>
         <Content>
@@ -94,7 +95,7 @@ Text.defaultProps.allowFontScaling = false;
                   <Input
                     placeholder={screen.pName}
                     placeholderTextColor='#aaa'
-                    style={{ height: 40 }}
+                    style={{ height: 40, textAlign: isRTL?'right':'left'}}
                     value={this.state.name}
                     onChangeText={(value) => { this.setState({ name: value }) }}
                   />
@@ -105,22 +106,24 @@ Text.defaultProps.allowFontScaling = false;
                     keyboardType='numeric'
                     maxLength={10}
                     placeholderTextColor='#aaa'
-                    style={{ height: 40 }}
+                    style={{ height: 40, textAlign: isRTL?'right':'left' }}
                     value={this.state.number}
                     onChangeText={(value) => { this.setState({ number: value }) }}
                   />
                 </Item>
-                <Text style={{ fontSize: 18, marginTop: 15 }}>{screen.addressLabel}</Text>
+                <Text style={{ fontSize: 18, marginTop: 15, textAlign: isRTL?'right':'left'}}>{screen.addressLabel}</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                      placeholder={screen.pArea}
-                      onChangeText={(text) => this.setState({ area: text })}
-                      value={this.state.area}
+                        style={{textAlign: isRTL?'right':'left'}}
+                        placeholder={screen.pArea}
+                        onChangeText={(text) => this.setState({ area: text })}
+                        value={this.state.area}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pBlock}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ block: text })}
@@ -131,6 +134,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pStreet}
                       onChangeText={(text) => this.setState({ street: text })}
                       value={this.state.street}
@@ -138,6 +142,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pJada}
                       onChangeText={(text) => this.setState({ jada: text })}
                       value={this.state.jada}
@@ -147,14 +152,15 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pHouse}
-
                       onChangeText={(text) => this.setState({ house: text })}
                       value={this.state.house}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pFloor}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ floor: text })}
@@ -165,6 +171,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pApartment}
                       onChangeText={(text) => this.setState({ apartment: text })}
                       value={this.state.apartment}
@@ -172,6 +179,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
+                        style={{textAlign: isRTL?'right':'left'}}
                       placeholder={screen.pExtra}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ extra_Number: text })}

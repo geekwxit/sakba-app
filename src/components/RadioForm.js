@@ -17,15 +17,16 @@ export default class RadioForm extends React.Component{
         this.props.onPress(value);
     }
     render(){
+        const isRTL = this.props.isRTL;
         return(
             <View>
                 {this.props.radio_props.map((item, index)=>{
                     return (
                         <TouchableWithoutFeedback onPress={()=>{this._onPress(item.value)}}>
-                            <View style={{flexDirection: 'row', alignItems:'center', alignSelf: this.props.isRTL?'flex-end':'flex-start'}}>
-                                {this.props.isRTL?<Text style={{padding:2,fontSize: 20, color: 'black'}}>{item.label}</Text>:null}
+                            <View style={{flexDirection: 'row', alignItems:'center', alignSelf: isRTL?'flex-end':'flex-start'}}>
+                                {isRTL?<Text style={{textAlign:'right',padding:2,fontSize: 20, color: 'black'}}>{item.label}</Text>:null}
                                 <RadioButton touchEnabled={this.props.radioTouchEnabled?true:false} checked={this.state.selected===item.value} color={this.props.buttonColor} size={22}/>
-                                {!this.props.isRTL?<Text style={{padding:2,fontSize: 20, color: 'black'}}>{item.label}</Text>:null}
+                                {!isRTL?<Text style={{padding:2,fontSize: 20, color: 'black'}}>{item.label}</Text>:null}
                             </View>
                         </TouchableWithoutFeedback>
                     )

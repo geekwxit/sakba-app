@@ -127,7 +127,7 @@ export default class RadioGroupCustom extends Component{
                 {
                     data?
                         rows(this.props.isRTL):
-                        <View style={{backgroundColor: '#ff6b62',borderRadius:10, height:35}}>
+                        <View style={{backgroundColor: '#ff6b62',borderRadius:10, height:35, alignItems:'center', justifyContent:'center'}}>
                         <Text style={{fontSize: 20, alignSelf:'center', textAlign: this.props.isRTL?'right':'left'}}>{noFabric} {this.props.type}</Text>
                         </View>
                 }

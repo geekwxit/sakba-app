@@ -14,13 +14,10 @@ import {
     ActivityIndicator,
   Alert
 } from 'react-native';
-import { Button, Container, Content } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
-import PayPal from 'react-native-paypal-wrapper';
-import renderIf from 'render-if';
 import axios from 'axios';
 import {NavigationActions, StackActions} from "react-navigation";
-
+import Icon from 'react-native-vector-icons/Ionicons';
 const {  height,width } = Dimensions.get('window');
 const WIDTH = width/2-20;
 const rate = 12;
@@ -32,13 +29,14 @@ const resetAction = StackActions.reset({
 
 export default class ReviewOrder extends Component<props>{
   static navigationOptions = ({ navigation }) => {
-    others = navigation.getParam('language').isRTL?
+    var others = navigation.getParam('language').isRTL?
         {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').reviewScreen.screenTitle}</Text>}:
         {title: navigation.getParam('language').reviewScreen.screenTitle}
+    others = navigation.getParam('language').isRTL?
+        {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>}:others;
     return {
-      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
+      headerStyle:{backgroundColor:'#0451A5',marginLeft:0},
       headerTintColor: '#fff',
-      headerLeft: null,
       ...others
     };
   };
@@ -85,13 +83,13 @@ export default class ReviewOrder extends Component<props>{
             else{
               var o = response.order_detail;
               response.more_details.length?this.setState({cart: response.more_details}):0;
-              this.setState({total: o.o_subtotal});
+              this.setState({total: o.o_total});
               console.log("ooooo", o);
               var rows = [
                 !isRTL?[screen.oID, o.o_id]:[o.o_id, screen.oID],
                 !isRTL?[screen.item_name,screen.classic]:[screen.classic, screen.item_name],
                 !isRTL?[screen.quantity, o.o_pieces]:[ o.o_pieces, screen.quantity],
-                !isRTL?[screen.item_price, o.o_total + " KD"]:[o.o_total + " KD", screen.item_price],
+                !isRTL?[screen.item_price, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.item_price],
                 o.o_pickup=='pickup'?!isRTL?[screen.pickup, screen.pickupCharge]:[screen.pickupCharge, screen.pickup]:null,
                 o.o_delivery=='home'?!isRTL?[screen.delivery, screen.deliveryCharge]:[screen.deliveryCharge, screen.delivery]:null,
                 o.o_delivery=='home'?!isRTL?[screen.expected, this.state.deliveryDate]:[this.state.deliveryDate, screen.expected]:null,
@@ -159,23 +157,17 @@ export default class ReviewOrder extends Component<props>{
                      return (
                           <Row
                           key={index}
-                          data={isRTL?[price, bName]:[bName, price]}
+                          data={isRTL?[`${price + ' KD  '}`, bName]:[bName, `${price + ' KD '}`]}
                           widthArr={state.widthArr}
                           style={[styles.row, 2 % 2 && { backgroundColor: '#F7F6E7' }]}
                           textStyle={styles.text}
                       />
                     )}
                   )}
-                  {/*<Row*/}
-                  {/*    data = {['Total',this.state.total]}*/}
-                  {/*    widthArr = {state.widthArr}*/}
-                  {/*    style={[styles.row, {backgroundColor: '#0451A5'}]}*/}
-                  {/*    textStyle={[styles.text,{color:'#fff',fontWeight: 'bold', fontSize:15}]}*/}
-                  {/*/>*/}
                 </Table>:null}
                 <Table borderStyle={{borderColor: '#C1C0B9'}}>
                   <Row
-                      data = {isRTL?[this.state.total,screen.total]:[screen.total,this.state.total]}
+                      data = {isRTL?[`${this.state.total + ' KD '}`,screen.total]:[screen.total,`${this.state.total + ' KD '}`]}
                       widthArr = {state.widthArr}
                       style={[styles.row, {backgroundColor: '#0451A5'}]}
                       textStyle={[styles.text,{color:'#fff',fontWeight: 'bold', fontSize:15}]}

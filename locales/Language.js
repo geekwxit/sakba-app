@@ -28,7 +28,7 @@ export const strings = new LocalizedStrings({
             okButton: "OK",
             wText1: "Welcome ",
             wTextMeasure: "Your last measurement on ",
-            acceptText: "Do you accept this measurement",
+            acceptText: "Do you accept this measurement ?",
             agree: "I agree",
             needNew: "I need new measurments",
         },
@@ -37,8 +37,8 @@ export const strings = new LocalizedStrings({
             outside: "YOUR FABRICS",
             inhome: "BUY FROM US",
             proceedButton: "Proceed",
-            maxInHome : "In home count value cannot exceed total no of dishdashas!",
-            maxOutside: "Outside count value cannot exceed total no of dishdashas!",
+            maxInHome : "Fabrics count value cannot exceed total number of dishdashas!",
+            maxOutside: "Fabrics count value cannot exceed total number of dishdashas!",
         },
         deliveryScreen: {
             screenTitle: "Delivery Options",
@@ -213,7 +213,7 @@ export const strings = new LocalizedStrings({
             maxOutside: "ضفت اكثر من العدد",
         },
         deliveryScreen: {
-            screenTitle: "شلون تبي تعطينا خامك؟",
+            screenTitle: "خيار التسليم", //Googled it
             text1: "اختيار خيار التسليم ", //Googled it
             fabricLabel: "توصيل الخام",
             sendFabric: "اجيبه لكم / او اطرشه لكم المحل",

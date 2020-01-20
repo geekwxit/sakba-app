@@ -1,16 +1,12 @@
-//This is the code to have a screen for 2 second and then navigate to another page
-
 import React,{Component}from 'react';
 import {ScrollView, View, Text, Image, Dimensions, TouchableOpacity, BackHandler, Alert} from 'react-native';
-import {Button} from 'native-base';
 import {NavigationActions, StackActions} from "react-navigation";
 import { TextInput } from 'react-native-gesture-handler';
 import Axios from 'axios';
 import {oConfirm} from './Strings';
 const { width, height } = Dimensions.get('window');
-//const sendIcon = require('../img/send_icon.png');
 const sendIconBlue = require('../img/send_icon_blue.png');
-
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -20,9 +16,11 @@ const resetAction = StackActions.reset({
 
 export default class  OrderConfirm extends Component<Props>{
     static navigationOptions = ({ navigation }) => {
-        others = navigation.getParam('language').isRTL?
+        var others = navigation.getParam('language').isRTL?
             {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').confirmScreen.screenTitle}</Text>}:
             {title: navigation.getParam('language').confirmScreen.screenTitle}
+        others = navigation.getParam('language').isRTL?
+            {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>}:others;
         return{
             headerStyle:{ backgroundColor:'#0451A5',marginLeft:0},
             headerTintColor: '#fff',
@@ -40,12 +38,10 @@ export default class  OrderConfirm extends Component<Props>{
     }
     componentDidMount() {
         this.setState({language: this.props.navigation.getParam('language')})
-        //setTimeout( () => {this.load()}, 2000);
         this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
             this.props.navigation.dispatch(resetAction);
             return true;
         });
-        console.log(this.props.navigation.state.params)
     }
 
     async sendMail(){
@@ -57,22 +53,18 @@ export default class  OrderConfirm extends Component<Props>{
             .then(response=>{
                 if(!response.error){
                     Alert.alert(this.state.language.commonFields.alertTitle, screen.alertOnEmailSent, [{text: this.state.language.commonFields.okButton}]);
-                    // alert(screen.alertOnEmailSent);
                 }
                 else{
                     Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{text: this.state.language.commonFields.okButton}]);
-                    // alert(screen.regularError);
                 }
             })
             .catch(error=>{
                 console.log("LOG ERROR: ", error);
                 Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{text: this.state.language.commonFields.okButton}]);
-                // alert(screen.regularError);
             })
         }
         else{
             Alert.alert(this.state.language.commonFields.alertTitle, screen.emailError, [{text: this.state.language.commonFields.okButton}]);
-            // alert(screen.emailError);
         }
     }
 
@@ -81,14 +73,9 @@ export default class  OrderConfirm extends Component<Props>{
         var isRTL = this.state.language.isRTL;
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
-
         const { navigation } = this.props;
         const customerName= navigation.getParam('customerName', '');
-        //const measurementDate= navigation.getParam('measurementDate', '');
-
         const textStyle = {fontSize: 25}
-
-
         return(
             <ScrollView>
             <View style={{paddingBottom: 20}}>
@@ -119,9 +106,6 @@ export default class  OrderConfirm extends Component<Props>{
                         <Text style={[textStyle, {marginTop: 20}]}>{screen.confirmMsg1}</Text>
                         <Text style={textStyle}>{screen.confirmMsg2}</Text>
                         <Text style={textStyle}>{screen.confirmMsg3}</Text>
-
-
-                            {/*<Text style={[textStyle, {marginTop: 10, color: 'grey'}]}>Your Order ID is</Text>*/}
                         <TouchableOpacity onPress={()=>this.reviewOrder()}>
                             <View style={{padding: 10,paddingLeft: 20,marginTop: 20, paddingRight: 20, alignItem:'center',justifyContent:'center', borderRadius: 10, backgroundColor: '#0451A5'}}>
                                 <Text style={{color: 'white', fontSize: 15}}>{screen.reviewButton}</Text>
@@ -135,12 +119,10 @@ export default class  OrderConfirm extends Component<Props>{
     }
 
     reviewOrder(){
-        // this.state.emailSent?
         this.props.navigation.navigate('review', {
             measurement: this.props.navigation.getParam('measurement',null),
             language: this.state.language,
             order_id: this.state.orderID,
             deliveryDate: this.props.navigation.getParam('deliveryDate', null)})
-        // : alert(oConfirm.reviewError);
     }
 }

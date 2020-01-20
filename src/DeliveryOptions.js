@@ -241,6 +241,7 @@ export default class DeliveryOptions extends Component<Props>{
         var screen = this.state.language.deliveryScreen;
         const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
         console.log(deliveryOption);
+        const isRTL = this.state.language.isRTL;
         const sizeCtrl = {width: 40, height: 40}
         return (
             <SafeAreaView >
@@ -253,22 +254,20 @@ export default class DeliveryOptions extends Component<Props>{
                         {/*    <Text style={{ fontSize: 20 }}>{screen.text1}</Text>*/}
                         {/*</View>*/}
                         <View style={{ marginTop: 40 }}>
-                            <Text style={{ fontSize: 20 }}>{screen.fabricLabel}</Text>
+                            <Text style={{ fontSize: 20,textAlign:isRTL?'right':'auto' }}>{screen.fabricLabel}</Text>
                             <View style={{ marginTop: 10 }}>
 
                                 <RadioForm
-                                    isRTL={this.state.language.isRTL}
+                                    isRTL={isRTL}
                                     buttonSize={10}
                                     buttonColor={'#0451A5'}
                                     buttonInnerColor={'#0451A5'}
                                     buttonOuterColor={'#0451A5'}
                                     buttonWrapStyle={{ marginTop: 10 }}
                                     selectedButtonColor={'#0451A5'}
-                                    labelStyle={{ fontSize: 20, marginTop: 0, }}
+                                    labelStyle={{ fontSize: 20, marginTop: 0}}
                                     buttonOuterSize={20}
                                     buttonStyle={{ marginTop: 20 }}
-
-
                                     radio_props={[{ label: screen.sendFabric, value: 0 },
                                         { label: screen.pickup, value: 1 }]}
                                     initial={0}
@@ -282,11 +281,11 @@ export default class DeliveryOptions extends Component<Props>{
 
                             {renderIf(this.state.itemSelected == 'itemOne')(
                                 <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                    <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
+                                    <Text style={{ fontSize: 18,textAlign:isRTL?'right':'auto'}}>{screen.addressLabel}</Text>
                                     <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pArea}
                                                 onChangeText={(text) => this.setState({ area: text })}
                                                 value={this.state.area}
@@ -294,7 +293,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pBlock}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ block: text })}
@@ -305,7 +304,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pStreet}
                                                 onChangeText={(text) => this.setState({ street: text })}
                                                 value={this.state.street}
@@ -313,7 +312,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pJada}
                                                 onChangeText={(text) => this.setState({ jada: text })}
                                                 value={this.state.jada}
@@ -323,7 +322,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pHouse}
                                                 onChangeText={(text) => this.setState({ house: text })}
                                                 value={this.state.house}
@@ -331,7 +330,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pFloor}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ floor: text })}
@@ -342,7 +341,7 @@ export default class DeliveryOptions extends Component<Props>{
                                     <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pApartment}
                                                 onChangeText={(text) => this.setState({ apartment: text })}
                                                 value={this.state.apartment}
@@ -350,7 +349,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         </Item>
                                         <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                             <Input
-                                                style={{textAlign:this.state.language.isRTL?'right':'left'}}
+                                                style={{textAlign:isRTL?'right':'left'}}
                                                 placeholder={screen.pExtra}
                                                 keyboardType='numeric'
                                                 onChangeText={(text) => this.setState({ extra_Number: text })}
@@ -363,67 +362,68 @@ export default class DeliveryOptions extends Component<Props>{
                         </View>
 
                         <View style={{ marginTop: 20, }}>
-                            <Text style={{ fontSize: 20 }}>{screen.deliveryLabel}</Text>
+                            <Text style={{ fontSize: 20, textAlign:isRTL?'right':'left'}}>{screen.deliveryLabel}</Text>
 
                             <View style={{ flex: 1, marginTop: 10 }}>
 
-                                <View style={{alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
+                                <View style={{alignItems: isRTL?'flex-end':'flex-start'}}>
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemOne' })} >
-                                        {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
+                                        {isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                         {deliveryOption == 'itemOne'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                         }
-                                        {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
+                                        {!isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
                                     </TouchableOpacity>
                                 </View>
                                 <View>
                                     {renderIf(deliveryOption == 'itemOne')(
-                                        <View style={{ marginLeft: 25, marginRight:25,flex: 1, alignItems: this.state.language.isRTL?'flex-end':'flex-start' }}>
+                                        <View style={{ marginLeft: 25, marginRight:25,flex: 1, alignItems: isRTL?'flex-end':'flex-start' }}>
                                             <TouchableOpacity
                                                 style={{ flexDirection: 'row', marginTop: 10 }}
                                                 onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-                                                {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
+                                                {isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
                                                 {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
                                                     ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                     : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                                 }
-                                                {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
+                                                {!isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
                                                 style={{ flexDirection: 'row', marginTop: 5 }}>
-                                                {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
+                                                {isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
                                                 {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
                                                     ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                                     : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                                 }
-                                                {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
+                                                {!isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
                                             </TouchableOpacity>
                                         </View>
                                     )}
 
                                 </View>
-                                <View style={{marginTop:5,alignItems: this.state.language.isRTL?'flex-end':'flex-start'}}>
+                                <View style={{marginTop:5,alignItems: isRTL?'flex-end':'flex-start'}}>
                                     <TouchableOpacity
                                         style={{ flex: 1, flexDirection: 'row' }}
                                         onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
-                                        {this.state.language.isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
+                                        {isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
                                         {deliveryOption === 'itemTwo'
                                             ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
                                             : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
                                         }
-                                        {!this.state.language.isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
+                                        {!isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
                                     </TouchableOpacity>
                                 </View>
                                 {renderIf(deliveryOption == 'itemTwo')(
                                     <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                        <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
+                                        <Text style={{ fontSize: 18, textAlign:isRTL?'right':'left'}}>{screen.addressLabel}</Text>
                                         <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pArea}
                                                     onChangeText={(text) => this.setState({ area: text })}
                                                     value={this.state.area}
@@ -431,6 +431,7 @@ export default class DeliveryOptions extends Component<Props>{
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pBlock}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ block: text })}
@@ -441,6 +442,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pStreet}
                                                     onChangeText={(text) => this.setState({ street: text })}
                                                     value={this.state.street}
@@ -448,6 +450,7 @@ export default class DeliveryOptions extends Component<Props>{
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pJada}
                                                     onChangeText={(text) => this.setState({ jada: text })}
                                                     value={this.state.jada}
@@ -457,6 +460,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pHouse}
                                                     onChangeText={(text) => this.setState({ house: text })}
                                                     value={this.state.house}
@@ -464,6 +468,7 @@ export default class DeliveryOptions extends Component<Props>{
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pFloor}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ floor: text })}
@@ -474,6 +479,7 @@ export default class DeliveryOptions extends Component<Props>{
                                         <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pApartment}
                                                     onChangeText={(text) => this.setState({ apartment: text })}
                                                     value={this.state.apartment}
@@ -481,6 +487,7 @@ export default class DeliveryOptions extends Component<Props>{
                                             </Item>
                                             <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                                                 <Input
+                                                    style={{textAlign:isRTL?'right':'left'}}
                                                     placeholder={screen.pExtra}
                                                     keyboardType='numeric'
                                                     onChangeText={(text) => this.setState({ extra_Number: text })}
@@ -504,19 +511,19 @@ export default class DeliveryOptions extends Component<Props>{
                                 backgroundColor:'#d1e2ff',
                                 width: (width / 2 - 40)*2,
                                 minHeight: 30,}}>
-                                <Text style={{marginBottom:2,flex:1, justifyContent:this.state.language.isRTL?'flex-end':'flex-start'}}>{screen.pRemarks}</Text>
-                            <TextInput
-                                selectionColor={'rgba(4,101,227,0.44)'}
-                                multiline={true}
-                                style={{
-                                    textAlign:this.state.language.isRTL?'right':'left',
-                                    borderBottomWidth:1,
-                                    flex:1,
-                                    fontSize: 15 }}
-                                onChangeText={(remarks) => {
-                                    this.setState({remarks, charcount: remarks.length})
-                                }}
-                            />
+                                <Text style={{marginBottom:2,flex:1, textAlign:isRTL?'right':'left'}}>{screen.pRemarks}</Text>
+                                <TextInput
+                                    selectionColor={'rgba(4,101,227,0.44)'}
+                                    multiline={true}
+                                    style={{
+                                        textAlign:isRTL?'right':'left',
+                                        borderBottomWidth:1,
+                                        flex:1,
+                                        fontSize: 15 }}
+                                    onChangeText={(remarks) => {
+                                        this.setState({remarks, charcount: remarks.length})
+                                    }}
+                                />
                             </View>
                             {/*<View style={{backgroundColor: '#d1e2ff', alignItems: 'flex-end',width: width - 110}}>*/}
                             {/*    <Text style={{color:'#878787',backgroundColor: '#d1e2ff'}}>{this.state.charcount}/200</Text>*/}
