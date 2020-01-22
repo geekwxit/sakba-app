@@ -254,7 +254,7 @@ export default class DeliveryOptions extends Component<Props>{
                         {/*    <Text style={{ fontSize: 20 }}>{screen.text1}</Text>*/}
                         {/*</View>*/}
                         <View style={{ marginTop: 40 }}>
-                            <Text style={{ fontSize: 20,textAlign:isRTL?'right':'auto' }}>{screen.fabricLabel}</Text>
+                            <Text style={{ fontSize: 20,alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'auto' }}>{screen.fabricLabel}</Text>
                             <View style={{ marginTop: 10 }}>
 
                                 <RadioForm
@@ -281,7 +281,7 @@ export default class DeliveryOptions extends Component<Props>{
 
                             {renderIf(this.state.itemSelected == 'itemOne')(
                                 <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                    <Text style={{ fontSize: 18,textAlign:isRTL?'right':'auto'}}>{screen.addressLabel}</Text>
+                                    <Text style={{ fontSize: 18,alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'auto'}}>{screen.addressLabel}</Text>
                                     <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                         <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                             <Input
@@ -362,7 +362,7 @@ export default class DeliveryOptions extends Component<Props>{
                         </View>
 
                         <View style={{ marginTop: 20, }}>
-                            <Text style={{ fontSize: 20, textAlign:isRTL?'right':'left'}}>{screen.deliveryLabel}</Text>
+                            <Text style={{ fontSize: 20, alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'left'}}>{screen.deliveryLabel}</Text>
 
                             <View style={{ flex: 1, marginTop: 10 }}>
 
@@ -419,7 +419,7 @@ export default class DeliveryOptions extends Component<Props>{
                                 </View>
                                 {renderIf(deliveryOption == 'itemTwo')(
                                     <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                        <Text style={{ fontSize: 18, textAlign:isRTL?'right':'left'}}>{screen.addressLabel}</Text>
+                                        <Text style={{ fontSize: 18, alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'left'}}>{screen.addressLabel}</Text>
                                         <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                                             <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                                                 <Input
@@ -511,7 +511,7 @@ export default class DeliveryOptions extends Component<Props>{
                                 backgroundColor:'#d1e2ff',
                                 width: (width / 2 - 40)*2,
                                 minHeight: 30,}}>
-                                <Text style={{marginBottom:2,flex:1, textAlign:isRTL?'right':'left'}}>{screen.pRemarks}</Text>
+                                <Text style={{marginBottom:2,flex:1, alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'left'}}>{screen.pRemarks}</Text>
                                 <TextInput
                                     selectionColor={'rgba(4,101,227,0.44)'}
                                     multiline={true}

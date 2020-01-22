@@ -302,7 +302,7 @@ const ProductModal = (props) => {
                 <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
                   <Text style={{fontSize: 18}}><B>{texts.selectPBrand}</B>{props.selected.brand}</Text>
                 </View>
-                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign:props.isRTL?'right':'left'}}>{texts.selectPPattern}</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold', alignSelf:props.isRTL?'flex-end':'flex-start',textAlign:props.isRTL?'right':'left'}}>{texts.selectPPattern}</Text>
                   <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
                     <Text style={{fontSize: 18}}><B>{texts.selectPPrice}</B> {props.price} {texts.selectPerMeter}</Text>
                   </View>

@@ -64,13 +64,13 @@ export default class WelcomeCustomer extends Component {
 
 
                         <View style={{flexDirection: 'column', marginHorizontal: 40, paddingHorizontal: 0}}>
-                            <View style={{marginTop: 50, flexDirection: 'column'}}>
+                            <View style={{marginTop: 50, flexDirection: 'column', alignItems:isRTL?'flex-end':'flex-start'}}>
                                 <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left'}}>{screen.wText1}<Text
                                     style={{fontWeight: '500'}}>{customerName}</Text></Text>
                                 <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left', marginTop: 10}}>{screen.wTextMeasure}{measurementDate}</Text>
                             </View>
                             <View style={{marginTop: 30}}>
-                                <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left'}}>{screen.acceptText}</Text>
+                                <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left', alignSelf:isRTL?'flex-end':'flex-start'}}>{screen.acceptText}</Text>
                                 <View style={{marginTop: 15}}>
                                     <RadioForm isRTL={this.state.language.isRTL}
                                         radio_props={[
