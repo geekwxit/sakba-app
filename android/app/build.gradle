@@ -102,13 +102,13 @@ android {
         applicationId "com.sakba"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5000000    /** Here we need to change version every time **/
-        versionName "15.0"  /** Here we need to change version every time previous was 14.3.3**/
+        versionCode 5100000    /** Here we need to change version every time **/
+        versionName "15.1"  /** Here we need to change version every time previous was 15.0**/
     }
     splits {
         abi {
             reset()
-            enable enableSeparateBuildPerCPUArchitecture  /** here we need to enable for each version apk GEeek **/
+            enable enableSeparateBuildPerCPUArchitecture  /** here we need to enable for each version apk Geek **/
             universalApk true  // If true, also generate a universal APK  (also Geek here)
             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
