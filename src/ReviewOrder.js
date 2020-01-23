@@ -32,8 +32,7 @@ export default class ReviewOrder extends Component<props>{
     var others = navigation.getParam('language').isRTL?
         {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').reviewScreen.screenTitle}</Text>}:
         {title: navigation.getParam('language').reviewScreen.screenTitle}
-    others = navigation.getParam('language').isRTL?
-        {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>}:others;
+    others = {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>};
     return {
       headerStyle:{backgroundColor:'#0451A5',marginLeft:0},
       headerTintColor: '#fff',

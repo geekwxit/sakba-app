@@ -85,23 +85,24 @@ export default class FabricTypeSelection extends Component<Props>{
   }
 
   addToCart(){
+    this.setState({productBox:false})
     var screen = this.state.language.fabricScreen;
-      var productFound = false;
-      const {selectedPattern, selectedBrand, selectedColor} = this.state;
-      const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: parseInt(this.state.brands[selectedBrand].price)};
-      this.state.cart.map((item,index)=>{
+    var productFound = false;
+    const {selectedPattern, selectedBrand, selectedColor} = this.state;
+    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: parseInt(this.state.brands[selectedBrand].price)};
+    this.state.cart.forEach(item=>{
         if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
-          Alert.alert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]);
           productFound = true;
         }
       })
-      !productFound?this.setState({cart : [...this.state.cart, product]}):null;
-      !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
-      total = !productFound?parseInt(this.state.totalCartItems)+1:null;
-      total?this.setState({totalCartItems: total}):null;
-      !productFound?setTimeout(()=>{
-        Alert.alert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}]);
-      }, 500):null;
+    !productFound?this.setState({cart : [...this.state.cart, product]}):null;
+    !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
+    total = !productFound?parseInt(this.state.totalCartItems)+1:null;
+    total?this.setState({totalCartItems: total}):null;
+    setTimeout(()=>{
+      productFound?Alert.alert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]):
+      Alert.alert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}]);
+    },500);
   }
 
   removeFromCart(quantity, index){
@@ -172,7 +173,19 @@ export default class FabricTypeSelection extends Component<Props>{
         </View>:
         <ScrollView>
           {/**Define all modals here**/}
-          <ProductModal isRTL={this.state.language.isRTL} measurement={this.state.measurement} text={screen} price={this.state.brands[this.state.selectedBrand].price} brands={this.state.brands} onAdd={()=>this.setState({productBox: false},this.addToCart.bind(this))} selected={{brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null, pattern: this.getPatternData()?(this.getPatternData())[this.state.selectedPattern].path:null, color: this.getColorData()?(this.getColorData())[this.state.selectedColor].path:null}} visible={this.state.productBox} close={()=>this.setState({productBox: false})}/>
+          <ProductModal isRTL={this.state.language.isRTL}
+                        measurement={this.state.measurement}
+                        text={screen}
+                        price={this.state.brands[this.state.selectedBrand].price}
+                        brands={this.state.brands}
+                        onAdd={()=>this.addToCart()}
+                        selected={{
+                          brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null,
+                          pattern: this.getPatternData()?(this.getPatternData())[this.state.selectedPattern].path:null,
+                          color: this.getColorData()?(this.getColorData())[this.state.selectedColor].path:null
+                        }}
+                        visible={this.state.productBox}
+                        close={()=>this.setState({productBox: false})}/>
           <CartModal
               measurement={this.state.measurement}   isRTL={this.state.language.isRTL} text={screen} checkout={this.doCheckout} brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
           <FabricPreview ok={screen.previewOKButton} title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>

@@ -19,8 +19,7 @@ export default class  OrderConfirm extends Component<Props>{
         var others = navigation.getParam('language').isRTL?
             {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').confirmScreen.screenTitle}</Text>}:
             {title: navigation.getParam('language').confirmScreen.screenTitle}
-        others = navigation.getParam('language').isRTL?
-            {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>}:others;
+        others = {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>};
         return{
             headerStyle:{ backgroundColor:'#0451A5',marginLeft:0},
             headerTintColor: '#fff',
@@ -56,6 +55,7 @@ export default class  OrderConfirm extends Component<Props>{
                 }
                 else{
                     Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{text: this.state.language.commonFields.okButton}]);
+                    console.log("response has error", response);
                 }
             })
             .catch(error=>{

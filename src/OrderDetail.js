@@ -131,6 +131,7 @@ export default class OrderDetail extends Component<props>{
         .then(response=>{return response.data})
         .then(response=>{
           console.log("sender", data);
+          console.log("receiver", response);
           // if(!response.error){
           //   //debugger;
           //   this.setState({ isLoading: false });
