@@ -99,10 +99,8 @@ export default class FabricTypeSelection extends Component<Props>{
     !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
     total = !productFound?parseInt(this.state.totalCartItems)+1:null;
     total?this.setState({totalCartItems: total}):null;
-    setTimeout(()=>{
-      productFound?Alert.alert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]):
-      Alert.alert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}]);
-    },500);
+    productFound?this.safeAlert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]):
+      this.safeAlert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}])
   }
 
   removeFromCart(quantity, index){
@@ -124,12 +122,16 @@ export default class FabricTypeSelection extends Component<Props>{
     const customerName= this.props.navigation.getParam('customerName', null);
     const cart        = this.state.cart;
     console.log("PLEASE CHECK:", screen.moreThan(inHomeCount));
-    this.state.totalCartItems>inHomeCount?Alert.alert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-        this.state.totalCartItems<inHomeCount?Alert.alert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+    this.state.totalCartItems>inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+        this.state.totalCartItems<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
             this.state.totalCartItems==inHomeCount?
                 this.props.navigation.navigate('delivery',
                     {language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart, noOfPieces: this.state.noOfPieces, measurement: this.state.measurement}):
-                Alert.alert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
+                this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
+  }
+
+  safeAlert(title, message, buttons){
+    isIos?setTimeout(()=>Alert.alert(title, message, buttons),500):Alert.alert(title, message, buttons);
   }
 
   selectionChanged(type){
@@ -187,7 +189,15 @@ export default class FabricTypeSelection extends Component<Props>{
                         visible={this.state.productBox}
                         close={()=>this.setState({productBox: false})}/>
           <CartModal
-              measurement={this.state.measurement}   isRTL={this.state.language.isRTL} text={screen} checkout={this.doCheckout} brands={this.state.brands} removeItem={(quantity, index)=>this.removeFromCart(quantity, index)} close={()=>this.setState({cartVisible: false})} visible={this.state.cartVisible} cartItems={this.state.cart}/>
+              measurement={this.state.measurement}
+              isRTL={this.state.language.isRTL}
+              text={screen}
+              checkout={this.doCheckout}
+              brands={this.state.brands}
+              removeItem={(quantity, index)=>this.removeFromCart(quantity, index)}
+              close={()=>this.setState({cartVisible: false})}
+              visible={this.state.cartVisible}
+              cartItems={this.state.cart}/>
           <FabricPreview ok={screen.previewOKButton} title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
