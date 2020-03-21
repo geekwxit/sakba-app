@@ -2,11 +2,10 @@ import React,{Component}from 'react';
 import {ScrollView, View, Text, Image, Dimensions, TouchableOpacity, BackHandler, Alert} from 'react-native';
 import {NavigationActions, StackActions} from "react-navigation";
 import { TextInput } from 'react-native-gesture-handler';
-import Axios from 'axios';
-import {oConfirm} from './Strings';
 const { width, height } = Dimensions.get('window');
 const sendIconBlue = require('../img/send_icon_blue.png');
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from "./axios/AxiosInstance";
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -47,7 +46,7 @@ export default class  OrderConfirm extends Component<Props>{
         var screen = this.state.language.confirmScreen;
         var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if(this.state.email.match(regex)){
-            await Axios.post(oConfirm.sendEmailLink, {email: this.state.email, id: this.props.navigation.getParam('requestPaymentID', null), orderID: this.state.orderID})
+            await axios.post('request_paymentemail.php', {email: this.state.email, id: this.props.navigation.getParam('requestPaymentID', null), orderID: this.state.orderID})
             .then(response=>response.data)
             .then(response=>{
                 if(!response.error){

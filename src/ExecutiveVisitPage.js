@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {View, Text, Image, Dimensions, ScrollView, Alert} from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Icon, Textarea } from 'native-base';
 import DateTimePicker from "react-native-modal-datetime-picker";
-import axios from 'axios';
+import axios from './axios/AxiosInstance';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,7 +53,7 @@ Text.defaultProps.allowFontScaling = false;
     //   alert('Pls select time ')
     // }
     else {
-      URL = 'http://sakba.net/mobileApi/add-visit.php'
+      URL = 'add-visit.php'
       axios.post(URL, {
           name: name,
           old_number: number,

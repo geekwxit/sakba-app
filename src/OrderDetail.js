@@ -15,7 +15,7 @@ import { Button, Container, Content } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
 import renderIf from 'render-if';
-import axios from 'axios';
+import axios from './axios/AxiosInstance';
 
 const {  height,width } = Dimensions.get('window');
 const WIDTH = width/2-20;
@@ -57,11 +57,10 @@ export default class OrderDetail extends Component<props>{
   }
 
   async getEmailAddress(number){
-    const url = 'http://sakba.net/mobileApi/get-email.php';
     data = JSON.stringify({
       no: number,
     })
-    axios.post(url,data)
+    axios.post('get-email.php',data)
         .then((response) => response.data)
         .then((responseData) => {
           this.setState({ emailId: responseData.email })
@@ -74,9 +73,8 @@ export default class OrderDetail extends Component<props>{
   }
 
   async getOrderID(mobileNo){
-    const url2 = 'http://sakba.net/mobileApi/order-id.php';
     var data = {o_number:mobileNo};
-    await axios.post(url2, data)
+    await axios.post('order-id.php', data)
         .then((response) => response.data)
         .then((responseData) => {
           this.setState({ orderId: responseData.order_id })
@@ -127,7 +125,7 @@ export default class OrderDetail extends Component<props>{
     //this.setState({ isLoading: true })
     //try {
     //Assign the promise unresolved first then get the data using the json method.
-    await axios.post('http://sakba.net/mobileApi/requestPayment.php', data)
+    await axios.post('requestPayment.php', data)
         .then(response=>{return response.data})
         .then(response=>{
           console.log("sender", data);
@@ -154,7 +152,7 @@ export default class OrderDetail extends Component<props>{
           ])
         });
 
-    //const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
+    //const response = await axios.post('requestPayment.php', data);
     //}
     // catch (err) {
     //     alert("Something wrong in your network");

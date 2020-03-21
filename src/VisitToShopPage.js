@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import {View, Text, Image, Dimensions, Linking, SafeAreaView, ScrollView} from 'react-native';
 import {Button} from 'native-base';
-import {visitToShopPage} from "./Strings";
 
 const {width, height} = Dimensions.get('window');
 
-const url1 = visitToShopPage.awqaf_location_url;
-const url2 = visitToShopPage.view_on_map;
-// const url1 = 'https://goo.gl/maps/M4YDSRUrgARVrmoQ9';
-// const url2 = 'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9';
+const url1 = 'https://goo.gl/maps/M4YDSRUrgARVrmoQ9';
+const url2 = 'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9';
 
 export default class VisitToShopPage extends Component<Props> {
     static navigationOptions = ({navigation}) => {

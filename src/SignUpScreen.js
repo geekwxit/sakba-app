@@ -3,7 +3,7 @@ import {
     View, Text, StyleSheet, AsycStorage, Button, TouchableOpacity,
     TextInput, Alert, Image, ScrollView, Dimensions, Modal, ActivityIndicator, BackHandler
 } from "react-native";
-
+import axios from "./axios/AxiosInstance";
 import { StackActions, NavigationActions } from 'react-navigation';
 
 const { width, height } = Dimensions.get('window');
@@ -102,7 +102,7 @@ class SignUpScreen extends Component {
         //this.setState({ isLoading: true })
         //try {
             //Assign the promise unresolved first then get the data using the json method.
-         await axios.post('http://sakba.net/mobileApi/requestPayment.php',data)
+         await axios.post('requestPayment.php',data)
                 .then(response=>{return response.data})
                 .then(response=>{
                     console.log("sender", data);
@@ -128,7 +128,7 @@ class SignUpScreen extends Component {
                 ])
              });
 
-            //const response = await Axios.post('http://sakba.net/mobileApi/requestPayment.php', data);
+            //const response = await axios.post('requestPayment.php', data);
         //}
         // catch (err) {
         //     alert("Something wrong in your network");

@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import {Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking,ScrollView } from 'react-native';
 import { Form, Item, Container, Content, Button,} from 'native-base';
-import Axios from 'axios';
+import axios from "../axios/AxiosInstance";
 const { width, height } = Dimensions.get('window');
 import {strings} from '../../locales/Language'
 import {Language} from '../components/ChangeLanguage';
@@ -46,7 +46,7 @@ export default class Login extends Component {
   async sendApiRequest() {
     try {
       //Assign the promise unresolved first then get the data using the json method.
-      const mobileNumberApiCall = await Axios.get('http://sakba.net/mobileApi/all-number.php');
+      const mobileNumberApiCall = await axios.get('all-number.php');
       const mobileNumberList = mobileNumberApiCall.data;
       this.setState({ mobileNumberFromDataBase: mobileNumberList.numbers, loading: false });
     } catch (err) {

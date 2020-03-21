@@ -15,7 +15,7 @@ import {
   Alert
 } from 'react-native';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
-import axios from 'axios';
+import axios from './axios/AxiosInstance';
 import {NavigationActions, StackActions} from "react-navigation";
 import Icon from 'react-native-vector-icons/Ionicons';
 const {  height,width } = Dimensions.get('window');
@@ -70,7 +70,7 @@ export default class ReviewOrder extends Component<props>{
     var screen = this.state.language.reviewScreen;
     var isRTL = this.state.language.isRTL;
     this.setState({isLoading:true});
-    var url = 'https://sakba.net/mobileApi/get_order_copy.php?lang='+this.state.language.getLanguage();
+    var url = 'get_order_copy.php?lang='+this.state.language.getLanguage();
     var data = JSON.stringify({order_id : this.state.orderID});
     if(this.state.orderID!=null && this.state.orderID!=undefined){
       await axios.post(url,data)

@@ -6,8 +6,7 @@ import PayPal from 'react-native-paypal-wrapper';
 import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
 // import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import RadioForm from "./components/RadioForm";
-import axios from 'axios';
-import {deliveryStrings} from './Strings';
+import axios from './axios/AxiosInstance';
 
 const { width, height } = Dimensions.get('window');
 
@@ -56,7 +55,6 @@ export default class DeliveryOptions extends Component<Props>{
         var screen = this.state.language.deliveryScreen;
         console.log('in submit form');
         products = [];
-        const url = deliveryStrings.order_now;
         brands = this.state.fabrics;
         cart = this.state.cart;
         var others = {
@@ -129,7 +127,7 @@ export default class DeliveryOptions extends Component<Props>{
             Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
         } else {
             console.log(data);
-            axios.post(url, data)
+            axios.post('order_test.php', data)
                 .then((response) => response.data)
                 .then(responseData=>{
                     this.setState({emailId: responseData.email},()=>this.props.navigation.navigate('order_detail', {

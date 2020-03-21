@@ -162,6 +162,20 @@ Text.defaultProps.allowFontScaling = false;
               </View>
             </View>
 
+            <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
+                  onPress={() => this.props.navigation.navigate('Shop',
+                      {
+                        measurement: this.props.navigation.getParam('measurement'),
+                        language: this.state.language,
+                        inHomeCount:0, outsideCount:0, mobileNo:0,
+                        customerName:'d',
+                        noOfPieces: this.state.noOfPieces}
+                      )}>
+                <Text style={{ fontSize: 18, color: 'white' }}>Buy Products</Text>
+              </Button>
+            </View>
             <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}

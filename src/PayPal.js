@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, Modal, Dimensions, WebView, ActivityIndic
 import { Icon } from 'native-base';
 import { StackActions, NavigationActions } from 'react-navigation';
 const {width, height} =  Dimensions.get('window');
-import axios from 'axios'
 
 const resetAction = StackActions.reset({
     index: 0,

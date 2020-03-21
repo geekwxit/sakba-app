@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { View, Alert, Text, Image,Platform, Dimensions,TouchableWithoutFeedback, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import {Button} from 'native-base';
-import axios from 'axios';
+import axios from './axios/AxiosInstance';
 import RadioGroup from './components/RadioGroupCustom';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {fabricStrings} from "./Strings";
 import {B, I, U} from "./components/TextStyles";
 
 const isIos = Platform.OS == 'ios';
@@ -70,7 +69,7 @@ export default class FabricTypeSelection extends Component<Props>{
 
   async getAllFabrics(){
     var screen = this.state.language.fabricScreen;
-    axios.get(fabricStrings.getAllFabrics+'?lang='+this.state.language.getLanguage())
+    axios.get('get_fabrics.php'+'?lang='+this.state.language.getLanguage())
         .then(response=>response.data)
         .then(response=>this.setState({brands: response.brands}))
         .then(()=>this.setState({isLoading:false}))
