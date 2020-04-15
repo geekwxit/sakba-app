@@ -29,6 +29,7 @@ export const strings = new LocalizedStrings({
             wText1: "Welcome ",
             wTextMeasure: "Your last measurement on ",
             acceptText: "Do you accept this measurement ?",
+            measureAccept: "Do you agree and confirm your sample measurements?",
             agree: "I agree",
             needNew: "I need new measurments",
         },
@@ -45,7 +46,7 @@ export const strings = new LocalizedStrings({
             text1: "Choose delivery option ",
             fabricLabel: "Your Fabric:",
             sendFabric: "Send it to us",
-            pickup: 'We pick up "3 KD Extra"',
+            pickup: 'We pick up',
             addressLabel: "Address :",
             deliveryLabel: "Your Order :",
             pArea: "Area",
@@ -57,7 +58,7 @@ export const strings = new LocalizedStrings({
             pApartment: "Apartment",
             pExtra: "Extra Number",
             opPickup: "Pick up from our store",
-            opHomeDel: 'Home delivery "3 KD Extra"',
+            opHomeDel: 'Home delivery',
             opAwqaf: "Awqaf Complex",
             opQurain: "Qurain Shop",
             orderNowButton: "Order Now !",
@@ -125,6 +126,8 @@ export const strings = new LocalizedStrings({
         visitToShopPage: {
             first: "Aswaq Al Qurain",
             second: "Awqaf Complex",
+            awqaf: "Awqaf",
+            qurain: "Al Qurain",
             button: "View On Map"
         },
         visitPage: {
@@ -172,6 +175,15 @@ export const strings = new LocalizedStrings({
             deliveryCharge: "3 KD", classic : "Classic Dishdasha",
             error: "Something went wrong. Please retry again later!",
             fabricsText: "FABRICS FROM OUR SHOP",
+        },
+        measurementScreen: {
+            title: "Measurement",
+            submitButton: "Submit",
+            nameLabel: "Name :",
+            mobileLabel: "Mobile :",
+            metersLabel: "Meters Needed :",
+            heading: "Enter your measurement details",
+
         }
     },
     ar: {
@@ -297,6 +309,8 @@ export const strings = new LocalizedStrings({
         visitToShopPage: {
             first: "أسواق القرين",
             second: "مجمع الأوقاف",
+            awqaf: "الأوقاف",
+            qurain: "القرين",
             button: "افتح الخريطة"
         },
         visitPage: {

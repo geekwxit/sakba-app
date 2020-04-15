@@ -50,6 +50,7 @@ export default class RadioGroupCustom extends Component{
                             <View>
                                 <Image
                                     style={{width: 100, height: 100, resizeMode: 'cover', marginLeft: 5}} source={{uri:data[i].path}} />
+                                    <Text style={{width:'100%', textAlign:'center'}}>{data[i].name}</Text>
                             </View>:
                             <View>
                                 <Text>{data[i].name + '(' +data[i].price + ' KD)'}</Text>
@@ -71,6 +72,7 @@ export default class RadioGroupCustom extends Component{
                             <View>
                                 <Image
                                     style={{width: 100, height: 100, resizeMode: 'cover', marginLeft: 5}} source={{uri:data[i+1].path}} />
+                                <Text style={{width:'100%', textAlign:'center'}}>{data[i+1].name}</Text>
                             </View>:
                             <View>
                                 <Text>{data[i+1].name + '(' +data[i+1].price + ' KD)'}</Text>
@@ -102,6 +104,7 @@ export default class RadioGroupCustom extends Component{
                                 <View>
                                     <Image
                                         style={{width: 100, height: 100, resizeMode: 'cover', marginLeft: 5}} source={{uri:data[i].path}} />
+                                    <Text style={{width:'100%', textAlign:'center'}}>{data[j].name}</Text>
                                 </View>:
                                 <View>
                                     <Text>{data[i].name + '(' +data[i].price + ' KD)'}</Text>

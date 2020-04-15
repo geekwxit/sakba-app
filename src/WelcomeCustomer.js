@@ -29,13 +29,14 @@ export default class WelcomeCustomer extends Component {
     _onPressOK(mobileNo, customerName) {
         const {value, measurementDate} = this.state;
         if (value == 0) {
-            this.props.navigation.navigate('customer_agree', {
+            this.props.navigation.navigate('dishdasha_select', {
                 measurement: this.props.navigation.getParam('measurement'),
                 language: this.state.language,
                 mobileNo: mobileNo,
                 customerName: customerName,
                 measurementDate: measurementDate,
-                emailID: this.state.email
+                emailID: this.state.email,
+                measurementDone: this.props.navigation.getParam('measurementDone'),
             });
         } else {
             this.props.navigation.navigate('visit_page', {language: this.state.language});
@@ -52,6 +53,7 @@ export default class WelcomeCustomer extends Component {
         var mobileNo = this.props.navigation.state.params.mobileNo;
         const customerName = navigation.getParam('customerName', '');
         const measurementDate = navigation.getParam('measurementDate', '');
+        const newCustomer = navigation.getParam('newCustomer', false);
 
         console.log(customerName, measurementDate, mobileNo)
         return (
@@ -61,8 +63,6 @@ export default class WelcomeCustomer extends Component {
                         <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
                             <Image style={{width: 80, height: 80}} source={require('../img/om.png')}/>
                         </View>
-
-
                         <View style={{flexDirection: 'column', marginHorizontal: 40, paddingHorizontal: 0}}>
                             <View style={{marginTop: 50, flexDirection: 'column', alignItems:isRTL?'flex-end':'flex-start'}}>
                                 <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left'}}>{screen.wText1}<Text
@@ -70,7 +70,9 @@ export default class WelcomeCustomer extends Component {
                                 <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left', marginTop: 10}}>{screen.wTextMeasure}{measurementDate}</Text>
                             </View>
                             <View style={{marginTop: 30}}>
-                                <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left', alignSelf:isRTL?'flex-end':'flex-start'}}>{screen.acceptText}</Text>
+                                <Text style={{fontSize: 20, textAlign: isRTL ? 'right' : 'left', alignSelf:isRTL?'flex-end':'flex-start'}}>
+                                    {newCustomer?screen.measureAccept:screen.acceptText}
+                                </Text>
                                 <View style={{marginTop: 15}}>
                                     <RadioForm isRTL={this.state.language.isRTL}
                                         radio_props={[

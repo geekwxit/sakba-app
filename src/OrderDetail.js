@@ -9,9 +9,9 @@ import {
   SafeAreaView,
   BackHandler,
   TouchableOpacity,
-  Alert
+  Alert, TextInput
 } from 'react-native';
-import { Button, Container, Content } from 'native-base';
+import {Button, Container, Content, Item} from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
 import renderIf from 'render-if';
@@ -37,29 +37,36 @@ export default class OrderDetail extends Component<props>{
     super(props)
     var id = this.props.navigation.state.params.id;
     var token = this.props.navigation.state.params.token;
-
     this.state = {
       measurement: props.navigation.getParam('measurement'),
       language: props.navigation.getParam('language'),
       widthArr: [ WIDTH,WIDTH ],
       page: 'OrderDetail', emailId: '',
-      id: id, isLoading: false, cart: this.props.navigation.getParam('cart'),
-      fabrics: this.props.navigation.getParam('fabrics')
+      id: id, isLoading: false,
+      cart: this.props.navigation.getParam('cart',[]),
+      isCountNeeded: this.props.navigation.getParam('isCountNeeded',true),
+      products: [],
+      fabrics: [],
+      brands: this.props.navigation.getParam('brands',[]),
+      showPromo: false,promo_success: false, discount: 0,
+      promo_enabled: false, total:0,
     };
     this.url = "http://sakba.net/payment.php?Sid=" + id + "&&token=" + token;
-
   }
   componentDidMount() {
-    this.setState({language: this.props.navigation.getParam('language')});
+    this.setState(prev=>({
+      language: this.props.navigation.getParam('language')
+    }));
     var mobileNo = this.props.navigation.state.params.mobileNo;
     console.warn('mobileNo', mobileNo);
     this.getEmailAddress(mobileNo);this.getOrderID(mobileNo);
+    this.createTable();
   }
 
   async getEmailAddress(number){
-    data = JSON.stringify({
+    let data = {
       no: number,
-    })
+    }
     axios.post('get-email.php',data)
         .then((response) => response.data)
         .then((responseData) => {
@@ -68,7 +75,6 @@ export default class OrderDetail extends Component<props>{
         .catch((error) => {
           console.log("Error");
           console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-
         });
   }
 
@@ -94,30 +100,20 @@ export default class OrderDetail extends Component<props>{
     var ph_number = user.mobileNo;
     var email = user.emailID;
     var amount = Number.parseInt(total);
-    var data = JSON.stringify({token, fullname, ph_number, email, amount, orderID: this.state.orderId});
-
+    var data = {token, fullname, ph_number, email, amount, orderID: this.state.orderId};
+    var params = {
+      measurement: this.props.navigation.getParam('measurement',null),
+      language: this.state.language,
+      token: token,
+      customerName: fullname,
+      emailID: email,
+      totalAmount: amount,
+      orderID: this.state.orderId,
+      deliveryDate: deliveryDate
+    };
     this.sendApiRequest(data).then(()=>{
-      this.props.navigation.navigate('order_confirm', {
-        measurement: this.props.navigation.getParam('measurement',null),
-        language: this.state.language,
-          token: token,
-          customerName: fullname,
-          emailID: email,
-          totalAmount: amount,
-          orderID: this.state.orderId,
-          deliveryDate: deliveryDate
-      })
+      this.props.navigation.navigate('order_confirm', params)
     })
-    console.log(data);
-    // this.sendApiRequest(data);
-    // this.props.navigation.navigate('order_confirm',{
-    //   mobileNo : this.props.navigation.state.params.mobileNo,
-    //   token:this.props.navigation.state.params.token,
-    //   customerName: this.props.navigation.state.params.customerName,
-    //   emailID: this.props.navigation.state.params.emailID,
-    //   totalAmount: total
-    // }
-
   }
 
   async sendApiRequest(data) {
@@ -130,20 +126,6 @@ export default class OrderDetail extends Component<props>{
         .then(response=>{
           console.log("sender", data);
           console.log("receiver", response);
-          // if(!response.error){
-          //   //debugger;
-          //   this.setState({ isLoading: false });
-          //   Alert.alert('Alert', "Thanks we have receieved your request. Complete your order by making payment.", [
-          //     {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
-          //   ])
-          // }
-          // else {
-          //   //debugger;
-          //   this.setState({ isLoading: false });
-          //   Alert.alert('Alert', "Something wrong in your network.", [
-          //     {text: 'Yes', onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
-          //   ])
-          // }
         })
         .catch(e=>{
           this.setState({ isLoading: false });
@@ -151,189 +133,124 @@ export default class OrderDetail extends Component<props>{
             {text: screen.alertButton, onPress: ()=>{this.setState({isLoading: false}); this.props.navigation.dispatch(resetAction)}}
           ])
         });
-
-    //const response = await axios.post('requestPayment.php', data);
-    //}
-    // catch (err) {
-    //     alert("Something wrong in your network");
-    //     console.log("Error fetching data-----------", err);
-    //     this.setState({ isLoading: false });
-    //      this.props.navigation.dispatch(resetAction);
-    // }
   }
-  submitForm(total, noOfPieces) {
 
-    // Linking.openURL(this.url);
+  submitForm(total, noOfPieces) {
     var url = this.url + "&lang=" + this.state.language.getLanguage();
     this.props.navigation.navigate('paypal', { url: url, language: this.state.language})
-
-    //  PayPal.pay({
-    //       price: total+'',
-    //       currency: 'USD',
-    //       description: 'No of Dishdasha :'+noOfPieces,
-    //   })
-    //   .then(confirm => {
-    //     console.log(confirm);
-    //     this.secondCallForPayment(confirm)
-    //           this.setState({
-    //             page:'OrderConfirm'
-    //           })
-    //   })
-    //   .catch(error => console.log(error));
   }
 
   filterCart(cart, brands){
-    let tempCart = [];
-    cart.forEach(item=>{
-      y = tempCart.find(fItem=>{return fItem.brand==item.brand})
-      y?(y.quantity += item.quantity):tempCart.push({brand: item.brand, name: brands[item.brand].name, quantity: item.quantity, price: brands[item.brand].price})
+    let tempCart = cart.map(item=>{
+      let t = {
+          brand: item.brand,
+          name: (brands[item.brand].name + " ("+brands[item.brand].patterns[item.pattern].colors[item.color].name+")"),
+          quantity: item.quantity,
+          price: brands[item.brand].price
+    }
+      if(!this.state.isCountNeeded){
+        t.measurement = item.measurement
+      }
+      return t;
     })
     return tempCart.length?tempCart:null;
+  }
+
+  async applyPromo(promo){
+    if(promo.trim()){
+      await axios.get('apply_promo?promo='+promo+'&order_id='+this.state.orderId)
+          .then(response=>response.data)
+          .then(response=>{
+            if(response.promo_success){
+              console.log("dis:", response.discount)
+              this.setState({promo_enabled: true,promo_success: true, discount: response.discount})
+            } else {
+              alert(response.msg);
+              this.setState({promo_enabled: false,promo_success: false,discount: 0});
+            }
+          })
+          .catch(e=>{
+            Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}])
+          })
+    } else {
+      alert("Please enter the promo code first!");
+    }
+  }
+
+  togglePromo(){
+    this.setState(prev=>({showPromo:!prev.showPromo}));
+  }
+
+  async removePromo(){
+    await axios.get('apply_promo?removePromo=true&&order_id='+this.state.orderId)
+        .then(response=>response.data)
+        .then(response=>{
+          if(response.promo_success){
+            this.setState({promo_success: false, discount: 0, promo_enabled: false})
+          }
+        })
+        .catch(e=>{
+          this.setState({promo_success: false, discount: 0,promo_enabled: false})
+          // Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}])
+        })
+  }
+
+  createTable(){
+    const {navigation} = this.props;
+    const fabricPickupCharge = navigation.getParam('fabricPickupCharge', 0);
+    const deliveryCharge = navigation.getParam('deliveryCharge', 0);
+    const samplePickupCharge = navigation.getParam('samplePickupCharge', 0);
+    const noOfPieces = navigation.getParam('noOfPieces', 0);
+    const m = navigation.getParam('measurement', 0);
+    const screen = this.state.language.orderDetail;
+    var total = 12 * noOfPieces + fabricPickupCharge + deliveryCharge + samplePickupCharge;
+    let products = [], fabrics = [];
+    this.state.cart.forEach(item=>{
+      if(item.isFabric){
+        if(this.state.isCountNeeded){
+          total += parseFloat(item.quantity*item.price*m);
+        } else {
+          total += parseFloat(item.quantity*item.price*item.measurement);
+        }
+        fabrics.push(item);
+      } else if (item.isProduct) {
+        total += parseFloat(item.quantity*item.price);
+        products.push([item.name + ' * ' + item.quantity,parseFloat(item.quantity*item.price).toFixed(2) + ' KD '])
+      }
+    })
+    fabrics = this.filterCart(fabrics, this.state.brands);
+    fabrics = fabrics?fabrics:[];
+    if(this.state.isCountNeeded){
+      fabrics = fabrics.map(item=>([item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*m).toFixed(2)+ ' KD ']))
+    } else {
+      fabrics = fabrics.map(item=>([item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*item.measurement).toFixed(2)+ ' KD ']))
+    }
+
+    console.log(fabrics, products, total);
+    this.setState({fabrics, products, total});
   }
 
   render() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
+    const {navigation} = this.props;
     var isRTL = this.state.language.isRTL;
     var screen = this.state.language.orderDetail;
     const state = this.state;
-    const m = this.state.measurement;
-    const { navigation } = this.props;
-    const noOfPieces = navigation.getParam('noOfPieces', 'NO-ID');
-    const fabricOptionValue = navigation.getParam('fabricOptionValue', 'NO-ID');
-    const deliveryOptionValue = navigation.getParam('deliveryOptionValue', 'NO-ID');
-    const delivery_date = navigation.getParam('delivery_date', 'NO-ID');
-    // const inHomeCount = navigation.getParam('inHomeCount', 0);
-    // const inHomeTotal = 0;
-    console.log(delivery_date);
-    var total = 12 * noOfPieces + fabricOptionValue + deliveryOptionValue;
+    const noOfPieces = navigation.getParam('noOfPieces', 0);
+    const fabricPickupCharge = navigation.getParam('fabricPickupCharge', 0);
+    const deliveryCharge = navigation.getParam('deliveryCharge', 0);
+    const samplePickupCharge = navigation.getParam('samplePickupCharge', 0);
+    let {total, products, fabrics, discount} = this.state;
+    const delivery_date = this.props.navigation.getParam('delivery_date', null);
+    let tableData = [], deliveryOptions = [];
 
-    const customerName = navigation.getParam('customerName', '');
-    const measurementDate = navigation.getParam('measurementDate', '');
-
-    userCart = this.filterCart(state.cart, state.fabrics);
-    const tableData = [];
-    const fabrics = [];
-
-    userCart?userCart.map(item=>{
-      total += item.quantity*item.price*m;
-      fabrics.push([!isRTL?(`${item.name} * `+ item.quantity*m + " m " + `(${item.price} KD/m)`):(`${item.quantity*item.price*m} KD`), isRTL?(`${item.name} * `+item.quantity):(`${item.quantity*item.price*m} KD`)]);
-    }):null;
-
-    tableData.push(!isRTL?([`${screen.tableDishdasha} ${noOfPieces}`, `${noOfPieces*12} KD`]):([`${noOfPieces*12} KD`, `${screen.tableDishdasha} ${noOfPieces}`]));
-    fabricOptionValue?tableData.push(!isRTL?([`${screen.tablePickup}`, `${fabricOptionValue} KD`]):([`${fabricOptionValue} KD`, `${screen.tablePickup}`])):null;
-    deliveryOptionValue?tableData.push(!isRTL?([`${screen.tableDelivery}`, `${deliveryOptionValue} KD`]):([`${deliveryOptionValue} KD`, `${screen.tableDelivery}`])):null;
-    /*
-    if (fabricOptionValue == 0 && deliveryOptionValue == 0) {
-      for (let i = 0; i < 2; i += 1) {
-        const rowData = [];
-        for (let j = 0; j < 2; j += 1) {
-
-          if (i == 0 && j == 0) {
-            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-          }
-          if (i == 0 && j == 1) {
-            rowData.push(`${12 * noOfPieces}`);
-          }
-          // if (i == 1 && j == 0) {
-          //   rowData.push(`Total`);
-          // }
-          // if (i == 1 && j == 1) {
-          //   rowData.push(`${total}`);
-          // }
-        }
-        tableData.push(rowData);
-      }
-    }
-    else if (deliveryOptionValue == 0) {
-      for (let i = 0; i < 3; i += 1) {
-        const rowData = [];
-        for (let j = 0; j < 2; j += 1) {
-
-          if (i == 0 && j == 0) {
-            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-          }
-          if (i == 0 && j == 1) {
-            rowData.push(`${12 * noOfPieces}`);
-          }
-          if (i == 1 && j == 0) {
-            rowData.push(`Pickup`);
-          }
-          if (i == 1 && j == 1) {
-            rowData.push(`${fabricOptionValue}`);
-          }
-          // if (i == 2 && j == 0) {
-          //   rowData.push(`Total`);
-          // }
-          // if (i == 2 && j == 1) {
-          //   rowData.push(`${total}`);
-          // }
-        }
-        tableData.push(rowData);
-      }
-    }
-    else if (fabricOptionValue == 0) {
-      for (let i = 0; i < 3; i += 1) {
-        const rowData = [];
-        for (let j = 0; j < 2; j += 1) {
-
-          if (i == 0 && j == 0) {
-            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-          }
-          if (i == 0 && j == 1) {
-            rowData.push(`${12 * noOfPieces}`);
-          }
-          if (i == 1 && j == 0) {
-            rowData.push(`Delivery`);
-          }
-          if (i == 1 && j == 1) {
-            rowData.push(`${deliveryOptionValue}`);
-          }
-          // if (i == 2 && j == 0) {
-          //   rowData.push(`Total`);
-          // }
-          // if (i == 2 && j == 1) {
-          //   rowData.push(`${total}`);
-          // }
-        }
-        tableData.push(rowData);
-      }
-    }
-    else {
-      for (let i = 0; i < 4; i += 1) {
-        const rowData = [];
-        for (let j = 0; j < 2; j += 1) {
-
-          if (i == 0 && j == 0) {
-            rowData.push(`Classic Dishdasha * ${noOfPieces}`);
-          }
-          if (i == 0 && j == 1) {
-            rowData.push(`${12 * noOfPieces}`);
-          }
-          if (i == 1 && j == 0) {
-            rowData.push(`Pickup`);
-          }
-          if (i == 1 && j == 1) {
-            rowData.push(`${fabricOptionValue}`);
-          }
-          if (i == 2 && j == 0) {
-            rowData.push(`Delivery`);
-          }
-          if (i == 2 && j == 1) {
-            rowData.push(`${deliveryOptionValue}`);
-          }
-          // if (i == 3 && j == 0) {
-          //   rowData.push(`Total`);
-          // }
-          // if (i == 3 && j == 1) {
-          //   rowData.push(`${total}`);
-          // }
-        }
-        tableData.push(rowData);
-      }
-    }
-*/
-
+    noOfPieces?tableData.push(!isRTL?([`${screen.tableDishdasha} ${noOfPieces}`, `${noOfPieces*12} KD`]):([`${noOfPieces*12} KD`, `${screen.tableDishdasha} ${noOfPieces}`])):null
+    samplePickupCharge?deliveryOptions.push(['Sample Pickup', samplePickupCharge?samplePickupCharge:'FREE']):null;
+    deliveryCharge?deliveryOptions.push(['Delivery', deliveryCharge?deliveryCharge:'FREE']):null;
+    fabricPickupCharge?deliveryOptions.push(['Pickup', fabricPickupCharge?fabricPickupCharge:'FREE']):null;
+    discount?deliveryOptions.push(['Discount', -parseFloat(discount).toFixed(2) +' KD']):null;
+    total -= discount;
     return (
       <Container>
         <Content>
@@ -342,13 +259,11 @@ export default class OrderDetail extends Component<props>{
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
               <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
             </View>
-            {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 50 }}>
                 <View>
                   <Text style={{ fontSize: 22 }}>{screen.title}</Text>
                 </View>
               </View>
-            )}
             <View style={styles.container}>
               <View style={{width:width-40,}}>
                 <Table borderStyle={{ borderColor: '#C1C0B9' }}>
@@ -367,10 +282,21 @@ export default class OrderDetail extends Component<props>{
                         />
                       ))
                     }
+                    {
+                      products.map((item,index)=>(
+                          <Row
+                              key={index}
+                              data={item}
+                              widthArr={state.widthArr}
+                              style={[styles.row, index % 2 && { backgroundColor: '#F7F6E7' }]}
+                              textStyle={styles.text}
+                          />
+                      ))
+                    }
                   </Table>
                   {fabrics?fabrics.length?<Table borderStyle={{ borderColor: '#C1C0B9' }}>
                     <TableWrapper style={{flexDirection: 'row'}}>
-                      <Col data={[`${screen.fabricsText}`]} style={{backgroundColor: '#0451A5',height:userCart?null:0}} textStyle={{padding:5,color:'white', alignSelf: 'center'}} />
+                      <Col data={[`${screen.fabricsText}`]} style={{backgroundColor: '#0451A5',height:fabrics?null:0}} textStyle={{padding:5,color:'white', alignSelf: 'center'}} />
                     </TableWrapper>
                   </Table>:null:null}
                   <Table borderStyle={{ borderColor: '#C1C0B9' }}>
@@ -385,8 +311,16 @@ export default class OrderDetail extends Component<props>{
                           />
                       ))
                     }
-                    <Row
-                        data={!isRTL?([`${screen.tableTotal}`, total+' KD']):([total+' KD', `${screen.tableTotal}`])}
+                    {deliveryOptions.map(item=>
+                        <Row
+                            data={item}
+                            widthArr={state.widthArr}
+                            style={[styles.row, { backgroundColor: '#F7F6E7' }]}
+                            textStyle={styles.text}
+                        />)
+                    }
+                  <Row
+                        data={!isRTL?([`${screen.tableTotal}`, parseFloat(total).toFixed(2)+' KD']):([parseFloat(total).toFixed(2)+' KD', `${screen.tableTotal}`])}
                         widthArr={state.widthArr}
                         style={[styles.row, { backgroundColor: '#F7F6E7' }]}
                         textStyle={styles.text}
@@ -395,10 +329,23 @@ export default class OrderDetail extends Component<props>{
                 </ScrollView>
               </View>
             </View>
-
             <View>
-              <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
+              {!this.state.showPromo?<Text style={{ fontSize: 20, textAlign: 'center' , marginBottom:10}}>Have a Promo Code ?
+                <Text onPress={()=>this.togglePromo()} style={{textDecorationLine:'underline', color:'#0451A5'}}> Enter</Text>
+              </Text>:
+              <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center',transform:[{scaleX:isRTL?-1:1}]}}>
+                <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={'Promo Code'} onChangeText={(promo)=>this.setState({promo})}/>
+                <TouchableOpacity onPress={()=>this.state.promo_success?this.removePromo():this.applyPromo(this.state.promo)} style={{marginHorizontal:10,justifyContent:'center',alignItems:'center'}}>
+                  {!this.state.promo_success?<Image source={require('../img/tick.png')} style={{width:35, height:35, resizeMode:'contain'}} />:
+                  <Image source={require('../img/cross.png')} style={{width:35, height:35, resizeMode:'contain'}} />}
+                </TouchableOpacity>
+              </View>
+              }
             </View>
+
+            {delivery_date && <View>
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
+            </View>}
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 80, justifyContent: 'center', }}
@@ -413,14 +360,6 @@ export default class OrderDetail extends Component<props>{
                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.knet}</Text>
               </Button>
             </View>
-
-            {renderIf(this.state.page == 'OrderConfirm')(
-              <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 140, justifyContent: 'center' }} onPress={() => this.props.navigation.navigate('login')}>
-                  <Text style={{ fontSize: 20, color: 'white' }}>Ok</Text>
-                </Button>
-              </View>
-            )}
             </ScrollView>
           </SafeAreaView>
         </Content>
@@ -437,3 +376,18 @@ const styles = StyleSheet.create({
   dataWrapper: { marginTop: -1 },
   row: { height: 40, backgroundColor: '#E7E6E1' }
 });
+
+export const Input = ({value, disabled,keyboardType, onChangeText, label, isRTL, maxLength = 30}) => (
+    <Item style={{transform:[{scaleX: isRTL?-1:1}],marginLeft: 0, height: 40, width: width*0.6, backgroundColor: '#d1e2ff'}}>
+      <View style={{paddingHorizontal:10, backgroundColor: '#0451A5', height:'100%', justifyContent:'center',alignItems:'center'}}>
+        <Text style={{color:'#fff',transform:[{scaleX: isRTL?-1:1}]}}>{label}</Text>
+      </View>
+      <TextInput editable={!disabled} selectionColor={'rgba(4,101,227,0.44)'}
+                 style={{paddingHorizontal:10,flex: 1,
+                   textAlign: isRTL ? 'right' : 'left',
+                   transform:[{scaleX: isRTL?-1:1}],
+                   height: 50, fontSize: 15}}
+                 keyboardType={keyboardType} value={value}
+                 onChangeText={(text)=>onChangeText(text)} maxLength={maxLength}/>
+    </Item>
+)

@@ -5,38 +5,45 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Login from './src/login/Login';
 import WelcomeCustomer from './src/WelcomeCustomer';
-import customerAgree from './src/customerAgree';
+import DishdashaSelectionScreen from './src/DishdashaSelectionScreen';
 import VisitPage from './src/VisitPage';
 import VisitToShopPage from './src/VisitToShopPage';
 import ExecutiveVisitPage from './src/ExecutiveVisitPage';
 import OrderDetail from './src/OrderDetail';
 import OrderConfirm from './src/OrderConfirm';
 import Paypal from './src/PayPal';
-import SignUpScreen from './src/SignUpScreen';
 import Review from './src/ReviewOrder';
 import FabricTypeSelection from "./src/FabricTypeSelection";
 import DeliveryOptions from "./src/DeliveryOptions";
-import ShopScreen from "./src/ShopScreen";
+import ProductsScreen from "./src/ProductsScreen";
+import MeasurementScreen from "./src/MeasurementScreen";
+import SampleMeasurement from "./src/SampleMeasurementScreen";
+import FabricsAndProducts from "./src/FabricsAndProducts";
+import SingleProduct from "./src/SingleProduct";
 
 const AppNavigator = createStackNavigator(
   {
     login: Login,
     welcome_customer: WelcomeCustomer,
-    customer_agree: customerAgree,
+    dishdasha_select: DishdashaSelectionScreen,
     visit_page: VisitPage,
     visit_to_shoppage: VisitToShopPage,
     executive_visitpage: ExecutiveVisitPage,
     order_detail: OrderDetail,
     order_confirm: OrderConfirm,
     paypal: Paypal,
-    sign_up:SignUpScreen,  //Not using this screen (SignUpScreen) in project
     review: Review,
     fabric: FabricTypeSelection,
     delivery: DeliveryOptions,
-      Shop: ShopScreen
+      Shop: ProductsScreen,
+      write_measure: MeasurementScreen,
+      sample_measure: SampleMeasurement,
+      fabrics_and_products: FabricsAndProducts,
+      single_product: SingleProduct
   },
   {
     initialRouteName: 'login',
+    // initialRouteName: 'review',
     initialRouteParams: { selected: false }
   }
 );
@@ -63,8 +70,8 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    if (!this.state.timePassed) {
-      // if(0){
+    // if (!this.state.timePassed) {
+      if(0){
       return <SplashScreen />;
     } else {
       return <AppContainer />;

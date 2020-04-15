@@ -4,7 +4,7 @@ import { Button,Icon} from 'native-base';
 import renderIf from 'render-if';
 const { width, height } = Dimensions.get('window');
 
-export default class customerAgree extends Component<Props>{
+export default class DishdashaSelectionScreen extends Component<Props>{
 
   static navigationOptions = ({ navigation }) => {
     return {
@@ -19,8 +19,10 @@ export default class customerAgree extends Component<Props>{
       isLoading: false,
       pickupStore: null,
       sendFabric: true, homeDelivery: true,
-      itemSelected: 'itemTwo', noOfPieces: 1, mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
-      deliveryOptionPickUpFormStore: 'one', delivery_date: '',
+      itemSelected: 'itemTwo', noOfPieces: 1,
+      mobileNo: this.props.navigation.getParam('mobileNo', null),
+      address: 2, response: [], msg: '',
+      delivery_date: '',
 
       inHomeCount: 0, outsideCount: 1
     };
@@ -40,14 +42,28 @@ export default class customerAgree extends Component<Props>{
     this.setState({ noOfPieces: this.state.noOfPieces + 1, outsideCount:  this.state.noOfPieces + 1, inHomeCount: 0});
   }
 
-    proceed(){
+  proceed(products_disabled = false){
       const inHomeCount = this.state.inHomeCount;
       const outsideCount= this.state.outsideCount;
       const mobileNo    = this.props.navigation.getParam('mobileNo', null);
       const customerName= this.props.navigation.getParam('customerName', null);
-		console.log("customerName: ",customerName);
-      this.props.navigation.navigate(inHomeCount>0?'fabric':'delivery',
-          {measurement: this.props.navigation.getParam('measurement'),language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, noOfPieces: this.state.noOfPieces})
+      let params = {
+        measurement: this.props.navigation.getParam('measurement'),
+        language: this.state.language, inHomeCount, outsideCount, mobileNo,
+        customerName, noOfPieces: this.state.noOfPieces,
+        productsEnabled: !products_disabled,
+        fabricsEnabled: !(outsideCount==this.state.noOfPieces),
+        measurementDone: this.props.navigation.getParam('measurementDone'),
+      };
+      console.log(
+          "fabricsEnabled:", !(outsideCount==this.state.noOfPieces),
+          "productsEnabled: ", !products_disabled
+      )
+      if(!products_disabled || !(outsideCount==this.state.noOfPieces)){
+        this.props.navigation.navigate('fabrics_and_products', params)
+      } else {
+        this.props.navigation.navigate('delivery', params)
+      }
     }
 
   updateQuantity(type, quantity){
@@ -85,7 +101,7 @@ export default class customerAgree extends Component<Props>{
   }
 
   render() {
-   var screen = this.state.language.customerAgree;
+   var screen = this.props.screen?this.props.screen:this.state.language.customerAgree;
     Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 
@@ -161,33 +177,20 @@ Text.defaultProps.allowFontScaling = false;
                 </View>
               </View>
             </View>
-
-            <View style={{ marginTop: 40, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button
-                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() => this.props.navigation.navigate('Shop',
-                      {
-                        measurement: this.props.navigation.getParam('measurement'),
-                        language: this.state.language,
-                        inHomeCount:0, outsideCount:0, mobileNo:0,
-                        customerName:'d',
-                        noOfPieces: this.state.noOfPieces}
-                      )}>
-                <Text style={{ fontSize: 18, color: 'white' }}>Buy Products</Text>
-              </Button>
-            </View>
             <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() => this.proceed()}>
-                <Text style={{ fontSize: 18, color: 'white' }}>{screen.proceedButton}</Text>
+                  onPress={() => this.proceed(true)}>
+                <Text style={{ fontSize: 18, color: 'white' }}>Buy Dishdasha</Text>
               </Button>
             </View>
-            {renderIf(this.state.msg)(
-              <View style={{}}>
-                <Text style={{ color: '#0451A5', fontSize: 20, fontWeight: 'bold' }}>{this.state.msg}</Text>
-              </View>
-            )}
+            <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
+              <Button
+                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
+                  onPress={() =>this.proceed()}>
+                <Text style={{ fontSize: 18, color: 'white' }}>Buy Dishdasha and Products</Text>
+              </Button>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>

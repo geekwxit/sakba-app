@@ -4,6 +4,7 @@ import {Button} from 'native-base';
 import axios from './axios/AxiosInstance';
 import RadioGroup from './components/RadioGroupCustom';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {B, I, U} from "./components/TextStyles";
 
 const isIos = Platform.OS == 'ios';
@@ -37,6 +38,7 @@ export default class FabricTypeSelection extends Component<Props>{
   constructor(props) {
     super(props)
     this.state = {
+      promo_success: undefined,showPromo: false,promo:'', discount:0,
       measurement: 0,
       language: props.navigation.getParam('language'),
       isLoading: true,
@@ -50,7 +52,9 @@ export default class FabricTypeSelection extends Component<Props>{
       patternOverlayHeight: 0, cartVisible: false, productBox: false,
       brands: [],
       cart : [],
-      totalCartItems: 0, selectionChanged: false, changeType: null,
+      totalCartItems: 0,
+      actualTotalCartItems: 0,
+      selectionChanged: false, changeType: null,
       shouldBrandShow: true, shouldPatternShow: true,shouldColorShow: true,
        colorLoader: false,
       fabricPreview: false, previewTitle: 'Preview', previewPath: null,
@@ -71,11 +75,25 @@ export default class FabricTypeSelection extends Component<Props>{
     var screen = this.state.language.fabricScreen;
     axios.get('get_fabrics.php'+'?lang='+this.state.language.getLanguage())
         .then(response=>response.data)
-        .then(response=>this.setState({brands: response.brands}))
+        .then(response=>{
+          if(response.error){
+            Alert.alert(
+                this.state.language.commonFields.alertTitle,
+                response.msg,
+                [{text: this.state.language.commonFields.okButton}]
+            );
+          } else {
+            this.setState({brands: response.brands})
+          }
+        })
         .then(()=>this.setState({isLoading:false}))
         .catch(error=>{
           console.log("Get fabrics error: ", error);
-          Alert.alert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}]);
+          Alert.alert(
+              this.state.language.commonFields.alertTitle,
+              screen.commonError,
+              [{text: this.state.language.commonFields.okButton}]
+          );
         })
   }
 
@@ -86,28 +104,44 @@ export default class FabricTypeSelection extends Component<Props>{
   addToCart(){
     this.setState({productBox:false})
     var screen = this.state.language.fabricScreen;
-    var productFound = false;
     const {selectedPattern, selectedBrand, selectedColor} = this.state;
-    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: parseInt(this.state.brands[selectedBrand].price)};
-    this.state.cart.forEach(item=>{
-        if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
-          productFound = true;
-        }
-      })
-    !productFound?this.setState({cart : [...this.state.cart, product]}):null;
-    !productFound?this.props.navigation.setParams({cartCount: this.state.cart.length+1}):null;
-    total = !productFound?parseInt(this.state.totalCartItems)+1:null;
-    total?this.setState({totalCartItems: total}):null;
-    productFound?this.safeAlert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]):
-      this.safeAlert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}])
+    const product = {pattern: selectedPattern,brand:  selectedBrand,color: selectedColor, quantity: 1, price: parseFloat(this.state.brands[selectedBrand].price)};
+    var product_found = this.state.cart.findIndex(c=>(c.brand==product.brand && c.pattern==product.pattern && c.color==product.color));
+    // this.state.cart.forEach(item=>{
+    //     if(item.brand==product.brand && item.pattern==product.pattern && item.color==product.color){
+    //       productFound = true;
+    //     }
+    //   })
+    if(product_found>=0){
+      this.updateQuantity(product_found, 1);
+      // total = parseInt(this.state.actualTotalCartItems)+1;
+      // this.setState({actualTotalCartItems: total});
+    } else {
+      this.setState({cart : [...this.state.cart, product]});
+      this.props.navigation.setParams({cartCount: this.state.cart.length+1});
+      total = parseInt(this.state.totalCartItems)+1;
+      this.setState(prev=>({totalCartItems: total, actualTotalCartItems: prev.actualTotalCartItems+1}));
+    }
+    // productFound?this.safeAlert(this.state.language.commonFields.alertTitle, screen.alreadyInCart, [{text: this.state.language.commonFields.okButton}]):
+    //   this.safeAlert(this.state.language.commonFields.alertTitle, screen.addedToCart, [{text: this.state.language.commonFields.okButton}])
+  }
+
+  updateQuantity(index, amount){
+    var cart2 = Object.assign([], this.state.cart);
+    var product  = cart2[index];
+    product.quantity += amount;
+    var finalCart = [...(cart2.splice(0, index)), product,...(cart2.splice(1, cart2.length))];
+    this.setState(prev=>({cart: finalCart, actualTotalCartItems: prev.actualTotalCartItems+amount}));
   }
 
   removeFromCart(quantity, index){
     tempCart = this.state.cart;
+    actualQuantity  = tempCart[index].quantity;
     tempCart.splice(index,1);
     this.setState({
       cart: tempCart,
       totalCartItems: this.state.totalCartItems - quantity,
+      actualTotalCartItems: this.state.actualTotalCartItems - actualQuantity
     });
     this.props.navigation.setParams({cartCount: this.state.cart.length});
   }
@@ -121,11 +155,12 @@ export default class FabricTypeSelection extends Component<Props>{
     const customerName= this.props.navigation.getParam('customerName', null);
     const cart        = this.state.cart;
     console.log("PLEASE CHECK:", screen.moreThan(inHomeCount));
-    this.state.totalCartItems>inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-        this.state.totalCartItems<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-            this.state.totalCartItems==inHomeCount?
+    console.log("CART COUNT:", this.state.actualTotalCartItems);
+    this.state.actualTotalCartItems>inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+        this.state.actualTotalCartItems<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+            this.state.actualTotalCartItems==inHomeCount?
                 this.props.navigation.navigate('delivery',
-                    {language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart, noOfPieces: this.state.noOfPieces, measurement: this.state.measurement}):
+                    {promo: this.state.promo, discount: this.state.discount,language: this.state.language, inHomeCount, outsideCount, mobileNo, customerName, fabrics: this.state.brands, cart, noOfPieces: this.state.noOfPieces, measurement: this.state.measurement}):
                 this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
   }
 
@@ -158,42 +193,67 @@ export default class FabricTypeSelection extends Component<Props>{
     this.setState({selectionChanged: false, changedType: null});
   }
 
+  async applyPromo(){
+    await axios.get('apply_promo?promo='+this.state.promo)
+        .then(response=>response.data)
+        .then(response=>{
+          if(response.promo_success){
+            console.log("dis:", response.discount)
+            this.setState({promo_success: true, discount: response.discount})
+          } else{
+            this.setState({promo_success: false,discount: 0});
+          }
+        })
+        .catch(e=>{
+          Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}])
+        })
+  }
+
   render() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     const { deliveryOption, deliveryOptionPickUpFormStore } = this.state;
     console.log(this.state);
+    console.log("discount",this.state.discount);
     var screen = this.state.language.fabricScreen;
     var parentHeight = null;
     const sizeCtrl = {width: 40, height: 40}
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{flex:1}}>
         {this.state.isLoading?
             <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
-        </View>:
-        <ScrollView>
+              <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
+            </View>:
+        <ScrollView contentContainerStyle={{flex:(this.state.brands && this.state.brands.length>0)?0:1}}>
           {/**Define all modals here**/}
           <ProductModal isRTL={this.state.language.isRTL}
                         measurement={this.state.measurement}
                         text={screen}
-                        price={this.state.brands[this.state.selectedBrand].price}
+                        price={(this.state.brands && this.state.brands.length>0)?
+                            parseFloat(this.state.brands[this.state.selectedBrand].price).toFixed(2):0}
                         brands={this.state.brands}
                         onAdd={()=>this.addToCart()}
                         selected={{
-                          brand: this.state.brands?this.state.brands[this.state.selectedBrand].name:null,
-                          pattern: this.getPatternData()?(this.getPatternData())[this.state.selectedPattern].path:null,
-                          color: this.getColorData()?(this.getColorData())[this.state.selectedColor].path:null
+                          brand: (this.state.brands && this.state.brands.length>0)?this.state.brands[this.state.selectedBrand].name:null,
+                          pattern: this.getPatternData()?(this.getPatternData())[this.state.selectedPattern]:null,
+                          color: this.getColorData()?(this.getColorData())[this.state.selectedColor]:null
                         }}
                         visible={this.state.productBox}
                         close={()=>this.setState({productBox: false})}/>
           <CartModal
+              discountAmount={parseFloat(this.state.discount)}
+              promoSuccess={this.state.promo_success}
+              showPromo={()=>{this.setState({showPromo: true})}}
+              applyPromo={()=>{this.applyPromo()}}
+              setPromo={(promo)=>this.setState({promo})}
+              shouldShowPromo={this.state.showPromo}
               measurement={this.state.measurement}
               isRTL={this.state.language.isRTL}
               text={screen}
               checkout={this.doCheckout}
               brands={this.state.brands}
               removeItem={(quantity, index)=>this.removeFromCart(quantity, index)}
+              updateQuantity={(index, amount)=>this.updateQuantity(index, amount)}
               close={()=>this.setState({cartVisible: false})}
               visible={this.state.cartVisible}
               cartItems={this.state.cart}/>
@@ -201,9 +261,9 @@ export default class FabricTypeSelection extends Component<Props>{
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50}}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
           </View>
-          {this.state.brands?this.state.brands.length?
-            <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
-              {this.state.shouldBrandShow ?
+          {(this.state.brands && this.state.brands.length)?
+              <View style={{flex:1, flexDirection: 'column', marginHorizontal: 40 }}>
+                {this.state.shouldBrandShow ?
                   <View>
                     <View style={{marginTop: 20, marginBottom: 10}}>
                       <Text style={{fontSize: 20, textAlign: 'center'}}>{screen.chooseBrand}</Text>
@@ -290,8 +350,10 @@ export default class FabricTypeSelection extends Component<Props>{
                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.checkoutButton}</Text>
               </Button>
             </View>
-          </View>
-          :null:null
+          </View>:
+              <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                <Text style={{fontSize:20}}>No fabrics found</Text>
+              </View>
           }
         </ScrollView>
         }
@@ -301,8 +363,9 @@ export default class FabricTypeSelection extends Component<Props>{
 }
 
 const ProductModal = (props) => {
-  isColorAnImage = true;
-  texts = props.text;
+  var isColorAnImage = true, texts = props.text,
+      patternName = props.selected.pattern?props.selected.pattern.name:"";
+      colorName = props.selected.color?props.selected.color.name:"";
   return(
       <Modal
           style={{top: '50%', left: '50%', transform: 'translate(-50%, -50%) !important'}}
@@ -324,20 +387,20 @@ const ProductModal = (props) => {
                 <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
                   <Text style={{fontSize: 18}}><B>{texts.selectPBrand}</B>{props.selected.brand}</Text>
                 </View>
-                <Text style={{fontSize: 18, fontWeight: 'bold', alignSelf:props.isRTL?'flex-end':'flex-start',textAlign:props.isRTL?'right':'left'}}>{texts.selectPPattern}</Text>
+                <Text style={{fontSize: 18, alignSelf:props.isRTL?'flex-end':'flex-start',textAlign:props.isRTL?'right':'left'}}><B>{texts.selectPPattern}</B>{patternName} ({colorName})</Text>
                   <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
                     <Text style={{fontSize: 18}}><B>{texts.selectPPrice}</B> {props.price} {texts.selectPerMeter}</Text>
                   </View>
                   <View style={[{flexDirection: 'row'}, (props.isRTL?{justifyContent:'flex-end'}:null)]}>
-                      {props.isRTL?<Text style={{fontSize: 18}}> {(props.price*props.measurement)!=0?(props.price*props.measurement):props.price + texts.kd}</Text>:null}
+                      {props.isRTL?<Text style={{fontSize: 18}}> {(props.price*props.measurement)!=0?(props.price*props.measurement).toFixed(2):props.price + texts.kd}</Text>:null}
                       <Text style={{fontSize: 18, fontWeight: 'bold'}}>{texts.selectPFinalPrice}</Text>
-                      {!props.isRTL?<Text style={{fontSize: 18}}> {(props.price*props.measurement)!=0?(props.price*props.measurement):props.price + texts.kd}</Text>:null}
+                      {!props.isRTL?<Text style={{fontSize: 18}}> {(props.price*props.measurement)!=0?(props.price*props.measurement).toFixed(2):props.price + texts.kd}</Text>:null}
                 </View>
               </View>
               <View style={{alignItems: 'center', justifyContent: 'center'}}>
                 <View style={{ alignItems : 'center', justifyContent: 'center'}}>
                   {props.selected.pattern && props.selected.color?
-                  <Image style={{width: width*0.8, height: 200, resizeMode: 'contain',borderRadius: 10}} source={{uri: props.selected.color}} /> :
+                  <Image style={{width: width*0.8, height: 200, resizeMode: 'contain',borderRadius: 10}} source={{uri: props.selected.color.path}} /> :
                       <Text style={{fontSize:20, color:'rgba(255,40,67,0.67)'}}>{texts.noColorPattern}</Text>
                   }
                 </View>
@@ -393,15 +456,18 @@ const CartModal = (props) => {
                             props.cartItems.map((item, index)=>{
                               cartTotal += (item.quantity*item.price)*props.measurement;
                               return <CartItem
-                                  rate={item.price}
+                                  rate={parseFloat(item.price).toFixed(2)}
                                   showDetail={(product)=>{props.showDetail(product)}}
                                   isRTL={isRTL}
                                   text={props.text}
-                                  price={(item.quantity*item.price)*props.measurement}
+                                  price={parseFloat((item.quantity*item.price)*props.measurement).toFixed(2)}
                                   quantity={item.quantity}
                                   key={index}
                                   onRemove={()=>props.removeItem(item.quantity,index)}
                                   name={props.brands[item.brand].name}
+                                  incQuantity={()=>props.updateQuantity(index, 1)}
+                                  decQuantity={()=>item.quantity==1?props.removeItem(item.quantity, index):props.updateQuantity(index, -1)}
+                                  colorName={props.brands[item.brand].patterns[item.pattern].colors[item.color].name}
                                   pattern={props.brands[item.brand].patterns[item.pattern].path}
                                   color={props.brands[item.brand].patterns[item.pattern].colors[item.color].path}/>
                             })
@@ -421,6 +487,40 @@ const CartModal = (props) => {
                         <Text style={{fontSize: 15, color: '#fff', alignSelf: 'center'}}> {props.measurement} {texts.meters}</Text>
                         {isRTL && <Text style={{fontSize: 15, color: '#fff', alignSelf: 'center'}}>{texts.measureText}</Text>}
                       </View>
+                      <View style={{
+                        borderWidth:1,
+                        borderColor:'rgba(4,90,225,0.35)',
+                        // maxHeight:(isIos?undefined:5),
+                        backgroundColor: 'rgba(4,92,255,0.35)',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        // padding:(isIos?0:10)
+                      }}>
+                      {
+                        props.shouldShowPromo?
+                            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+                              <TextInput
+                                  onChangeText={(promo)=>props.setPromo(promo)}
+                                  placeholder={'Promo Code'}
+                                  underlineColorAndroid={'black'} style={{width:'60%',color:'rgba(5,88,221,0.67)'}}/>
+                              <TouchableOpacity
+                                  style={{backgroundColor: '#0451A5',padding:10,
+                                    alignItems: 'center', justifyContent: 'center', borderRadius: 10}}
+                                  onPress={()=>props.applyPromo()}>
+                                <Text style={{fontSize: 14, color: 'white'}}>APPLY</Text>
+                              </TouchableOpacity>
+                            </View>:
+                            <View style={{flexDirection:'row'}}>
+                              <Text style={{fontSize: 15, color: '#fff', alignSelf: 'center'}}>
+                                Have a promo code?
+                              </Text>
+                              <TouchableOpacity onPress={()=>props.showPromo()}>
+                                <Text style={{color:'rgba(5,88,221,0.67)'}}> Click</Text>
+                              </TouchableOpacity>
+                            </View>
+                      }
+                      </View>
                         <View style={{
                             borderTopColor: 'rgba(255,255,255,0)',
                           borderBottomColor: '#fff', borderLeftColor: '#fff', borderRightColor: '#fff',
@@ -429,7 +529,7 @@ const CartModal = (props) => {
                             alignItems: 'center',
                             justifyContent: 'center',
                             padding:10}}>
-                            <Text style={{fontSize: 20, color: '#0451A5', alignSelf: 'center'}}>{texts.cartTotal} {cartTotal} {texts.kd}</Text>
+                            <Text style={{fontSize: 20, color: '#0451A5', alignSelf: 'center'}}>{texts.cartTotal} {parseFloat(cartTotal-props.discountAmount).toFixed(2)} {texts.kd}</Text>
                         </View>
                         <TouchableOpacity onPress={props.checkout}>
                           <View style={{ backgroundColor: '#0451A5', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>
@@ -543,9 +643,11 @@ const CartItem = (props) =>{
                 <Image style={{width: 80, height: 80,resizeMode: 'contain', flex: 1}} source={{uri: props.color}}/>
               </View>
               <View style={{flex:2}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{props.name}</Text>
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  {props.name} ({props.colorName})
+                </Text>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.rateLabel} {props.rate} {texts.kdPerMeter}</Text>
-                {/*<Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartQuantity} {props.quantity}</Text>*/}
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartQuantity} {props.quantity}</Text>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>{texts.cartPrice} {props.price}</Text>
                 {/*<Text style={{fontSize: 20, fontWeight: 'bold'}}>Color: {props.color}</Text>*/}
               </View>
@@ -557,6 +659,15 @@ const CartItem = (props) =>{
             {/*    <Text style={{fontSize: 20, color: 'white'}}>Details</Text>*/}
             {/*  </View>*/}
             {/*</TouchableOpacity>*/}
+            <View style={{marginBottom:20,flexDirection:'row', alignItems:'center',justifyContent:'space-between'}}>
+              <TouchableOpacity onPress={()=>props.incQuantity()}>
+                <AntDesign size={25} color={'#0451A5'} name={'pluscircle'}/>
+              </TouchableOpacity>
+              <Text style={{fontWeight:'bold'}}>{props.quantity}</Text>
+              <TouchableOpacity onPress={()=>props.decQuantity()}>
+                <AntDesign size={25} color={'#0451A5'} name={'minuscircle'}/>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity onPress={() => props.onRemove()}>
               <View style={{flex: 1, backgroundColor: '#0451A5',padding:5,
                 alignItems: 'center', justifyContent: 'center', borderRadius: 10}}>

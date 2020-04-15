@@ -18,6 +18,8 @@ import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-componen
 import axios from './axios/AxiosInstance';
 import {NavigationActions, StackActions} from "react-navigation";
 import Icon from 'react-native-vector-icons/Ionicons';
+import {strings} from "../locales/Language";
+import Store from "./CommonStore/Store";
 const {  height,width } = Dimensions.get('window');
 const WIDTH = width/2-20;
 const rate = 12;
@@ -29,16 +31,16 @@ const resetAction = StackActions.reset({
 
 export default class ReviewOrder extends Component<props>{
   static navigationOptions = ({ navigation }) => {
-    var others = navigation.getParam('language').isRTL?
-        {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').reviewScreen.screenTitle}</Text>}:
-        {title: navigation.getParam('language').reviewScreen.screenTitle}
-    others = {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>};
-    return {
-      headerStyle:{backgroundColor:'#0451A5',marginLeft:0},
-      headerTintColor: '#fff',
-      ...others
+      var others = navigation.getParam('language').isRTL?
+          {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').reviewScreen.screenTitle}</Text>}:
+          {title: navigation.getParam('language').reviewScreen.screenTitle}
+      others = {...others, headerLeft: <Icon onPress={()=>navigation.dispatch(resetAction)} color={'white'} size={25} style={{padding: 15}} name={'ios-arrow-back'}/>};
+      return {
+        headerStyle:{backgroundColor:'#0451A5',marginLeft:0},
+        headerTintColor: '#fff',
+        ...others
+      };
     };
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -46,14 +48,19 @@ export default class ReviewOrder extends Component<props>{
       showMoreIndex: null,
       total: 0,
       measurement: props.navigation.getParam('measurement', null),
-      cart:[],
+      fabrics:[],products:[],cart:[],
       language: props.navigation.getParam('language'),
       widthArr: [ WIDTH,WIDTH ],
       ordersAvailable: false,
       idLoading: true,
+      noOfPieces: 0,
       page: 'OrderDetail', emailId: '', isLoading: true,
       orderID: props.navigation.getParam('order_id', null),
-      tableData: [], deliveryDate: props.navigation.getParam('deliveryDate', null)
+      tableData: [],
+      deliveryDate: props.navigation.getParam('deliveryDate', null),
+      discount:0,
+      fabricPickupCharge:0, deliveryCharge:0, samplePickupCharge:0,
+      brands:[], deliveryOptions: {isPickingSample:false,isDelivering:false,isPickingFabric:false}
     };
     this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
       this.props.navigation.dispatch(resetAction);
@@ -61,9 +68,18 @@ export default class ReviewOrder extends Component<props>{
     });
   }
 
+  async getBrands(){
+    return this.setState({brands: await Store.getFabrics()})
+  }
+
   componentDidMount() {
     this.setState({language: this.props.navigation.getParam('language')})
-    this.getOrder().then(()=>this.setState({isLoading:false}));
+    this.getBrands();
+    this.getOrder()
+        .then(()=>{
+          this.createTable();
+          this.setState({isLoading:false})
+        });
   }
 
   async getOrder(){
@@ -71,33 +87,37 @@ export default class ReviewOrder extends Component<props>{
     var isRTL = this.state.language.isRTL;
     this.setState({isLoading:true});
     var url = 'get_order_copy.php?lang='+this.state.language.getLanguage();
-    var data = JSON.stringify({order_id : this.state.orderID});
+    var data = {order_id : this.state.orderID};
     if(this.state.orderID!=null && this.state.orderID!=undefined){
       await axios.post(url,data)
           .then((response) => response.data)
           .then(response=>{
+            this.setState({isLoading: false});
             if(response.error){
               this.setState({ordersAvailable: false});
-            }
-            else{
-              var o = response.order_detail;
-              response.more_details.length?this.setState({cart: response.more_details}):0;
-              this.setState({total: o.o_total});
-              console.log("ooooo", o);
-              var rows = [
-                !isRTL?[screen.oID, o.o_id]:[o.o_id, screen.oID],
-                !isRTL?[screen.item_name,screen.classic]:[screen.classic, screen.item_name],
-                !isRTL?[screen.quantity, o.o_pieces]:[ o.o_pieces, screen.quantity],
-                !isRTL?[screen.item_price, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.item_price],
-                o.o_pickup=='pickup'?!isRTL?[screen.pickup, screen.pickupCharge]:[screen.pickupCharge, screen.pickup]:null,
-                o.o_delivery=='home'?!isRTL?[screen.delivery, screen.deliveryCharge]:[screen.deliveryCharge, screen.delivery]:null,
-                o.o_delivery=='home'?!isRTL?[screen.expected, this.state.deliveryDate]:[this.state.deliveryDate, screen.expected]:null,
-                // !isRTL?[screen.subtotal, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.subtotal]
-              ];
-              this.setState({tableData: rows})
-              this.setState({ordersAvailable: true});
-            }
-          })
+            } else {
+                var o = response.order_details;
+                response.cart.length?this.setState({cart: response.cart}):0;
+                this.setState({
+                  total: o.o_total, noOfPieces: parseInt(o.o_pieces),discount: o.o_discount,
+                  fabricPickupCharge:parseInt(o.o_pickup_charge), deliveryCharge:parseInt(o.o_delivery_charge),
+                  deliveryOptions: {isPickingSample:false,isDelivering:o.o_delivery=='home',isPickingFabric:o.o_pickup=='pickup'}
+                });
+                var rows = [
+                  !isRTL?[screen.oID, o.o_id]:[o.o_id, screen.oID],
+                  // o.o_pickup=='pickup'?!isRTL?[screen.pickup, screen.pickupCharge]:[screen.pickupCharge, screen.pickup]:null,
+                  // o.o_delivery=='home'?!isRTL?[screen.delivery, screen.deliveryCharge]:[screen.deliveryCharge, screen.delivery]:null,
+                  // o.o_delivery=='home'?!isRTL?[screen.expected, this.state.deliveryDate]:[this.state.deliveryDate, screen.expected]:null,
+                  // !isRTL?[screen.subtotal, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.subtotal]
+                ];
+                if(this.state.noOfPieces){
+                  rows.push(!isRTL?[screen.item_name,screen.classic]:[screen.classic, screen.item_name]);
+                  rows.push(!isRTL?[screen.quantity, o.o_pieces]:[ o.o_pieces, screen.quantity]);
+                  rows.push(!isRTL?[screen.item_price, o.o_subtotal + " KD"]:[o.o_subtotal + " KD", screen.item_price],);
+                }
+                this.setState({tableData: rows, ordersAvailable: true})
+              }
+            })
           .catch(e=>
               {console.log(e);this.setState({ordersAvailable: false})})
     }
@@ -105,6 +125,40 @@ export default class ReviewOrder extends Component<props>{
       Alert.alert(this.state.language.commonFields.alertTitle, screen.error, [{text: this.state.language.commonFields.okButton}]);
       // alert(screen.error);
     }
+    return true;
+  }
+
+  createTable(){
+    const {noOfPieces, fabricPickupCharge, deliveryCharge, samplePickupCharge} = this.state;
+    const {navigation} = this.props;
+    const m = navigation.getParam('measurement', 0);
+    var total = 12 * noOfPieces + fabricPickupCharge + deliveryCharge + samplePickupCharge;
+    let products = [], fabrics = [];
+    this.state.cart.forEach(item=>{
+      if(item.isFabric){
+        total += parseFloat(item.quantity*item.brand_price*item.measurement);
+        debugger
+        fabrics.push([item.brand_name + '(' +item.colour_name+') * ' + item.quantity,parseFloat(item.quantity*item.brand_price*item.measurement).toFixed(2) + ' KD ']);
+      } else if (item.isProduct) {
+        total += parseFloat(item.quantity*item.product_price);
+        products.push([item.product_name + ' * ' + item.quantity,parseFloat(item.quantity*item.product_price).toFixed(2) + ' KD '])
+      }
+    })
+    // fabrics = this.filterCart(fabrics, this.state.brands);
+    // fabrics = fabrics?fabrics:[];
+    // fabrics = fabrics.map(item=>[item.brand_name + ' * ' + item.quantity,parseFloat(item.quantity*item.brand_price*m).toFixed(2) + ' KD ']);
+    console.log(fabrics, products, total);
+    this.setState({fabrics, products, total});
+  }
+
+  filterCart(cart, brands){
+    let tempCart = cart.map(item=>({
+      brand: item.brand,
+      name: (brands[item.brand].name + " ("+brands[item.brand].patterns[item.pattern].colors[item.color].name+")"),
+      quantity: item.quantity,
+      price: brands[item.brand].price
+    }))
+    return tempCart.length?tempCart:null;
   }
 
 
@@ -115,25 +169,32 @@ export default class ReviewOrder extends Component<props>{
     var isRTL = this.state.language.isRTL;
     const state = this.state;
     const { navigation } = this.props;
-    const delivery_date = navigation.getParam('delivery_date', 'NO-ID')
-
+    let deliveryOptions = [];
+    let {isLoading,samplePickupCharge,deliveryCharge, fabricPickupCharge,
+      ordersAvailable,tableData, total, products, fabrics, discount} = this.state;
+    const delivery_date = navigation.getParam('delivery_date', '')
+    total -= discount;
+    samplePickupCharge?deliveryOptions.push(['Sample Pickup', samplePickupCharge?samplePickupCharge:'FREE']):null;
+    deliveryCharge?deliveryOptions.push(['Delivery', deliveryCharge?deliveryCharge:'FREE']):null;
+    fabricPickupCharge?deliveryOptions.push(['Pickup', fabricPickupCharge?fabricPickupCharge:'FREE']):null;
+    discount?deliveryOptions.push(['Discount', -parseFloat(discount).toFixed(2) +' KD']):null;
     return (
         <View style={{flex: 1}}>
-          {this.state.isLoading?
+          {isLoading?
               <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
               <ActivityIndicator size={'large'} color={'#0451A5'}/>
               </View>:
-              this.state.ordersAvailable?
+              ordersAvailable?
           (<SafeAreaView>
             <ScrollView style={[styles.dataWrapper, {height:height}]}>
               <View style={{alignItems: 'center', marginTop: 40}}>
                 <View style={[styles.header, {width: WIDTH*2, justifyContent: 'center'}]}>
                   <Text style={[styles.textHeader, {fontSize: 20}]}>{screen.tableHeadTitle}</Text>
                 </View>
-                <Table borderStyle={{borderColor:'#C1C0B9'}}>
+                <Table borderStyle={{borderColor:'#C1C0B9'}}>y
 
                   {
-                    this.state.tableData.map((rowData, index) => (
+                    tableData.map((rowData, index) => (
                         <Row
                             key={index}
                             data={rowData}
@@ -143,20 +204,31 @@ export default class ReviewOrder extends Component<props>{
                         />
                     ))
                   }
+                  {products.map((item,index)=>{
+                    const name = item.product_name;
+                    const price = parseFloat(item.product_price*item.quantity).toFixed(2);
+                    return (
+                        <Row
+                            key={index}
+                            data={item}
+                            widthArr={state.widthArr}
+                            style={[styles.row, 2 % 2 && { backgroundColor: '#F7F6E7' }]}
+                            textStyle={styles.text}
+                        />
+                    )}
+                  )}
                 </Table>
                 {
-                  this.state.cart.length?
+                  fabrics.length?
                 <Table borderStyle={{borderColor: '#C1C0B9'}}>
                   <TableWrapper style={{flexDirection: 'row'}}>
                     <Col data={[screen.fabricsText]} style={{backgroundColor: '#0451A5'}} textStyle={{padding:5,color:'white', alignSelf: 'center'}}/>
                   </TableWrapper>
-                  {this.state.cart.map((item,index)=>{
-                    bName = item.brand_name + " * " + this.state.measurement*item.quantity + "m";
-                    price = item.brand_price*item.quantity*this.state.measurement;
+                  {fabrics.map((item,index)=>{
                      return (
                           <Row
                           key={index}
-                          data={isRTL?[`${price + ' KD  '}`, bName]:[bName, `${price + ' KD '}`]}
+                          data={item}
                           widthArr={state.widthArr}
                           style={[styles.row, 2 % 2 && { backgroundColor: '#F7F6E7' }]}
                           textStyle={styles.text}
@@ -164,9 +236,18 @@ export default class ReviewOrder extends Component<props>{
                     )}
                   )}
                 </Table>:null}
+                {deliveryOptions.map((item,index)=>
+                    <Row
+                        key={index}
+                        data={item}
+                        widthArr={state.widthArr}
+                        style={[styles.row, 2 % 2 && { backgroundColor: '#F7F6E7' }]}
+                        textStyle={styles.text}
+                    />
+                )}
                 <Table borderStyle={{borderColor: '#C1C0B9'}}>
                   <Row
-                      data = {isRTL?[`${this.state.total + ' KD '}`,screen.total]:[screen.total,`${this.state.total + ' KD '}`]}
+                      data = {isRTL?[`${parseFloat(total).toFixed(2) + ' KD '}`,screen.total]:[screen.total,`${parseFloat(total).toFixed(2) + ' KD '}`]}
                       widthArr = {state.widthArr}
                       style={[styles.row, {backgroundColor: '#0451A5'}]}
                       textStyle={[styles.text,{color:'#fff',fontWeight: 'bold', fontSize:15}]}
@@ -177,7 +258,8 @@ export default class ReviewOrder extends Component<props>{
           </SafeAreaView>):
           (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={{fontSize: 20}}>{screen.orderUnable}</Text>
-            <TouchableOpacity onPress={()=>this.getOrder().then(()=>this.setState({isLoading: false}))}>
+            <TouchableOpacity onPress={()=>this.getOrder().then(()=>{this.createTable();
+              this.setState({isLoading:false})})}>
               <View style={{padding: 10,paddingLeft: 20,marginTop: 20, paddingRight: 20, alignItem:'center',justifyContent:'center', borderRadius: 10, backgroundColor: '#0451A5'}}>
                 <Text style={{color: 'white', fontSize: 20}}>{screen.retryButton}</Text>
               </View>

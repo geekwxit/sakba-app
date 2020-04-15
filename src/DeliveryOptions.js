@@ -7,9 +7,22 @@ import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons'
 // import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 import RadioForm from "./components/RadioForm";
 import axios from './axios/AxiosInstance';
+import Store from "./CommonStore/Store";
 
 const { width, height } = Dimensions.get('window');
-
+const address = {
+    area:'', block:'', street:'', jada: '', house: '',
+    floor:'', apartment: '', extra_Number: '', enabled: false
+}
+const initialState = {
+    charcount:0, remarks: '', isLoading: false,
+    response: [], msg: '', delivery_date: '',
+    noOfPieces: 0, mobileNo: null, inHomeCount : 0, outsideCount: 0,
+    cart:  [], fabrics : null,
+    sampleAddress: {...address}, pickupAddress: {...address},
+    deliveryAddress: {...address},
+    measurementDone: true, pickupShop: 0,
+}
 export default class DeliveryOptions extends Component<Props>{
 
     static navigationOptions = ({ navigation }) => {
@@ -25,125 +38,158 @@ export default class DeliveryOptions extends Component<Props>{
     constructor(props) {
         super(props)
         this.state = {
-            charcount:0,
-            remarks: '',
+            ...initialState,
+            noOfPieces: props.navigation.getParam('noOfPieces'),
+            mobileNo: this.props.navigation.getParam('mobileNo', null),
             language: props.navigation.getParam('language'),
-            isLoading: false,
-            pickupStore: null,
-            sendFabric: true, homeDelivery: true,
-            p_area: '', p_street: '', p_jada: '', p_floor: '', p_block: '', p_apartment: '',
-            p_extra_Number: '', p_house: '',
-            d_area: '', d_street: '', d_jada: '', d_floor: '', d_block: '', d_apartment: '',
-            d_extra_Number: '', d_house: '',
-            area: '', street: '', jada: '', floor: '', block: '', apartment: '', extra_Number: '', house: '',
-            itemSelected: 'itemTwo', noOfPieces: props.navigation.getParam('noOfPieces'), mobileNo: this.props.navigation.getParam('mobileNo', null), address: 2, response: [], msg: '', deliveryOption: 'itemOne',
-            deliveryOptionPickUpFormStore: 'one', delivery_date: '',
-
             inHomeCount : props.navigation.getParam('inHomeCount', 0),
             outsideCount: props.navigation.getParam('outsideCount', 0),
             cart: props.navigation.getParam('cart', []),
-            fabrics : props.navigation.getParam('fabrics', null)
+            fabrics : props.navigation.getParam('fabrics', null),
+            measurementDone: this.props.navigation.getParam('measurementDone'),
+            isCountNeeded: this.props.navigation.getParam('isCountNeeded', true),
+            name : '', email: '', phone: ''
         };
     }
     componentDidMount() {
         this.setState({language: this.props.navigation.getParam('language')});
-        PayPal.initialize(PayPal.NO_NETWORK, "AedWoRTQiHP7ObJm8A065-v8dGa1iyuoZlZqcvZZEtb0jLo3lBPaWA6eXOafT5c9Wv3Md5tVzqpcOgjm");
     }
 
     submitForm() {
-        var cartTotal = 0;
+        console.log(this.state);
+       var cartTotal = 0;
+        const {shippingCharges: {pickupCharges,deliveryCharges,sampleCharges}} = Store.store;
+       let validated = false;
         var screen = this.state.language.deliveryScreen;
-        console.log('in submit form');
-        products = [];
-        brands = this.state.fabrics;
-        cart = this.state.cart;
-        var others = {
-            measurement: this.props.navigation.getParam('measurement'),
-            cart: cart, fabrics: brands, language: this.state.language,
-        }
-        if(this.state.inHomeCount>0){
-            products = this.state.cart.map((item,index)=>{
-                cartTotal += item.quantity*item.price*others.measurement;
-                return (
-                    {
-                        brandID: brands[item.brand].id,
-                        patternID: brands[item.brand].patterns[item.pattern].id,
-                        colorID: brands[item.brand].patterns[item.pattern].colors[item.color].id,
-                        quantity: item.quantity
-                    }
-                )
-            })
-        }
-
-        otherFabrics = {
-            inHomeCount: this.state.inHomeCount, outsideCount: this.state.outsideCount,
-        }
+        var addresses = {};
+        var fabrics = [], products = [];
         const {
-            p_area, p_street, p_jada, p_floor, p_block, p_apartment, p_extra_Number, p_house,
-            d_area, d_street, d_jada, d_floor, d_block, d_apartment, d_extra_Number, d_house,
-            itemSelected, deliveryOption, deliveryOptionPickUpFormStore,
-            area, street, jada, floor, block, apartment, extra_Number, house,
+            pickupAddress: {
+                area:p_area, block:p_block, street:p_street,
+                jada:p_jada, house: p_house, floor:p_floor,
+                apartment:p_apartment, extra_Number: p_extra_number,
+                enabled: pickup
+            },
+            deliveryAddress: {
+                area:d_area, block:d_block, street:d_street,
+                jada:d_jada, house: d_house, floor:d_floor,
+                apartment:d_apartment, extra_Number: d_extra_number,
+                enabled: delivery
+            },
+            sampleAddress: {
+                area:s_area, block:s_block, street:s_street,
+                jada:s_jada, house: s_house, floor:s_floor,
+                apartment:s_apartment, extra_Number: s_extra_number,
+                enabled: sample
+            },remarks, fabrics: brands, cart, name, email, phone
         } = this.state;
 
+        const sampleAddress = {s_area, s_block,  s_street, s_jada, s_house, s_floor, s_apartment, s_extra_number,}
+        const pickupAddress = {p_area, p_block,  p_street, p_jada, p_house, p_floor, p_apartment, p_extra_number,}
+        const deliveryAddress = {d_area, d_block,  d_street, d_jada, d_house, d_floor, d_apartment, d_extra_number,}
+        // const deliveryOptions = { pickup_type: pickup?'pickup':'send', o_pickup_charge: pickup?3:0,
+        //     delivery_type: delivery?'home':'self', o_delivery_charge: delivery?3:0,
+        //     sample_type: sample?'pickup':'send', o_sample_charge: sample?3:0};
+        const deliveryOptions = { pickup_type: pickup?'pickup':'send', o_pickup_charge: pickup?parseFloat(pickupCharges):0,
+            delivery_type: delivery?'home':'self', o_delivery_charge: delivery?parseFloat(deliveryCharges):0,
+            sample_type: sample?'pickup':'send', o_sample_charge: sample?parseFloat(sampleCharges):0};
+        addresses = pickup?{...addresses, ...pickupAddress}:addresses;
+        addresses = sample?{...addresses, ...sampleAddress}:addresses;
+        addresses = delivery?{...addresses, ...deliveryAddress}:addresses;
+
+        subTotal = (12 * this.state.noOfPieces);
         var customerName = this.props.navigation.state.params.customerName;
         var measurementDate = this.props.navigation.state.params.measurementDate;
         var emailAddr = this.props.navigation.state.params.emailID;
-        var pickup_type, delivery_type, whichStore;
-        var fabricOptionValue, deliveryOptionValue, subTotal;
-
-        whichStore = deliveryOptionPickUpFormStore == 'one'?"Awquaf Complex":"Qurain Shop";
-        pickup_type = itemSelected=="itemTwo"?'send':'pickup';
-        fabricOptionValue = itemSelected=="itemTwo"?0:3;
-        delivery_type = deliveryOption === 'itemTwo'?'home':'self';
-        deliveryOptionValue = deliveryOption == 'itemTwo'?3:0;
-        subTotal = (12 * this.state.noOfPieces);
-
-        const data = {
-            o_pieces: this.state.noOfPieces,
-            o_total: subTotal + fabricOptionValue + deliveryOptionValue + cartTotal,
-            o_number: this.state.mobileNo,
-            o_subtotal: subTotal,
-            o_pickup_charge: fabricOptionValue,
-            o_delivery_charge: deliveryOptionValue,
-            pickup_type: pickup_type,
-            delivery_type: delivery_type,
-            d_apartment: apartment,
-            d_area: area,
-            d_block: block,
-            d_extra_number: extra_Number,
-            d_floor: floor,
-            d_house: house, d_jada: jada, d_street: street,
-            products,remarks: this.state.remarks,
-            p_apartment: apartment,
-            p_area: area,
-            p_block: block,
-            p_extra_number: extra_Number,
-            p_floor: floor,
-            p_house: house, p_jada: jada, p_street: street,
-            d_store_name: whichStore,
+        var others = {
+            measurement: this.props.navigation.getParam('measurement'),
+            cart,brands, language: this.state.language,
+            noOfPieces: this.state.noOfPieces,
+            fabricPickupCharge:deliveryOptions.o_pickup_charge,
+            deliveryCharge:deliveryOptions.o_delivery_charge,
+            samplePickupCharge:deliveryOptions.o_sample_charge,
+            customerName: customerName,
+            measurementDate: measurementDate,
+            mobileNo: this.state.mobileNo,
+            emailID: emailAddr,
+        }
+        console.log("ret",others);
+        this.state.cart.forEach(item=>{
+            if(item.isFabric){
+                if(this.state.isCountNeeded){
+                    cartTotal += item.quantity*item.price*others.measurement;
+                    fabrics.push({
+                        brandID: brands[item.brand].id,
+                        patternID: brands[item.brand].patterns[item.pattern].id,
+                        colorID: brands[item.brand].patterns[item.pattern].colors[item.color].id,
+                        quantity: item.quantity,
+                        measurement: others.measurement
+                    })
+                } else {
+                    cartTotal += item.quantity*item.price*item.measurement;
+                    fabrics.push({
+                        brandID: brands[item.brand].id,
+                        patternID: brands[item.brand].patterns[item.pattern].id,
+                        colorID: brands[item.brand].patterns[item.pattern].colors[item.color].id,
+                        quantity: item.quantity,
+                        measurement: item.measurement,
+                    })
+                }
+            } else if(item.isProduct){
+                cartTotal += item.quantity*item.price;
+                products.push(item);
+            }
+        })
+        otherFabrics = {
+            inHomeCount: this.state.inHomeCount,
+            outsideCount: this.state.outsideCount,
         }
 
-        if((fabricOptionValue!=0 || deliveryOptionValue!=0) && this.validateFields(area,block,house,street)){
-            Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
+        const data = {
+            name, email, phone,
+            o_pieces: this.state.noOfPieces,
+            o_total: subTotal +
+                deliveryOptions.o_pickup_charge +
+                deliveryOptions.o_delivery_charge +
+                deliveryOptions.o_sample_charge +
+                cartTotal,
+            o_number: this.state.mobileNo,
+            o_subtotal: subTotal,fabrics,
+            products,remarks: this.state.remarks,
+            d_store_name: !delivery?(!parseInt(this.state.pickupShop)?"Awquaf Complex":"Qurain Shop"):"",
+            ...deliveryOptions, ...addresses
+        }
+        if(pickup || delivery || sample){
+            validated = (pickup?!this.validateFields(p_area, p_block, p_house, p_street):true) &&
+            (delivery?!this.validateFields(d_area, d_block, d_house, d_street):true) &&
+            (sample?!this.validateFields(s_area, s_block, s_house, s_street):true);
+            !validated && Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
+        } else if(!this.state.isCountNeeded && this.validateFields(name, email, phone)) {
+            validated = false;
         } else {
+            validated = true;
+        }
+        if(validated) {
             console.log(data);
             axios.post('order_test.php', data)
                 .then((response) => response.data)
                 .then(responseData=>{
-                    this.setState({emailId: responseData.email},()=>this.props.navigation.navigate('order_detail', {
+                    if(responseData.error){
+                        alert(responseData.msg);
+                    } else {
+                    this.setState({emailId: responseData.email},()=>this.props.navigation.navigate('order_detail',
+                        {
+                            isCountNeeded: this.state.isCountNeeded,
                         id: responseData.id,
                         token: responseData.token,
-                        noOfPieces: this.state.noOfPieces,
-                        fabricOptionValue: fabricOptionValue,
-                        deliveryOptionValue: deliveryOptionValue,
-                        customerName: customerName,
-                        measurementDate: measurementDate,
-                        mobileNo: this.state.mobileNo,
-                        delivery_date: responseData.delivery_date,
-                        emailID: emailAddr,
+                            delivery_date: responseData.delivery_date,
                         ...others
-                    })
-                )})
+                        })
+                    )
+                    }
+                })
+        } else {
+            alert("Please fill details!");
         }
     }
 
@@ -153,355 +199,67 @@ export default class DeliveryOptions extends Component<Props>{
         ar.forEach(a=>a.trim().length==0?empty++:0);
         return empty;
     }
-    getComponent(){
-        var screen = this.state.language.deliveryScreen;
-        if (this.state.deliveryOption == 'itemTwo') {
-            return (<View style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                <Text style={{ fontSize: 18 }}>{screen.addressLabel}</Text>
-                <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                            placeholder={screen.pArea}
-                            onChangeText={(text) => this.setState({ area: text })}
-                            value={this.state.area}
-                        />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                            placeholder={screen.pBlock}
-                            keyboardType='numeric'
-                            onChangeText={(text) => this.setState({ block: text })}
-                            value={this.state.block}
-                        />
-                    </Item>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                            placeholder={screen.pStreet}
-                            onChangeText={(text) => this.setState({ street: text })}
-                            value={this.state.street}
-                        />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                            placeholder={screen.pJada}
-                            onChangeText={(text) => this.setState({ jada: text })}
-                            value={this.state.jada}
-                        />
-                    </Item>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                            placeholder={screen.pHouse}
-                            onChangeText={(text) => this.setState({ house: text })}
-                            value={this.state.house}
-                        />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                            placeholder={screen.pFloor}
-                            keyboardType='numeric'
-                            onChangeText={(text) => this.setState({ floor: text })}
-                            value={this.state.floor}
-                        />
-                    </Item>
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-                    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                        <Input
-                            placeholder={screen.pApartment}
-                            onChangeText={(text) => this.setState({ apartment: text })}
-                            value={this.state.apartment}
-                        />
-                    </Item>
-                    <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                        <Input
-                            placeholder={screen.pExtra}
-                            keyboardType='numeric'
-                            onChangeText={(text) => this.setState({ extra_Number: text })}
-                            value={this.state.extra_Number}
-                        />
-                    </Item>
-                </View>
-            </View>)
-        }
-    }
-
-    tempsubmitForm(){
-        console.log("DELIVERYOPTIONS: ", this.state);
-    }
 
     render() {
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
         var screen = this.state.language.deliveryScreen;
-        const { deliveryOption, deliveryOptionPickUpFormStore } = this.state
-        console.log(deliveryOption);
         const isRTL = this.state.language.isRTL;
-        const sizeCtrl = {width: 40, height: 40}
+        const {shippingCharges: {pickupCharges,deliveryCharges,sampleCharges}} = Store.store;
+        const {shippingCharges} = Store.store;
+        // let pickupCharge = 0,  = 0, sampleCharge=0;
+        console.log(shippingCharges)
         return (
-            <SafeAreaView >
+            <SafeAreaView>
                 <ScrollView>
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
                         <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
                     </View>
-                    <View style={{ flexDirection: 'column', marginHorizontal: 40 }}>
-                        {/*<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>*/}
-                        {/*    <Text style={{ fontSize: 20 }}>{screen.text1}</Text>*/}
-                        {/*</View>*/}
-                        <View style={{ marginTop: 40 }}>
-                            <Text style={{ fontSize: 20,alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'auto' }}>{screen.fabricLabel}</Text>
-                            <View style={{ marginTop: 10 }}>
-
-                                <RadioForm
-                                    isRTL={isRTL}
-                                    buttonSize={10}
-                                    buttonColor={'#0451A5'}
-                                    buttonInnerColor={'#0451A5'}
-                                    buttonOuterColor={'#0451A5'}
-                                    buttonWrapStyle={{ marginTop: 10 }}
-                                    selectedButtonColor={'#0451A5'}
-                                    labelStyle={{ fontSize: 20, marginTop: 0}}
-                                    buttonOuterSize={20}
-                                    buttonStyle={{ marginTop: 20 }}
-                                    radio_props={[{ label: screen.sendFabric, value: 0 },
-                                        { label: screen.pickup, value: 1 }]}
-                                    initial={0}
-                                    onPress={(value) => {
-                                        (value == 0)
-                                            ? this.setState({ itemSelected: 'itemTwo' })
-                                            : this.setState({ itemSelected: 'itemOne' })
-                                    }}
-                                />
+                    <View style={{ marginTop:20, flexDirection: 'column', marginHorizontal: 40 }}>
+                        {!this.state.measurementDone && this.state.isCountNeeded && <AddressOption
+                            label={'Your Sample :'}
+                            setValue={(value)=>this.setState(prev=>({sampleAddress: {...prev.sampleAddress, ...value}}))}
+                            values={this.state.sampleAddress}
+                            showAddress={this.state.sampleAddress.enabled} isRTL={isRTL} screen={screen}
+                            radioOptions={[{ label: screen.sendFabric, value: 0 },
+                                { label: screen.pickup + (parseFloat(sampleCharges)?` "${sampleCharges} KD Extra`:""), value: 1 }]}
+                            toggle={()=>this.setState(prev=>({sampleAddress: {...prev.sampleAddress, enabled: !prev.sampleAddress.enabled}}))}
+                        />}
+                        {!(this.state.inHomeCount==this.state.noOfPieces) && this.state.isCountNeeded && <AddressOption
+                            style={{marginTop:20}}
+                            label={screen.fabricLabel}
+                            setValue={(value)=>this.setState(prev=>({pickupAddress: {...prev.pickupAddress, ...value}}))}
+                            values={this.state.pickupAddress}
+                            showAddress={this.state.pickupAddress.enabled} isRTL={isRTL} screen={screen}
+                            radioOptions={[{ label: screen.sendFabric, value: 0 },
+                                { label: screen.pickup + (parseFloat(pickupCharges)?` "${pickupCharges} KD Extra"`:""), value: 1 }]}
+                            toggle={()=>this.setState(prev=>({pickupAddress: {...prev.pickupAddress, enabled: !prev.pickupAddress.enabled}}))}
+                        />}
+                        {!this.state.isCountNeeded &&
+                            <View>
+                                <Text style={{
+                                    fontSize: 20,
+                                    alignSelf: isRTL ? 'flex-end' : 'flex-start',
+                                    textAlign: isRTL ? 'right' : 'auto'
+                                }}>Your Details: </Text>
+                                <CustomInput label={'Name'} isRTL={isRTL}  onChangeText={(name)=>this.setState({name})} />
+                                <CustomInput label={'Phone'} isRTL={isRTL} onChangeText={(phone)=>this.setState({phone})} />
+                                <CustomInput label={'Email'} isRTL={isRTL} onChangeText={(email)=>this.setState({email})} />
                             </View>
-
-                            {renderIf(this.state.itemSelected == 'itemOne')(
-                                <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                    <Text style={{ fontSize: 18,alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'auto'}}>{screen.addressLabel}</Text>
-                                    <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pArea}
-                                                onChangeText={(text) => this.setState({ area: text })}
-                                                value={this.state.area}
-                                            />
-                                        </Item>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pBlock}
-                                                keyboardType='numeric'
-                                                onChangeText={(text) => this.setState({ block: text })}
-                                                value={this.state.block}
-                                            />
-                                        </Item>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pStreet}
-                                                onChangeText={(text) => this.setState({ street: text })}
-                                                value={this.state.street}
-                                            />
-                                        </Item>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pJada}
-                                                onChangeText={(text) => this.setState({ jada: text })}
-                                                value={this.state.jada}
-                                            />
-                                        </Item>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pHouse}
-                                                onChangeText={(text) => this.setState({ house: text })}
-                                                value={this.state.house}
-                                            />
-                                        </Item>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pFloor}
-                                                keyboardType='numeric'
-                                                onChangeText={(text) => this.setState({ floor: text })}
-                                                value={this.state.floor}
-                                            />
-                                        </Item>
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pApartment}
-                                                onChangeText={(text) => this.setState({ apartment: text })}
-                                                value={this.state.apartment}
-                                            />
-                                        </Item>
-                                        <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                            <Input
-                                                style={{textAlign:isRTL?'right':'left'}}
-                                                placeholder={screen.pExtra}
-                                                keyboardType='numeric'
-                                                onChangeText={(text) => this.setState({ extra_Number: text })}
-                                                value={this.state.extra_Number}
-                                            />
-                                        </Item>
-                                    </View>
-                                </Form>
-                            )}
-                        </View>
-
-                        <View style={{ marginTop: 20, }}>
-                            <Text style={{ fontSize: 20, alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'left'}}>{screen.deliveryLabel}</Text>
-
-                            <View style={{ flex: 1, marginTop: 10 }}>
-
-                                <View style={{alignItems: isRTL?'flex-end':'flex-start'}}>
-                                    <TouchableOpacity
-                                        style={{ flex: 1, flexDirection: 'row' }}
-                                        onPress={() => this.setState({ deliveryOption: 'itemOne' })} >
-                                        {isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
-                                        {deliveryOption == 'itemOne'
-                                            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                        }
-                                        {!isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opPickup}</Text>:null}
-                                    </TouchableOpacity>
-                                </View>
-                                <View>
-                                    {renderIf(deliveryOption == 'itemOne')(
-                                        <View style={{ marginLeft: 25, marginRight:25,flex: 1, alignItems: isRTL?'flex-end':'flex-start' }}>
-                                            <TouchableOpacity
-                                                style={{ flexDirection: 'row', marginTop: 10 }}
-                                                onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'one' })} >
-                                                {isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
-                                                {(deliveryOptionPickUpFormStore == "one" && deliveryOption == "itemOne")
-                                                    ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                                    : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                                }
-                                                {!isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opAwqaf}</Text>:null}
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                onPress={() => this.setState({ deliveryOptionPickUpFormStore: 'two' })}
-                                                style={{ flexDirection: 'row', marginTop: 5 }}>
-                                                {isRTL?<Text style={{ marginRight: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
-                                                {(deliveryOptionPickUpFormStore === "two" && deliveryOption === "itemOne")
-                                                    ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                                    : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                                }
-                                                {!isRTL?<Text style={{ marginLeft: 10, fontSize: 18, color: '#000' }}>{screen.opQurain}</Text>:null}
-                                            </TouchableOpacity>
-                                        </View>
-                                    )}
-
-                                </View>
-                                <View style={{marginTop:5,alignItems: isRTL?'flex-end':'flex-start'}}>
-                                    <TouchableOpacity
-                                        style={{ flex: 1, flexDirection: 'row' }}
-                                        onPress={() => this.setState({ deliveryOption: 'itemTwo' })} >
-                                        {isRTL?<Text style={{ marginRight: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
-                                        {deliveryOption === 'itemTwo'
-                                            ? <CustomRadioButton name="radiobox-marked" size={25} color={'#0451A5'} />
-                                            : <CustomRadioButton name="checkbox-blank-circle-outline" size={25} color={'#0451A5'} />
-                                        }
-                                        {!isRTL?<Text style={{ marginLeft: 10, fontSize: 20, color: '#000', fontWeight: '400' }}>{screen.opHomeDel}</Text>:null}
-                                    </TouchableOpacity>
-                                </View>
-                                {renderIf(deliveryOption == 'itemTwo')(
-                                    <Form style={{ flexDirection: 'column', marginTop: 20, marginLeft: 0 }}>
-                                        <Text style={{ fontSize: 18, alignSelf:isRTL?'flex-end':'flex-start',textAlign:isRTL?'right':'left'}}>{screen.addressLabel}</Text>
-                                        <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pArea}
-                                                    onChangeText={(text) => this.setState({ area: text })}
-                                                    value={this.state.area}
-                                                />
-                                            </Item>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pBlock}
-                                                    keyboardType='numeric'
-                                                    onChangeText={(text) => this.setState({ block: text })}
-                                                    value={this.state.block}
-                                                />
-                                            </Item>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pStreet}
-                                                    onChangeText={(text) => this.setState({ street: text })}
-                                                    value={this.state.street}
-                                                />
-                                            </Item>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pJada}
-                                                    onChangeText={(text) => this.setState({ jada: text })}
-                                                    value={this.state.jada}
-                                                />
-                                            </Item>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pHouse}
-                                                    onChangeText={(text) => this.setState({ house: text })}
-                                                    value={this.state.house}
-                                                />
-                                            </Item>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pFloor}
-                                                    keyboardType='numeric'
-                                                    onChangeText={(text) => this.setState({ floor: text })}
-                                                    value={this.state.floor}
-                                                />
-                                            </Item>
-                                        </View>
-                                        <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pApartment}
-                                                    onChangeText={(text) => this.setState({ apartment: text })}
-                                                    value={this.state.apartment}
-                                                />
-                                            </Item>
-                                            <Item regular style={{ width: width / 2 - 40, height: 30 }}>
-                                                <Input
-                                                    style={{textAlign:isRTL?'right':'left'}}
-                                                    placeholder={screen.pExtra}
-                                                    keyboardType='numeric'
-                                                    onChangeText={(text) => this.setState({ extra_Number: text })}
-                                                    value={this.state.extra_Number}
-                                                />
-                                            </Item>
-                                        </View>
-                                    </Form>
-                                )}
-                            </View>
-
-                        </View>
-
-                        {/*<View style={{marginTop:10,alignSelf:'center',alignItems: 'center', justifyContent:'center',borderColor:'#0451A5',borderRadius:5,padding:5,borderWidth:1}}>*/}
-                            {/*<Text style={{color: 'black',fontSize:15}}>Remarks (Optional) : </Text>*/}
-                            <View style={{borderColor:'#abbee9',
+                        }
+                        <AddressOption
+                            style={{marginTop:20}}
+                            label={screen.deliveryLabel}
+                            setValue={(value)=>this.setState(prev=>({deliveryAddress: {...prev.deliveryAddress, ...value}}))}
+                            values={this.state.deliveryAddress}
+                            showAddress={this.state.deliveryAddress.enabled} isRTL={isRTL} screen={screen}
+                            radioOptions={[{ label: screen.opPickup, value: 0 },
+                                { label: screen.opHomeDel + (parseFloat(deliveryCharges)?` "${deliveryCharges} KD Extra`:""), value: 1 }]}
+                            toggle={()=>this.setState(prev=>({deliveryAddress: {...prev.deliveryAddress, enabled: !prev.deliveryAddress.enabled}}))}>
+                            <ExtraOptions isRTL={isRTL} radioOptions={[{ label: screen.opAwqaf, value: 0 },
+                                { label: screen.opQurain, value: 1 }]} value={false} toggle={(pickupShop)=>this.setState({pickupShop})}/>
+                        </AddressOption>
+                           <View style={{borderColor:'#abbee9',
                                 borderWidth:1,
                                 marginTop:10,
                                 borderRadius:5,
@@ -523,10 +281,6 @@ export default class DeliveryOptions extends Component<Props>{
                                     }}
                                 />
                             </View>
-                            {/*<View style={{backgroundColor: '#d1e2ff', alignItems: 'flex-end',width: width - 110}}>*/}
-                            {/*    <Text style={{color:'#878787',backgroundColor: '#d1e2ff'}}>{this.state.charcount}/200</Text>*/}
-                            {/*</View>*/}
-                        {/*</View>*/}
                         <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                             <Button
                                 style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
@@ -534,28 +288,117 @@ export default class DeliveryOptions extends Component<Props>{
                                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.orderNowButton}</Text>
                             </Button>
                         </View>
-                        {renderIf(this.state.msg)(
-                            <View style={{}}>
-                                <Text style={{ color: '#0451A5', fontSize: 20, fontWeight: 'bold' }}>{this.state.msg}</Text>
-                            </View>
-                        )}
                     </View>
-
-                    {/* <Modal
-                style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-                animationType="fade"
-                transparent={true}
-                visible={this.state.isLoading}
-                onRequestClose={() => {
-                  Alert.alert('Modal has been closed.');
-                }}>
-                <ActivityIndicator size={"large"} color="#00ff00" />
-              </Modal> */}
-
                 </ScrollView>
             </SafeAreaView>
-            //   </Content>
-            // </Container>
         );
     }
 }
+
+const AddressOption =({children, style, values, radioOptions, isRTL, screen, setValue, showAddress, toggle, extras, label})=>(
+    <View style={style}>
+        <Text style={{
+            fontSize: 20,
+            alignSelf: isRTL ? 'flex-end' : 'flex-start',
+            textAlign: isRTL ? 'right' : 'auto'
+        }}>{label}</Text>
+        <View style={{marginTop: 10}}>
+            <RadioForm
+                isRTL={isRTL}
+                buttonSize={10}
+                buttonColor={'#0451A5'}
+                buttonInnerColor={'#0451A5'}
+                buttonOuterColor={'#0451A5'}
+                buttonWrapStyle={{marginTop: 10}}
+                selectedButtonColor={'#0451A5'}
+                labelStyle={{fontSize: 20, marginTop: 0}}
+                buttonOuterSize={20}
+                buttonStyle={{marginTop: 20}}
+                radio_props={radioOptions}
+                initial={showAddress}
+                value={showAddress?1:0}
+                showAtIndex={0}
+                onPress={(value) => toggle(value)}>
+                {!showAddress?children:null}
+            </RadioForm>
+        </View>
+        {showAddress && <Form style={{flexDirection: 'column', marginTop: 20, marginLeft: 0}}>
+            <Text style={{
+                fontSize: 18,
+                alignSelf: isRTL ? 'flex-end' : 'flex-start',
+                textAlign: isRTL ? 'right' : 'auto'
+            }}>{screen.addressLabel}</Text>
+            <View style={{flexDirection: 'row', marginTop: 5, width: 40}}>
+                <AddressItem isRTL={isRTL} value={values.area} placeholder={screen.pArea}
+                             setValue={(area) => setValue({area})}/>
+                <AddressItem isRTL={isRTL} value={values.block} placeholder={screen.pBlock}
+                             setValue={(block) => setValue({block})}/>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: 5, width: 40}}>
+                <AddressItem isRTL={isRTL} value={values.street} placeholder={screen.pStreet}
+                             setValue={(street) => setValue({street})}/>
+                <AddressItem isRTL={isRTL} value={values.jada} placeholder={screen.pJada}
+                             setValue={(jada) => setValue({jada})}/>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: 5, width: 40}}>
+                <AddressItem isRTL={isRTL} value={values.house} placeholder={screen.pHouse}
+                             setValue={(house) => setValue({house})}/>
+                <AddressItem isRTL={isRTL} value={values.floor} placeholder={screen.pFloor}
+                             setValue={(floor) => setValue({floor})}/>
+            </View>
+            <View style={{flexDirection: 'row', marginTop: 5, width: 40}}>
+                <AddressItem isRTL={isRTL} value={values.apartment} placeholder={screen.pApartment}
+                             setValue={(apartment) => setValue({apartment})}/>
+                <AddressItem isRTL={isRTL} value={values.extra_number} placeholder={screen.pExtra}
+                             setValue={(extra_number) => setValue({extra_number})}/>
+            </View>
+        </Form>}
+    </View>
+)
+
+const AddressItem=({isRTL, value, placeholder, setValue})=>(
+    <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
+        <Input
+            style={{textAlign:isRTL?'right':'left'}}
+            placeholder={placeholder}
+            onChangeText={(v)=>setValue(v)}
+            value={value}
+        />
+    </Item>
+)
+
+const ExtraOptions=({isRTL, radioOptions, value, toggle})=>(
+    <View style={{paddingHorizontal:25}}>
+        <RadioForm
+            isRTL={isRTL}
+            buttonSize={10}
+            buttonColor={'#0451A5'}
+            buttonInnerColor={'#0451A5'}
+            buttonOuterColor={'#0451A5'}
+            buttonWrapStyle={{marginTop: 10}}
+            selectedButtonColor={'#0451A5'}
+            labelStyle={{fontSize: 20, marginTop: 0}}
+            buttonOuterSize={20}
+            buttonStyle={{marginTop: 20}}
+            radio_props={radioOptions}
+            initial={0}
+            onPress={(value)=>toggle(value)}
+        />
+    </View>
+)
+
+const CustomInput = ({value, keyboardType, onChangeText, label, isRTL, maxLength = 30}) => (
+    <Item style={{transform:[{scaleX: isRTL?-1:1}],marginLeft: 0, marginTop: 25, height: 40, width: width*0.8, backgroundColor: '#d1e2ff'}}>
+        <View style={{paddingHorizontal:10, backgroundColor: '#0451A5', height:'100%', justifyContent:'center',alignItems:'center'}}>
+            <Text style={{color:'#fff',transform:[{scaleX: isRTL?-1:1}]}}>{label}</Text>
+        </View>
+        <TextInput selectionColor={'rgba(4,101,227,0.44)'}
+                   style={{paddingHorizontal:10,flex: 1,
+                       textAlign: isRTL ? 'right' : 'left',
+                       transform:[{scaleX: isRTL?-1:1}],
+                       height: 50, fontSize: 15}}
+                   keyboardType={keyboardType} value={value}
+                   onChangeText={(text)=>onChangeText(text)} maxLength={maxLength}/>
+    </Item>
+
+)
