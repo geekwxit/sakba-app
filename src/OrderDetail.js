@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   BackHandler,
   TouchableOpacity,
+  TouchableHighlight,
   Alert, TextInput
 } from 'react-native';
 import {Button, Container, Content, Item} from 'native-base';
@@ -173,7 +174,7 @@ export default class OrderDetail extends Component<props>{
             Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}])
           })
     } else {
-      alert("Please enter the promo code first!");
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.orderDetail.promoAlert, [{text: this.state.language.commonFields.okButton}])
     }
   }
 
@@ -196,12 +197,13 @@ export default class OrderDetail extends Component<props>{
   }
 
   createTable(){
+    const isRTL = this.state.language.isRTL;
     const {navigation} = this.props;
-    const fabricPickupCharge = navigation.getParam('fabricPickupCharge', 0);
-    const deliveryCharge = navigation.getParam('deliveryCharge', 0);
-    const samplePickupCharge = navigation.getParam('samplePickupCharge', 0);
-    const noOfPieces = navigation.getParam('noOfPieces', 0);
-    const m = navigation.getParam('measurement', 0);
+    const fabricPickupCharge = parseFloat(navigation.getParam('fabricPickupCharge', 0));
+    const deliveryCharge = parseFloat(navigation.getParam('deliveryCharge', 0));
+    const samplePickupCharge = parseFloat(navigation.getParam('samplePickupCharge', 0));
+    const noOfPieces = parseInt(navigation.getParam('noOfPieces', 0));
+    const m = parseFloat(navigation.getParam('measurement', 0));
     const screen = this.state.language.orderDetail;
     var total = 12 * noOfPieces + fabricPickupCharge + deliveryCharge + samplePickupCharge;
     let products = [], fabrics = [];
@@ -215,15 +217,24 @@ export default class OrderDetail extends Component<props>{
         fabrics.push(item);
       } else if (item.isProduct) {
         total += parseFloat(item.quantity*item.price);
-        products.push([item.name + ' * ' + item.quantity,parseFloat(item.quantity*item.price).toFixed(2) + ' KD '])
+        products.push(isRTL?
+            [parseFloat(item.quantity*item.price).toFixed(2) + ' KD ', item.name + ' * ' + item.quantity]:
+            [item.name + ' * ' + item.quantity,parseFloat(item.quantity*item.price).toFixed(2) + ' KD ']
+        )
       }
     })
     fabrics = this.filterCart(fabrics, this.state.brands);
     fabrics = fabrics?fabrics:[];
     if(this.state.isCountNeeded){
-      fabrics = fabrics.map(item=>([item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*m).toFixed(2)+ ' KD ']))
+      fabrics = fabrics.map(item=>(isRTL?
+          [parseFloat(item.quantity*item.price*m).toFixed(2)+ ' KD ', item.name + ' * ' + item.quantity]:
+          [item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*m).toFixed(2)+ ' KD ']
+      ))
     } else {
-      fabrics = fabrics.map(item=>([item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*item.measurement).toFixed(2)+ ' KD ']))
+      fabrics = fabrics.map(item=>(isRTL?
+          [parseFloat(item.quantity*item.price*item.measurement).toFixed(2)+ ' KD ', item.name + ' * ' + item.quantity]:
+          [item.name + ' * ' + item.quantity, parseFloat(item.quantity*item.price*item.measurement).toFixed(2)+ ' KD ']
+      ))
     }
 
     console.log(fabrics, products, total);
@@ -237,19 +248,31 @@ export default class OrderDetail extends Component<props>{
     var isRTL = this.state.language.isRTL;
     var screen = this.state.language.orderDetail;
     const state = this.state;
-    const noOfPieces = navigation.getParam('noOfPieces', 0);
-    const fabricPickupCharge = navigation.getParam('fabricPickupCharge', 0);
-    const deliveryCharge = navigation.getParam('deliveryCharge', 0);
-    const samplePickupCharge = navigation.getParam('samplePickupCharge', 0);
+    const noOfPieces = parseFloat(navigation.getParam('noOfPieces', 0));
+    const fabricPickupCharge = parseFloat(navigation.getParam('fabricPickupCharge', 0));
+    const deliveryCharge = parseFloat(navigation.getParam('deliveryCharge', 0));
+    const samplePickupCharge = parseFloat(navigation.getParam('samplePickupCharge', 0));
     let {total, products, fabrics, discount} = this.state;
     const delivery_date = this.props.navigation.getParam('delivery_date', null);
     let tableData = [], deliveryOptions = [];
 
     noOfPieces?tableData.push(!isRTL?([`${screen.tableDishdasha} ${noOfPieces}`, `${noOfPieces*12} KD`]):([`${noOfPieces*12} KD`, `${screen.tableDishdasha} ${noOfPieces}`])):null
-    samplePickupCharge?deliveryOptions.push(['Sample Pickup', samplePickupCharge?samplePickupCharge:'FREE']):null;
-    deliveryCharge?deliveryOptions.push(['Delivery', deliveryCharge?deliveryCharge:'FREE']):null;
-    fabricPickupCharge?deliveryOptions.push(['Pickup', fabricPickupCharge?fabricPickupCharge:'FREE']):null;
-    discount?deliveryOptions.push(['Discount', -parseFloat(discount).toFixed(2) +' KD']):null;
+    samplePickupCharge?deliveryOptions.push(isRTL?
+        [samplePickupCharge, screen.tableSamplePickup]:
+        [screen.tableSamplePickup, samplePickupCharge]
+    ):null;
+    deliveryCharge?deliveryOptions.push(isRTL?
+        [deliveryCharge, screen.tableDelivery]:
+        [screen.tableDelivery, deliveryCharge]
+    ):null;
+    fabricPickupCharge?deliveryOptions.push(isRTL?
+        [fabricPickupCharge, screen.tablePickup]:
+        [screen.tablePickup,  fabricPickupCharge]
+    ):null;
+    discount?deliveryOptions.push(isRTL?
+        [-parseFloat(discount).toFixed(2) +' KD',screen.tableDiscount]:
+        [screen.tableDiscount, -parseFloat(discount).toFixed(2) +' KD']
+    ):null;
     total -= discount;
     return (
       <Container>
@@ -329,20 +352,29 @@ export default class OrderDetail extends Component<props>{
                 </ScrollView>
               </View>
             </View>
-            <View>
-              {!this.state.showPromo?<Text style={{ fontSize: 20, textAlign: 'center' , marginBottom:10}}>Have a Promo Code ?
-                <Text onPress={()=>this.togglePromo()} style={{textDecorationLine:'underline', color:'#0451A5'}}> Enter</Text>
-              </Text>:
-              <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center',transform:[{scaleX:isRTL?-1:1}]}}>
-                <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={'Promo Code'} onChangeText={(promo)=>this.setState({promo})}/>
-                <TouchableOpacity onPress={()=>this.state.promo_success?this.removePromo():this.applyPromo(this.state.promo)} style={{marginHorizontal:10,justifyContent:'center',alignItems:'center'}}>
-                  {!this.state.promo_success?<Image source={require('../img/tick.png')} style={{width:35, height:35, resizeMode:'contain'}} />:
-                  <Image source={require('../img/cross.png')} style={{width:35, height:35, resizeMode:'contain'}} />}
-                </TouchableOpacity>
-              </View>
+            <View style={{alignItems: 'center', justifyContent: 'center', margin:10}}>
+              {!this.state.showPromo?
+                  <View style={{borderWidth:2, borderColor:'#0451A5'}}>
+                    <Item style={{padding:0,transform:[{scaleX: isRTL?-1:1}], height: 40,
+                      width: width*0.8, backgroundColor: '#ffffff', justifyContent: 'space-between'}}>
+                        <Text style={{fontWeight:'bold',color:'#0451A5',fontSize:18, transform:[{scaleX: isRTL?-1:1}]}}>{screen.havePromo}</Text>
+                      <TouchableHighlight activeOpacity={0.6}
+                                          underlayColor={'rgba(4,96,195,0.43)'}
+                                          onPress={()=>this.togglePromo()} style={{paddingHorizontal:10, backgroundColor: '#0451A5', height:'100%', justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{color:'#fff',transform:[{scaleX: isRTL?-1:1}]}}>{screen.enterCode}</Text>
+                      </TouchableHighlight>
+                    </Item>
+                  </View>:
+                  <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center'}}>
+                    {!isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoLabel} onChangeText={(promo)=>this.setState({promo})}/>}
+                    <TouchableOpacity onPress={()=>this.state.promo_success?this.removePromo():this.applyPromo(this.state.promo)} style={{marginHorizontal:10,justifyContent:'center',alignItems:'center'}}>
+                      {!this.state.promo_success?<Image source={require('../img/tick.png')} style={{width:35, height:35, resizeMode:'contain'}} />:
+                          <Image source={require('../img/cross.png')} style={{width:35, height:35, resizeMode:'contain'}} />}
+                    </TouchableOpacity>
+                    {isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoLabel} onChangeText={(promo)=>this.setState({promo})}/>}
+                  </View>
               }
             </View>
-
             {delivery_date && <View>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
             </View>}

@@ -99,8 +99,11 @@ export default class ReviewOrder extends Component<props>{
                 var o = response.order_details;
                 response.cart.length?this.setState({cart: response.cart}):0;
                 this.setState({
-                  total: o.o_total, noOfPieces: parseInt(o.o_pieces),discount: o.o_discount,
-                  fabricPickupCharge:parseInt(o.o_pickup_charge), deliveryCharge:parseInt(o.o_delivery_charge),
+                  total: parseFloat(o.o_total),
+                  noOfPieces: parseInt(o.o_pieces),
+                  discount: parseFloat(o.o_discount),
+                  fabricPickupCharge:parseFloat(o.o_pickup_charge),
+                  deliveryCharge:parseFloat(o.o_delivery_charge),
                   deliveryOptions: {isPickingSample:false,isDelivering:o.o_delivery=='home',isPickingFabric:o.o_pickup=='pickup'}
                 });
                 var rows = [
@@ -129,19 +132,25 @@ export default class ReviewOrder extends Component<props>{
   }
 
   createTable(){
+    const isRTL = this.state.language.isRTL;
     const {noOfPieces, fabricPickupCharge, deliveryCharge, samplePickupCharge} = this.state;
     const {navigation} = this.props;
-    const m = navigation.getParam('measurement', 0);
+    const m = parseFloat(navigation.getParam('measurement', 0));
     var total = 12 * noOfPieces + fabricPickupCharge + deliveryCharge + samplePickupCharge;
     let products = [], fabrics = [];
     this.state.cart.forEach(item=>{
       if(item.isFabric){
         total += parseFloat(item.quantity*item.brand_price*item.measurement);
-        debugger
-        fabrics.push([item.brand_name + '(' +item.colour_name+') * ' + item.quantity,parseFloat(item.quantity*item.brand_price*item.measurement).toFixed(2) + ' KD ']);
+        fabrics.push(isRTL?
+            [parseFloat(item.quantity*item.brand_price*item.measurement).toFixed(2) + ' KD ', item.brand_name + '(' +item.colour_name+') * ' + item.quantity]:
+            [item.brand_name + '(' +item.colour_name+') * ' + item.quantity, parseFloat(item.quantity*item.brand_price*item.measurement).toFixed(2) + ' KD ']
+        );
       } else if (item.isProduct) {
         total += parseFloat(item.quantity*item.product_price);
-        products.push([item.product_name + ' * ' + item.quantity,parseFloat(item.quantity*item.product_price).toFixed(2) + ' KD '])
+        products.push(isRTL?
+            [parseFloat(item.quantity*item.product_price).toFixed(2) + ' KD ', item.product_name + ' * ' + item.quantity]:
+            [item.product_name + ' * ' + item.quantity,parseFloat(item.quantity*item.product_price).toFixed(2) + ' KD ']
+        )
       }
     })
     // fabrics = this.filterCart(fabrics, this.state.brands);
@@ -164,6 +173,7 @@ export default class ReviewOrder extends Component<props>{
 
   render() {
     var screen = this.state.language.reviewScreen;
+    var screen2 = this.state.language.orderDetail;
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     var isRTL = this.state.language.isRTL;
@@ -174,10 +184,23 @@ export default class ReviewOrder extends Component<props>{
       ordersAvailable,tableData, total, products, fabrics, discount} = this.state;
     const delivery_date = navigation.getParam('delivery_date', '')
     total -= discount;
-    samplePickupCharge?deliveryOptions.push(['Sample Pickup', samplePickupCharge?samplePickupCharge:'FREE']):null;
-    deliveryCharge?deliveryOptions.push(['Delivery', deliveryCharge?deliveryCharge:'FREE']):null;
-    fabricPickupCharge?deliveryOptions.push(['Pickup', fabricPickupCharge?fabricPickupCharge:'FREE']):null;
-    discount?deliveryOptions.push(['Discount', -parseFloat(discount).toFixed(2) +' KD']):null;
+
+    samplePickupCharge?deliveryOptions.push(isRTL?
+        [samplePickupCharge, screen2.tableSamplePickup]:
+        [screen2.tableSamplePickup, samplePickupCharge]
+    ):null;
+    deliveryCharge?deliveryOptions.push(isRTL?
+        [deliveryCharge, screen2.tableDelivery]:
+        [screen2.tableDelivery, deliveryCharge]
+    ):null;
+    fabricPickupCharge?deliveryOptions.push(isRTL?
+        [fabricPickupCharge, screen2.tablePickup]:
+        [screen2.tablePickup,  fabricPickupCharge]
+    ):null;
+    discount?deliveryOptions.push(isRTL?
+        [-parseFloat(discount).toFixed(2) +' KD',screen2.tableDiscount]:
+        [screen2.tableDiscount, -parseFloat(discount).toFixed(2) +' KD']
+    ):null;
     return (
         <View style={{flex: 1}}>
           {isLoading?
@@ -191,7 +214,7 @@ export default class ReviewOrder extends Component<props>{
                 <View style={[styles.header, {width: WIDTH*2, justifyContent: 'center'}]}>
                   <Text style={[styles.textHeader, {fontSize: 20}]}>{screen.tableHeadTitle}</Text>
                 </View>
-                <Table borderStyle={{borderColor:'#C1C0B9'}}>y
+                <Table borderStyle={{borderColor:'#C1C0B9'}}>
 
                   {
                     tableData.map((rowData, index) => (

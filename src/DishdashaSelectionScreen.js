@@ -1,7 +1,6 @@
 import  React, { Component } from 'react';
 import { View, Text, Image, Dimensions, SafeAreaView,Alert, ScrollView, TouchableOpacity} from 'react-native';
 import { Button,Icon} from 'native-base';
-import renderIf from 'render-if';
 const { width, height } = Dimensions.get('window');
 
 export default class DishdashaSelectionScreen extends Component<Props>{
@@ -43,6 +42,7 @@ export default class DishdashaSelectionScreen extends Component<Props>{
   }
 
   proceed(products_disabled = false){
+    let {shopTitle, fabricsLabel, productsLabel} = this.state.language.fabricScreen;
       const inHomeCount = this.state.inHomeCount;
       const outsideCount= this.state.outsideCount;
       const mobileNo    = this.props.navigation.getParam('mobileNo', null);
@@ -52,6 +52,7 @@ export default class DishdashaSelectionScreen extends Component<Props>{
         language: this.state.language, inHomeCount, outsideCount, mobileNo,
         customerName, noOfPieces: this.state.noOfPieces,
         productsEnabled: !products_disabled,
+        shopTitle, fabricsLabel, productsLabel,
         fabricsEnabled: !(outsideCount==this.state.noOfPieces),
         measurementDone: this.props.navigation.getParam('measurementDone'),
       };
@@ -107,7 +108,7 @@ Text.defaultProps.allowFontScaling = false;
 
     const sizeCtrl = {width: 40, height: 40}
     return (
-      <SafeAreaView >
+      <SafeAreaView style={{flex:1}}>
         <ScrollView>
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
             <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
@@ -177,18 +178,18 @@ Text.defaultProps.allowFontScaling = false;
                 </View>
               </View>
             </View>
-            <View style={{ marginTop: 40, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginTop: 40, marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                   onPress={() => this.proceed(true)}>
-                <Text style={{ fontSize: 18, color: 'white' }}>Buy Dishdasha</Text>
+                <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyDishdasha}</Text>
               </Button>
             </View>
-            <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ marginTop: 20, marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
               <Button
                   style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
                   onPress={() =>this.proceed()}>
-                <Text style={{ fontSize: 18, color: 'white' }}>Buy Dishdasha and Products</Text>
+                <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyDishdashaAndProduct}</Text>
               </Button>
             </View>
           </View>

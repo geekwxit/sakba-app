@@ -1,11 +1,11 @@
 import React from 'react';
-import {Dimensions, Image, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {Alert, Dimensions, Image, Modal, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import {B} from "./TextStyles";
 import {Input} from "../OrderDetail";
 
 const {width, height} = Dimensions.get('window');
 
-const ProductModal = ({onEnterMeasurement, strings, patternName, colorName, close, visible, isRTL, onAdd, selected, price, measurement, isCountNeeded}) => {
+const ProductModal = ({language, onEnterMeasurement, strings, patternName, colorName, close, visible, isRTL, onAdd, selected, price, measurement, isCountNeeded}) => {
     let finalPrice = (!isNaN(price*measurement) && price*measurement!=0)?
         (price*measurement).toFixed(2) +" " +strings.kd:"";
     return (
@@ -48,9 +48,8 @@ const ProductModal = ({onEnterMeasurement, strings, patternName, colorName, clos
                                 </View>
                             </View>
                             {!isCountNeeded &&
-                                <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center',
-                                    transform:[{scaleX:isRTL?-1:1}]}}>
-                                    <Input keyboardType={'numeric'} isRTL={isRTL} maxLength={20} label={'Measurement'} onChangeText={(m)=>onEnterMeasurement(m)}/>
+                                <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center'}}>
+                                    <Input keyboardType={'numeric'} isRTL={isRTL} maxLength={20} label={strings.measurementLabel} onChangeText={(m)=>onEnterMeasurement(m)}/>
                                 </View>
                             }
                             <View style={{height: 10}}/>
@@ -58,9 +57,11 @@ const ProductModal = ({onEnterMeasurement, strings, patternName, colorName, clos
                                 (selected.pattern && selected.color)?
                                     measurement?
                                         (isNaN(measurement)?
-                                            alert("Please enter measurement in numeric form!"):
-                                            onAdd()):
-                                        alert("Please enter measurement!"):
+                                            Alert.alert(language.commonFields.alertTitle, strings.promoNumberAlert, [{text: language.commonFields.okButton}]):
+                                            (parseFloat(measurement)>0)?
+                                                onAdd():
+                                                Alert.alert(language.commonFields.alertTitle, strings.greaterNumberError, [{text: language.commonFields.okButton}])):
+                                        Alert.alert(language.commonFields.alertTitle, strings.enterMeasurement, [{text: language.commonFields.okButton}]):
                                     close()
                             }}>
                                 <View style={{ backgroundColor: '#0451A5', alignItems: 'center', justifyContent: 'center', padding:10, borderBottomLeftRadius:10, borderBottomRightRadius: 10}}>

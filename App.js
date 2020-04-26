@@ -13,7 +13,6 @@ import OrderDetail from './src/OrderDetail';
 import OrderConfirm from './src/OrderConfirm';
 import Paypal from './src/PayPal';
 import Review from './src/ReviewOrder';
-import FabricTypeSelection from "./src/FabricTypeSelection";
 import DeliveryOptions from "./src/DeliveryOptions";
 import ProductsScreen from "./src/ProductsScreen";
 import MeasurementScreen from "./src/MeasurementScreen";
@@ -33,7 +32,6 @@ const AppNavigator = createStackNavigator(
     order_confirm: OrderConfirm,
     paypal: Paypal,
     review: Review,
-    fabric: FabricTypeSelection,
     delivery: DeliveryOptions,
       Shop: ProductsScreen,
       write_measure: MeasurementScreen,

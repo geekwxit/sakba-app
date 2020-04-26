@@ -69,16 +69,19 @@ export default class ProductsScreen extends Component{
                                 return <Product item={item} onAddToCart={()=>this.addToCart(item)}
                                                 openProduct={()=>main.props.navigation.navigate('single_product',{
                                                     title: item.product_name,
-                                                })} />
+                                                })}
+                                                addToCartLabel={screen.addToCartLabel}
+                                                outOfStockLabel={screen.outOfStockLabel}
+                                        />
                               }}
                           />:
                           !this.state.isLoading && <View style={{alignItems:'center', justifyContent:'center'}}>
                             <Feather size={80} color={'grey'} name={'alert-circle'}/>
                             <Text style={{fontWeight:'bold', fontSize:20}}>
-                              No Products found
+                                {screen.noProducts}
                             </Text>
                             <TouchableOpacity onPress={()=>this.getProducts()} style={{justifyContent:'center',borderRadius:10,alignItems:'center',padding:10, backgroundColor:'#0551a5'}}>
-                              <Text style={{color: '#fff', letterSpacing:2}}>RETRY</Text>
+                              <Text style={{color: '#fff', letterSpacing:2}}>{screen.retryButton}</Text>
                             </TouchableOpacity>
                           </View>
                     }
@@ -89,7 +92,7 @@ export default class ProductsScreen extends Component{
   }
 }
 
-const Product=({item, openProduct, onAddToCart, })=>(
+const Product=({item, openProduct, onAddToCart, addToCartLabel, outOfStockLabel })=>(
     <TouchableOpacity onPress={()=>false} style={{marginTop: 10, borderWidth: 1, borderColor: '#0551a5', marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
         <View style={{width:'100%'}}>
             <View style={{width: '100%', height: 170}}>
@@ -105,7 +108,7 @@ const Product=({item, openProduct, onAddToCart, })=>(
                           style={{paddingVertical: 5,
                             backgroundColor: (parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?'#0551a5':'#ff0000', alignItems: 'center'}}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
-              {(parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?"ADD TO CART":"OUT OF STOCK"}
+              {(parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?addToCartLabel:outOfStockLabel}
             </Text>
         </TouchableOpacity>
     </TouchableOpacity>

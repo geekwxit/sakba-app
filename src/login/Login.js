@@ -20,6 +20,14 @@ export default class Login extends Component {
     componentDidMount(){
         this.setLanguage();
         Store.getShippingCharges();
+        // this.props.navigation.navigate('review', {
+        //     language: strings,
+        //     order_id: 1531,
+        // })
+    // this.props.navigation.navigate('fabrics_and_products', {
+    //         language: strings,
+    //         order_id: 1531,
+    //     })
     }
 
     async setLanguage(){
@@ -124,7 +132,7 @@ export default class Login extends Component {
     }
 
     render() {
-        screen = this.state.page;
+        let screen = this.state.page;
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
         return (
@@ -168,33 +176,37 @@ export default class Login extends Component {
                                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                     <Button style={{backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center', marginTop: 20 }}
                                             onPress={() => this.props.navigation.navigate('sample_measure', {language: strings,})}>
-                                        <Text style={{ fontSize: 18, color: 'white' }}>Send Sample Measurement</Text>
+                                        <Text style={{ fontSize: 18, color: 'white' }}>{screen.sendSampleButton}</Text>
                                     </Button>
                                     <Button style={{backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center', marginTop: 20 }}
                                             onPress={() => this.props.navigation.navigate('write_measure', {language: strings})}>
-                                        <Text style={{ fontSize: 18, color: 'white' }}>Write Your Measurement</Text>
+                                        <Text style={{ fontSize: 18, color: 'white' }}>{screen.writeMeasurementButton}</Text>
                                     </Button>
                                     <Button style={{backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center', marginTop: 20 }}
-                                            onPress={() => this.props.navigation.navigate('fabrics_and_products', {
-                                                language: strings,measurement:0,
-                                                noOfPieces: 0, mobileNo: 0,
-                                                inHomeCount: 0, outsideCount: 0,
-                                                isCountNeeded: false,
-                                                productsOnly: false, measurementDone: false,
-                                                fabricsEnabled: true,productsEnabled: true
-                                            })}>
-                                        <Text style={{ fontSize: 18, color: 'white' }}>Buy Products & Fabrics</Text>
+                                            onPress={() =>{
+                                                let {shopTitle, fabricsLabel, productsLabel} = strings.fabricScreen;
+                                                this.props.navigation.navigate('fabrics_and_products', {
+                                                    language: strings,measurement:0,
+                                                    noOfPieces: 0, mobileNo: 0,
+                                                    inHomeCount: 0, outsideCount: 0,
+                                                    isCountNeeded: false,
+                                                    productsOnly: false, measurementDone: false,
+                                                    fabricsEnabled: true,productsEnabled: true, shopTitle,
+                                                    fabricsLabel, productsLabel
+                                                })
+                                            }}>
+                                        <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>
                                     </Button>
                                     <View style={{width: width - 80, flexDirection:'row', justifyContent:'space-evenly', marginTop:20}}>
-                                        <Icon label={'Text Us'} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/login_icons/whatsapp.png')}/>
+                                        <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/login_icons/whatsapp.png')}/>
                                         <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/login_icons/maps-icon.png')}/>
                                         <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/login_icons/maps-icon.png')}/>
-                                        <Icon label={'Call Us'} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/call.png')}/>
+                                        <Icon label={screen.callUs} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/call.png')}/>
                                     </View>
                                 </View>
                             </View>
                             <View style={{marginTop:10,alignSelf: 'center',flexDirection: 'row'}}>
-                                <Text style={{fontSize: 15}}>Change lanugage to : </Text>
+                                <Text style={{fontSize: 15}}>Change language to : </Text>
                                 <TouchableOpacity onPress={()=>this._onLanguageChange('en')}>
                                     <Text style={{color: this.state.language=='en'?'#0451A5':'#a2a2a2',fontSize: 15}}>English  </Text>
                                 </TouchableOpacity>

@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import { View, Alert, Text, Image, Dimensions, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { Form, Item, Input, Container, Content, Button, Radio, Icon, Textarea } from 'native-base';
-import renderIf from 'render-if';
-import PayPal from 'react-native-paypal-wrapper';
-import CustomRadioButton from 'react-native-vector-icons/MaterialCommunityIcons';
-// import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import { View, Alert, Text, Image, Dimensions, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { Form, Item, Input, Button } from 'native-base';
 import RadioForm from "./components/RadioForm";
 import axios from './axios/AxiosInstance';
 import Store from "./CommonStore/Store";
@@ -56,9 +52,13 @@ export default class DeliveryOptions extends Component<Props>{
     }
 
     submitForm() {
-        console.log(this.state);
+        let pickupCharges =0 , deliveryCharges = 0, sampleCharges = 0 ;
        var cartTotal = 0;
-        const {shippingCharges: {pickupCharges,deliveryCharges,sampleCharges}} = Store.store;
+       if(Store.store.shippingCharges){
+           pickupCharges = Store.store.shippingCharges.pickupCharges?Store.store.shippingCharges.pickupCharges:0;
+           deliveryCharges = Store.store.shippingCharges.deliveryCharges?Store.store.shippingCharges.deliveryCharges:0;
+           sampleCharges = Store.store.shippingCharges.sampleCharges?Store.store.shippingCharges.sampleCharges:0;
+       }
        let validated = false;
         var screen = this.state.language.deliveryScreen;
         var addresses = {};
@@ -189,7 +189,7 @@ export default class DeliveryOptions extends Component<Props>{
                     }
                 })
         } else {
-            alert("Please fill details!");
+            Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
         }
     }
 
@@ -205,10 +205,6 @@ export default class DeliveryOptions extends Component<Props>{
         Text.defaultProps.allowFontScaling = false;
         var screen = this.state.language.deliveryScreen;
         const isRTL = this.state.language.isRTL;
-        const {shippingCharges: {pickupCharges,deliveryCharges,sampleCharges}} = Store.store;
-        const {shippingCharges} = Store.store;
-        // let pickupCharge = 0,  = 0, sampleCharge=0;
-        console.log(shippingCharges)
         return (
             <SafeAreaView>
                 <ScrollView>
@@ -217,12 +213,12 @@ export default class DeliveryOptions extends Component<Props>{
                     </View>
                     <View style={{ marginTop:20, flexDirection: 'column', marginHorizontal: 40 }}>
                         {!this.state.measurementDone && this.state.isCountNeeded && <AddressOption
-                            label={'Your Sample :'}
+                            label={screen.sampleLabel}
                             setValue={(value)=>this.setState(prev=>({sampleAddress: {...prev.sampleAddress, ...value}}))}
                             values={this.state.sampleAddress}
                             showAddress={this.state.sampleAddress.enabled} isRTL={isRTL} screen={screen}
                             radioOptions={[{ label: screen.sendFabric, value: 0 },
-                                { label: screen.pickup + (parseFloat(sampleCharges)?` "${sampleCharges} KD Extra`:""), value: 1 }]}
+                                { label: screen.pickup, value: 1 }]}
                             toggle={()=>this.setState(prev=>({sampleAddress: {...prev.sampleAddress, enabled: !prev.sampleAddress.enabled}}))}
                         />}
                         {!(this.state.inHomeCount==this.state.noOfPieces) && this.state.isCountNeeded && <AddressOption
@@ -232,7 +228,7 @@ export default class DeliveryOptions extends Component<Props>{
                             values={this.state.pickupAddress}
                             showAddress={this.state.pickupAddress.enabled} isRTL={isRTL} screen={screen}
                             radioOptions={[{ label: screen.sendFabric, value: 0 },
-                                { label: screen.pickup + (parseFloat(pickupCharges)?` "${pickupCharges} KD Extra"`:""), value: 1 }]}
+                                { label: screen.pickup, value: 1 }]}
                             toggle={()=>this.setState(prev=>({pickupAddress: {...prev.pickupAddress, enabled: !prev.pickupAddress.enabled}}))}
                         />}
                         {!this.state.isCountNeeded &&
@@ -241,10 +237,10 @@ export default class DeliveryOptions extends Component<Props>{
                                     fontSize: 20,
                                     alignSelf: isRTL ? 'flex-end' : 'flex-start',
                                     textAlign: isRTL ? 'right' : 'auto'
-                                }}>Your Details: </Text>
-                                <CustomInput label={'Name'} isRTL={isRTL}  onChangeText={(name)=>this.setState({name})} />
-                                <CustomInput label={'Phone'} isRTL={isRTL} onChangeText={(phone)=>this.setState({phone})} />
-                                <CustomInput label={'Email'} isRTL={isRTL} onChangeText={(email)=>this.setState({email})} />
+                                }}>{screen.deliveryLabel} </Text>
+                                <CustomInput label={screen.name} isRTL={isRTL}  onChangeText={(name)=>this.setState({name})} />
+                                <CustomInput label={screen.phone} isRTL={isRTL} onChangeText={(phone)=>this.setState({phone})} />
+                                <CustomInput label={screen.email} isRTL={isRTL} onChangeText={(email)=>this.setState({email})} />
                             </View>
                         }
                         <AddressOption
@@ -254,7 +250,7 @@ export default class DeliveryOptions extends Component<Props>{
                             values={this.state.deliveryAddress}
                             showAddress={this.state.deliveryAddress.enabled} isRTL={isRTL} screen={screen}
                             radioOptions={[{ label: screen.opPickup, value: 0 },
-                                { label: screen.opHomeDel + (parseFloat(deliveryCharges)?` "${deliveryCharges} KD Extra`:""), value: 1 }]}
+                                { label: screen.opHomeDel, value: 1 }]}
                             toggle={()=>this.setState(prev=>({deliveryAddress: {...prev.deliveryAddress, enabled: !prev.deliveryAddress.enabled}}))}>
                             <ExtraOptions isRTL={isRTL} radioOptions={[{ label: screen.opAwqaf, value: 0 },
                                 { label: screen.opQurain, value: 1 }]} value={false} toggle={(pickupShop)=>this.setState({pickupShop})}/>

@@ -1,6 +1,7 @@
 /** Define string constants for the app here */
 import LocalizedStrings from 'react-native-localization';
 import {Text} from "react-native";
+import React from "react";
 export const strings = new LocalizedStrings({
     en: {
         isRTL: false,
@@ -12,8 +13,8 @@ export const strings = new LocalizedStrings({
             screenTitle: "Login",
             enterMobile: "Enter your mobile number",
             validation: {
-                lengthError: "Pls Enter the Mobile No. with minimum length of Eight Number",
-                mobileError: "Pls Enter the Mobile No.",
+                lengthError: "Please Enter the Mobile No. with minimum length of Eight Number",
+                mobileError: "Please Enter the Mobile No.",
                 others: "Please Enter Only Numbers"
             },
             noWhatsApp: "Please install whats app to send direct message",
@@ -23,6 +24,11 @@ export const strings = new LocalizedStrings({
             submitButton: "Submit",
             or: "OR",
             installWhatsApp: "Please install whats app to send direct message",
+            sendSampleButton: "Send Sample Measurement",
+            writeMeasurementButton: "Write Your Measurement",
+            buyButton: "Buy Products & Fabrics",
+            textUs: 'Text Us',
+            callUs: 'Call Us',
         },
         welcomeCustomer: {
             okButton: "OK",
@@ -40,6 +46,7 @@ export const strings = new LocalizedStrings({
             proceedButton: "Proceed",
             maxInHome : "Fabrics count value cannot exceed total number of dishdashas!",
             maxOutside: "Fabrics count value cannot exceed total number of dishdashas!",
+            buyDishdasha: "Buy Dishdasha", buyDishdashaAndProduct: "Buy Dishdasha and Products"
         },
         deliveryScreen: {
             screenTitle: "Delivery Options",
@@ -49,6 +56,7 @@ export const strings = new LocalizedStrings({
             pickup: 'We pick up',
             addressLabel: "Address :",
             deliveryLabel: "Your Order :",
+            sampleLabel: "Your Sample :",
             pArea: "Area",
             pBlock: 'Block',
             pStreet: "Street",
@@ -64,6 +72,7 @@ export const strings = new LocalizedStrings({
             orderNowButton: "Order Now !",
             detailsRequired: "All Details Are Required",
             pRemarks: "Remarks :",
+            email: "Email", name:  "Name", phone: 'Phone'
         },
         fabricScreen: {
             title: "Select Fabric Options",
@@ -91,6 +100,12 @@ export const strings = new LocalizedStrings({
             kdPerMeter: "KD per meter", rateLabel: "Rate :", meters: "meters",
 
             brandLabel: "brands", patternLabel: "patterns", colorsLabel: "colors",
+            fabricsLabel: "Fabrics",productsLabel: "Products",shopTitle: 'Shop',
+            noProducts: "No Products found", retryButton: "RETRY",
+            promoNumberAlert: "Please enter the promo code first!",
+            enterMeasurement: "Please enter measurement!", greaterNumberError: "Number must be greater than 0",
+            addToCartLabel: "ADD TO CART", outOfStockLabel: "OUT OF STOCK",
+            measurementLabel: "Measurement",
         },
         orderDetail:{
             title: "Order Details",
@@ -106,8 +121,12 @@ export const strings = new LocalizedStrings({
             alertButton: "Ok",
             alertTitle: "Alert",
             tableDishdasha: "Classic Dishdasha *",
-            tablePickup: "Pickup", tableDelivery: "Delivery", tableTotal: "Total",tableHeadTitle: "Product / Service",
+            tablePickup: "Pickup", tableDelivery: "Delivery", tableSamplePickup: "Sample Pickup", tableTotal: "Total",tableHeadTitle: "Product / Service",
+            tableDiscount: "Discount",
             fabricsText: "FABRICS FROM OUR SHOP",
+            promoAlert: "Please enter the promo code first!",
+            enterCode: "Enter Code",
+            havePromo: "Have a Promo Code?",
         },
         confirmScreen: {
             screenTitle: "Checkout",
@@ -176,14 +195,19 @@ export const strings = new LocalizedStrings({
             error: "Something went wrong. Please retry again later!",
             fabricsText: "FABRICS FROM OUR SHOP",
         },
-        measurementScreen: {
+        sampleMeasurementScreen: {
             title: "Measurement",
             submitButton: "Submit",
             nameLabel: "Name :",
             mobileLabel: "Mobile :",
             metersLabel: "Meters Needed :",
             heading: "Enter your measurement details",
-
+        },
+        measurementScreen: {
+            submitButton: "Submit Measurement",
+            acceptTerms: "Please accept terms and conditions.",
+            mandatoryMessage: "All fields are mandatory!",
+            measurementSuccess: "Measurement submitted successfully!",
         }
     },
     ar: {
@@ -207,6 +231,11 @@ export const strings = new LocalizedStrings({
             submitButton: "ادخل",
             or: "او",
             installWhatsApp: "نزل برنامج الواتساب عشان تكلمنا",
+            sendSampleButton: "إرسال قياس العينة",
+            writeMeasurementButton: "اكتب قياسك",
+            buyButton: "شراء المنتجات والأقمشة",
+            textUs: 'أرسل لنا رسالة',
+            callUs: 'اتصل بنا',
         },
         welcomeCustomer: {
             okButton: "اوكي",
@@ -215,6 +244,7 @@ export const strings = new LocalizedStrings({
             acceptText: "موافق عالقياس؟ ",
             agree: "موافق",
             needNew: "لا، محتاج قياس يديد",
+            measureAccept: "هل توافق وتؤكد قياسات العينة الخاصة بك؟",
         },
         customerAgree:{
             dishdashaCount: "جم دشداشة تبي تفصل؟",
@@ -223,6 +253,7 @@ export const strings = new LocalizedStrings({
             proceedButton: "كمّل",
             maxInHome : "ضفت اكثر من العدد",
             maxOutside: "ضفت اكثر من العدد",
+            buyDishdasha: "يشترى دشداشة", buyDishdashaAndProduct: "يشترى  دشداشة و منتجات"
         },
         deliveryScreen: {
             screenTitle: "خيار التسليم", //Googled it
@@ -247,6 +278,8 @@ export const strings = new LocalizedStrings({
             orderNowButton: "انتقل للدفع",
             detailsRequired: "كل البيانات مطلوبة",
             pRemarks: "ملاحظات :",
+            email: "ايميلك:", name:  "الاسم", phone: 'رقم',
+            sampleLabel: "عينتك:",
         },
         fabricScreen: {
             title: "اختار الخامات",
@@ -274,6 +307,12 @@ export const strings = new LocalizedStrings({
             kdPerMeter: "دينار كويتي لكل متر", rateLabel: "معدل :", meters: "متر",
 
             brandLabel: "ركة", patternLabel: "أنماط", colorsLabel: "الألوان",
+            fabricsLabel: "الخامات", productsLabel: "منتجات",shopTitle: 'أسواق',
+            noProducts: "لم يتم العثور على منتجات", retryButton: "عيد حاول",
+            promoNumberAlert: "يرجى إدخال الرمز الترويجي أولاً!",
+            enterMeasurement: "الرجاء إدخال القياس!", greaterNumberError: "يجب أن يكون الرقم أكبر من 0",
+            addToCartLabel: "اضافه القطعة", outOfStockLabel: "إنتهى من المخزن",
+            measurementLabel:  "قياس",
         },
         orderDetail:{
             title: "تفاصيل الطلب",
@@ -289,8 +328,12 @@ export const strings = new LocalizedStrings({
             alertButton: "اوكي",
             alertTitle: "انذار",
             tableDishdasha: "دشداشة كلاسيك *",
-            tablePickup: "استلام", tableDelivery: "توصيل", tableTotal: "المجموع",tableHeadTitle: "المنتج/الخدمة",
+            tablePickup: "استلام", tableDelivery: "توصيل", tableSamplePickup: "لاقط عينة", tableTotal: "المجموع",tableHeadTitle: "المنتج/الخدمة",
+            tableDiscount: "خصم",
             fabricsText: "خامات من المحل",
+            promoAlert: "يرجى إدخال الرمز الترويجي أولاً!",
+            enterCode: "ادخل الرمز",
+            havePromo: "هل يمتلك الرمز الترويجي؟",
         },
         confirmScreen: {
             screenTitle: "خروج",
@@ -358,6 +401,21 @@ export const strings = new LocalizedStrings({
             deliveryCharge: "٣ د.ك", classic : "دشداشة كلاسيك",
             error: "في خطأ، جرب مره ثانيه",
             fabricsText: "خامات من المحل",
+        },
+        sampleMeasurementScreen: {
+            title: "قياس",
+            submitButton: "إرسال",
+            nameLabel:  "الاسم",
+            mobileLabel: 'رقم',
+            metersLabel: "متر المطلوبة",
+            heading: "أدخل تفاصيل القياس الخاصة بك",
+        },
+        measurementScreen: {
+            submitButton: "إرسال القياس",
+            acceptTerms: "يرجى قبول الشروط والأحكام",
+            mandatoryMessage: "جميع الحقول إلزامية!",
+            measurementSuccess: "تم إرسال القياس بنجاح!",
+
         }
     },
 })

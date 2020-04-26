@@ -13,7 +13,7 @@ class SampleMeasurement extends Component {
       const language = navigation.getParam('language');
         const others = language.isRTL?
             {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{language.measurementScreen.title}</Text>}:
-            {title: language.measurementScreen.title};
+            {title: language.sampleMeasurementScreen.title};
 
         return {headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 }, headerTintColor: '#fff', ...others};
     };
@@ -23,18 +23,8 @@ class SampleMeasurement extends Component {
         this.state = {
             mobile: '', name: '', meter: '',
             language: props.navigation.getParam('language'),
-            itemSelected: 'itemOne',
-            flag: false, boardAddModalShow: false,
-            itemSelected2: 'itemOne2',
             noOfPieces: 0,
-            mobileNumberFromDataBase: [],
-            customerName: '', measurementDate: '',
-            status: '', count: 0, notFound: false
         };
-    }
-
-    componentDidMount(){
-      // this.props.navigation.setParams({language: strings})
     }
 
   async submitForm() {
@@ -64,13 +54,13 @@ class SampleMeasurement extends Component {
                   }
               })
               .catch(e=>{
-
+                  Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.commonError, [{text: this.state.language.commonFields.okButton}]);
               })
       }
   }
 
     render() {
-        const screen = this.state.language.measurementScreen;
+        const screen = this.state.language.sampleMeasurementScreen;
         const isRTL =  this.state.language.isRTL;
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;

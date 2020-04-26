@@ -72,10 +72,15 @@ export default class FabricsAndProducts extends Component<Props>{
     this.props.navigation.setParams({showCart: this.showCart})
   }
   componentDidMount() {
+    let shopTitle = this.props.navigation.getParam('shopTitle', '');
+    let fabricsLabel = this.props.navigation.getParam('fabricsLabel', '');
+    let productsLabel = this.props.navigation.getParam('productsLabel', '');
     let fabricsEnabled = this.props.navigation.getParam('fabricsEnabled', true)
     let productsEnabled = this.props.navigation.getParam('productsEnabled', true)
     const Tabs = this.state.tabHead;
     Tabs[0].enabled = fabricsEnabled;
+    Tabs[0].name = fabricsLabel;
+    Tabs[1].name = productsLabel;
     Tabs[1].enabled = productsEnabled;
     Tabs[0].active = (fabricsEnabled && productsEnabled)?true:fabricsEnabled;
     Tabs[1].active = (fabricsEnabled && productsEnabled)?false:productsEnabled;
@@ -85,7 +90,7 @@ export default class FabricsAndProducts extends Component<Props>{
       tabHead: Tabs,activeTabIndex:fabricsEnabled?0:1,
       fabricsEnabled: fabricsEnabled
     });
-    this.props.navigation.setParams({title: 'Shop', error: this.state.language.fabricScreen.commonError});
+    this.props.navigation.setParams({title: shopTitle, error: this.state.language.fabricScreen.commonError});
     this.getData();
   }
 
@@ -148,7 +153,7 @@ export default class FabricsAndProducts extends Component<Props>{
         this.props.navigation.navigate('delivery', params)
       }
     } else {
-      Alert.alert(this.state.language.commonFields.alertTitle, "Cart is empty.", [{text: this.state.language.commonFields.okButton}])
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.cartEmpty, [{text: this.state.language.commonFields.okButton}])
     }
   }
 
@@ -216,6 +221,7 @@ export default class FabricsAndProducts extends Component<Props>{
             cartItems={this.state.cart}/>
         <FabricPreview ok={screen.previewOKButton} title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
         <TabbedView
+            screen={screen}
           style={{marginTop:10,alignSelf:'center',  width:'95%'}}
           tabHead={this.state.tabHead}
           onChangeTab={(activeTabIndex)=>this.onChangeTab(activeTabIndex)}
@@ -268,7 +274,7 @@ const FabricPreview = (props) => {
   )
 }
 
-const TabbedView=({style, children, activeTabIndex, tabHead, onChangeTab, checkout})=>(
+const TabbedView=({screen, style, children, activeTabIndex, tabHead, onChangeTab, checkout})=>(
     <View style={[{flex:1},style]}>
       <View style={{width:'100%', flexDirection:'row', justifyContent:'space-evenly'}}>
         {
@@ -282,7 +288,7 @@ const TabbedView=({style, children, activeTabIndex, tabHead, onChangeTab, checko
         <Button
             style={{ borderRadius: 15, height:30,  borderWidth: 2, backgroundColor: '#0451A5', width: width*0.8, justifyContent: 'center' }}
             onPress={checkout}>
-          <Text style={{ fontSize: 18, color: 'white' }}>Checkout</Text>
+          <Text style={{ fontSize: 18, color: 'white' }}>{screen.checkoutButton}</Text>
         </Button>
       </View>
     </View>

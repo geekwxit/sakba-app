@@ -112,6 +112,7 @@ export default class FabricsScreen extends React.Component{
                 <ProductModal isRTL={main.state.language.isRTL}
                               measurement={main.state.measurement}
                               isCountNeeded={main.state.isCountNeeded}
+                              language={main.state.language}
                               strings={screen}
                               price={(this.state.brands && this.state.brands.length>0)?
                                   parseFloat(this.state.brands[this.state.selectedBrand].price).toFixed(2):0}

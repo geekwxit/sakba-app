@@ -6,17 +6,39 @@ import axios from "./axios/AxiosInstance";
 const { width, height } = Dimensions.get('window');
 
 export default class MeasurementScreen extends Component {
-    state = {
+    state = {language: {},
         acceptTerms: false, neck:'', length:'', shoulder:'', arm_length:'',
-        arm_width:'', vest_size:'', hip_size:'', bottom:'', name: '', email: ''
+        arm_width:'', vest_size:'', hip_size:'', bottom:'', name: '', email: '', mobile: ''
     };
+
+    constructor() {
+        super();
+        this.name = React.createRef();
+        this.email = React.createRef();
+        this.mobile = React.createRef();
+        this.neck = React.createRef();
+        this.length = React.createRef();
+        this.shoulder = React.createRef();
+        this.arm_length = React.createRef();
+        this.arm_width = React.createRef();
+        this.vest_size = React.createRef();
+        this.hip_size = React.createRef();
+        this.bottom = React.createRef();
+    }
 
     static navigationOptions = { header:null };
 
+    componentDidMount(){
+        this.setState({
+            language: this.props.navigation.getParam('language')
+        })
+    }
+
     async submit(){
+        let screen = this.state.language?.measurementScreen;
         let {neck, length, shoulder, arm_length, arm_width, vest_size, hip_size,
-            bottom, name, email} = this.state;
-        if(!this.validateFields(neck, length, shoulder, arm_length, arm_width, vest_size, hip_size,
+            bottom, mobile, name, email} = this.state;
+        if(!this.validateFields(neck, mobile, length, shoulder, arm_length, arm_width, vest_size, hip_size,
             bottom, name, email)){
             if(this.state.acceptTerms){
                 await axios.post('write_measurements.php', {
@@ -28,17 +50,17 @@ export default class MeasurementScreen extends Component {
                         if(response.error){
                             alert(response.msg);
                         } else {
-                            alert("Measurement submitted successfully!");
+                            Alert.alert(this.state.language.commonFields.alertTitle, screen.measurementSuccess, [{text: this.state.language.commonFields.okButton}]);
                             this.props.navigation.navigate('login');
                         }
                     })
 
             } else {
-                alert("Please accept terms and conditions.");
+                Alert.alert(this.state.language.commonFields.alertTitle, screen.acceptTerms, [{text: this.state.language.commonFields.okButton}]);
             }
             // this.validateFields(ata})
         } else {
-            alert("All fields are mandatory.");
+            Alert.alert(this.state.language.commonFields.alertTitle, screen.mandatoryMessage, [{text: this.state.language.commonFields.okButton}]);
         }
     }
 
@@ -51,6 +73,7 @@ export default class MeasurementScreen extends Component {
     }
 
     render(){
+        let screen = this.state.language?.measurementScreen;
         return (
             <SafeAreaView style={{flex:1}}>
                 <ScrollView>
@@ -59,8 +82,9 @@ export default class MeasurementScreen extends Component {
                             <Image style={{width:null,height:null,flex:1, resizeMode:'contain'}} source={require('../img/om.png')} />
                         </View>
                         <View style={{flex: 3.5,alignSelf:'flex-end', justifyContent:'space-evenly'}}>
-                            <Input data={ "الاسم :"} onChangeText={(name)=>this.setState({name})}/>
-                            <Input data={'ايميل :'} onChangeText={(email)=>this.setState({email})}/>
+                            <Input refCustom={this.name} focusNext={this.email} data={ "الاسم :"} onChangeText={(name)=>this.setState({name})}/>
+                            <Input refCustom={this.email} focusNext={this.mobile} data={'ايميل :'} onChangeText={(email)=>this.setState({email})}/>
+                            <Input refCustom={this.mobile} focusNext={this.neck} data={'تلفون :'} onChangeText={(mobile)=>this.setState({mobile})} keyboardType={'numeric'}/>
                         </View>
                     </View>
                     <View style={{alignItems:'center', width:width, marginTop:20}}>
@@ -69,14 +93,14 @@ export default class MeasurementScreen extends Component {
                             <View style={{
                                 justifyContent:'space-evenly',
                                 alignItems:'center',position:'absolute',flex:1,zIndex:10,width:'100%', height: '90%'}}>
-                                <Box onChangeText={(neck)=>this.setState({neck})}  data={'الرقبة'}/>
-                                <Box onChangeText={(length)=>this.setState({length})}  data={'الطول'}/>
-                                <Box onChangeText={(shoulder)=>this.setState({shoulder})}  data={'الكتف'}/>
-                                <Box onChangeText={(arm_length)=>this.setState({arm_length})}  data={'طول الذراع'}/>
-                                <Box onChangeText={(arm_width)=>this.setState({arm_width})}  data={'وسع الذراع'}/>
-                                <Box onChangeText={(vest_size)=>this.setState({vest_size})}  data={'وسع البطن'}/>
-                                <Box onChangeText={(hip_size)=>this.setState({hip_size})}  data={'وسع الورك'}/>
-                                <Box onChangeText={(bottom)=>this.setState({bottom})}  data={'وسع الخطوه'}/>
+                                <Box refCustom={this.neck} focusNext={this.length} onChangeText={(neck)=>this.setState({neck})}  data={'الرقبة'}/>
+                                <Box refCustom={this.length} focusNext={this.shoulder} onChangeText={(length)=>this.setState({length})}  data={'الطول'}/>
+                                <Box refCustom={this.shoulder} focusNext={this.arm_length} onChangeText={(shoulder)=>this.setState({shoulder})}  data={'الكتف'}/>
+                                <Box refCustom={this.arm_length} focusNext={this.arm_width} onChangeText={(arm_length)=>this.setState({arm_length})}  data={'طول الذراع'}/>
+                                <Box refCustom={this.arm_width} focusNext={this.vest_size} onChangeText={(arm_width)=>this.setState({arm_width})}  data={'وسع الذراع'}/>
+                                <Box refCustom={this.vest_size} focusNext={this.hip_size} onChangeText={(vest_size)=>this.setState({vest_size})}  data={'وسع البطن'}/>
+                                <Box refCustom={this.hip_size} focusNext={this.bottom} onChangeText={(hip_size)=>this.setState({hip_size})}  data={'وسع الورك'}/>
+                                <Box refCustom={this.bottom} focusNext={this.bottom} onChangeText={(bottom)=>this.setState({bottom})}  data={'وسع الخطوه'}/>
                             </View>
                         </View>
                     </View>
@@ -91,7 +115,7 @@ export default class MeasurementScreen extends Component {
             <Button
                 style={{ marginTop:10,marginBottom:20,alignSelf:'center',backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                 onPress={() =>this.submit()}>
-                <Text style={{ fontSize: 18, color: 'white' }}>Submit Measurements</Text>
+                <Text style={{ fontSize: 18, color: 'white' }}>{screen?.submitButton}</Text>
             </Button>
             </ScrollView>
         </SafeAreaView>
@@ -99,17 +123,21 @@ export default class MeasurementScreen extends Component {
   }
 }
 
-const Box=({data, onChangeText, image})=>(
+const Box=({data, onChangeText, refCustom, focusNext})=>(
     <View style={{padding:10,width:'70%',alignItems:'center',
         justifyContent:'center', borderWidth:0}}>
         <Text style={{fontSize: 14, fontWeight:'bold',color: '#0451A5'}}>{data}</Text>
-        <TextInput onChangeText={(text)=>onChangeText(text)} style={{borderColor:'#0451A5',textAlign:'center',padding:0, margin:0, width:'60%', borderBottomWidth:1,borderStyle:'dotted', borderRadius:0.5}}/>
+        <TextInput ref={refCustom} blurOnSubmit={false} returnKeyType={'next'} onSubmitEditing={() =>focusNext.current.focus()} onChangeText={(text)=>onChangeText(text)} style={{borderColor:'#0451A5',textAlign:'center',padding:0, margin:0, width:'60%', borderBottomWidth:1,borderStyle:'dotted', borderRadius:0.5}}/>
     </View>
 )
 
-const Input=({data, onChangeText, image})=>(
+const Input =({data, onChangeText, keyboardType='', refCustom, focusNext})=>(
     <View style={{width:'95%',color:'#0451A5',flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
-        <TextInput onChangeText={onChangeText} style={{height:35,textAlign:'right',flex:4, width:null,borderColor:'#0451A5', borderBottomWidth:1,borderStyle:'dotted', borderRadius:0.5}}/>
+        <TextInput ref={refCustom} onSubmitEditing={() =>focusNext.current.focus()}
+                   blurOnSubmit={false} returnKeyType={'next'} keyboardType={keyboardType}
+                   onChangeText={onChangeText}
+                   style={{height:35,textAlign:'right',flex:4, width:null,borderColor:'#0451A5',
+                       borderBottomWidth:1,borderStyle:'dotted', borderRadius:0.5}}/>
         <Text style={{flex:1, color:'#0451A5',fontWeight:'bold',fontSize:14}}>{data}</Text>
     </View>
 )
