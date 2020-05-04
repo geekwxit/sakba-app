@@ -253,7 +253,9 @@ export default class DeliveryOptions extends Component<Props>{
                                 { label: screen.opHomeDel, value: 1 }]}
                             toggle={()=>this.setState(prev=>({deliveryAddress: {...prev.deliveryAddress, enabled: !prev.deliveryAddress.enabled}}))}>
                             <ExtraOptions isRTL={isRTL} radioOptions={[{ label: screen.opAwqaf, value: 0 },
-                                { label: screen.opQurain, value: 1 }]} value={false} toggle={(pickupShop)=>this.setState({pickupShop})}/>
+                                { label: screen.opQurain, value: 1 }]}
+                                style={{alignSelf:'flex-start'}}
+                                          value={false} toggle={(pickupShop)=>this.setState({pickupShop})}/>
                         </AddressOption>
                            <View style={{borderColor:'#abbee9',
                                 borderWidth:1,
@@ -363,8 +365,8 @@ const AddressItem=({isRTL, value, placeholder, setValue})=>(
     </Item>
 )
 
-const ExtraOptions=({isRTL, radioOptions, value, toggle})=>(
-    <View style={{paddingHorizontal:25}}>
+const ExtraOptions=({isRTL, radioOptions, value,style, toggle})=>(
+    <View style={[{paddingHorizontal:25},style]}>
         <RadioForm
             isRTL={isRTL}
             buttonSize={10}

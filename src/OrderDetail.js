@@ -366,12 +366,12 @@ export default class OrderDetail extends Component<props>{
                     </Item>
                   </View>:
                   <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center'}}>
-                    {!isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoLabel} onChangeText={(promo)=>this.setState({promo})}/>}
+                    {!isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoCode} onChangeText={(promo)=>this.setState({promo})}/>}
                     <TouchableOpacity onPress={()=>this.state.promo_success?this.removePromo():this.applyPromo(this.state.promo)} style={{marginHorizontal:10,justifyContent:'center',alignItems:'center'}}>
                       {!this.state.promo_success?<Image source={require('../img/tick.png')} style={{width:35, height:35, resizeMode:'contain'}} />:
                           <Image source={require('../img/cross.png')} style={{width:35, height:35, resizeMode:'contain'}} />}
                     </TouchableOpacity>
-                    {isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoLabel} onChangeText={(promo)=>this.setState({promo})}/>}
+                    {isRTL && <Input disabled={this.state.promo_enabled} value={this.state.promo} isRTL={isRTL} maxLength={20} label={screen.promoCode} onChangeText={(promo)=>this.setState({promo})}/>}
                   </View>
               }
             </View>

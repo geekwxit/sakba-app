@@ -125,7 +125,7 @@ export const strings = new LocalizedStrings({
             tableDiscount: "Discount",
             fabricsText: "FABRICS FROM OUR SHOP",
             promoAlert: "Please enter the promo code first!",
-            enterCode: "Enter Code",
+            enterCode: "Enter Code",promoCode: "Promo Code",
             havePromo: "Have a Promo Code?",
         },
         confirmScreen: {
@@ -260,7 +260,7 @@ export const strings = new LocalizedStrings({
             text1: "اختيار خيار التسليم ", //Googled it
             fabricLabel: "توصيل الخام",
             sendFabric: "اجيبه لكم / او اطرشه لكم المحل",
-            pickup: 'طرشولي السايق يستلمه من عندي "ندفعك ٣ د.ك"',
+            pickup: 'طرشولي السايق يستلمه من عندي ',
             addressLabel: "العنوان",
             deliveryLabel: "خيارات التوصيل",
             pArea: "المنطقة",
@@ -332,7 +332,7 @@ export const strings = new LocalizedStrings({
             tableDiscount: "خصم",
             fabricsText: "خامات من المحل",
             promoAlert: "يرجى إدخال الرمز الترويجي أولاً!",
-            enterCode: "ادخل الرمز",
+            enterCode: "ادخل الرمز",promoCode: "شفرة تخفيض",
             havePromo: "هل يمتلك الرمز الترويجي؟",
         },
         confirmScreen: {
