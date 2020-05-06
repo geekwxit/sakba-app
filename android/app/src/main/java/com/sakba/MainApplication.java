@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.babisoft.ReactNativeLocalization.ReactNativeLocalizationPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.taessina.paypal.RNPaypalWrapperPackage;
@@ -31,7 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
             new AsyncStoragePackage(),
             new ReactNativeLocalizationPackage(),
             new RNPaypalWrapperPackage(),
-            new RNGestureHandlerPackage()
+            new RNGestureHandlerPackage(),
+              new RNCWebViewPackage()
       );
     }
 

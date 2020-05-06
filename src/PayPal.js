@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Modal, Dimensions, WebView, ActivityIndicator, BackHandler } from "react-native";
-import { Icon } from 'native-base';
+import { View, Text, Dimensions,  ActivityIndicator} from "react-native";
 import { StackActions, NavigationActions } from 'react-navigation';
+import {WebView} from "react-native-webview";
 const {width, height} =  Dimensions.get('window');
 
 const resetAction = StackActions.reset({
@@ -30,72 +30,47 @@ export default class PayPal extends React.Component {
             language: props.navigation.getParam('language'),
             showModal: false,
             status: "Pending",
-            isLoading: false
+            isLoading: false,
+            orderID: props.navigation.getParam('orderID', null),
         };
     }
 
 
     componentDidMount() {
         this.setState({language: this.props.navigation.getParam('language')})
-        this.setState({ isLoading: true })
-        // this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        //     this.props.navigation.dispatch(resetAction);
-        //     return true;
-        // });
+        this.setState({ isLoading: true });
     }
 
-    componentWillUnmount(){
-
-        // this.backhandler.remove();
-    }
-
-    handleResponse = data => {
-        if (data.title === "success") {
-            this.setState({ showModal: false, status: "Complete" });
-        } else if (data.title === "cancel") {
-            this.setState({ showModal: false, status: "Cancelled" });
-        } else {
-            return;
+    paymentStatus(data){
+        let params = {
+            measurement: this.props.navigation.getParam('measurement',null),
+            language: this.state.language,
+            customerName: this.props.navigation.getParam('customerName',null),
+            emailID: this.props.navigation.getParam('emailID',null),
+            orderID: this.state.orderID,
+            deliveryDate: this.props.navigation.getParam('deliveryDate',null),
         }
-    };
-    handleBackButtonClick() {
-        // alert('you are in back')
-        return true;
+        console.log("data:",data);
+        if(data && data.paymentSuccess && data.data && data.data.order_id && data.data.order_id.trim()){
+            this.props.navigation.navigate('order_confirm', params)
+        } else {
+            // this.props.navigation.navigate('PendingScreen');
+        }
     }
-    render() {
 
+    render() {
         var url = this.props.navigation.state.params.url;
         console.log(" URIIIII:    ", url);
         return (
             <View style={{ marginTop: 10, flex: 1 }}>
                 <WebView
-                    source={{ uri: url }}
-                    onLoadEnd={() => this.setState({ isLoading: false })}
-                // onNavigationStateChange={data =>
-                //     this.handleResponse(data)
-                // }
-                // injectedJavaScript={`document.f1.submit()`}
+                    onLoadEnd={()=>this.setState({loading: false})}
+                    javaScriptEnabledAndroid={true}
+                    javaScriptEnabled={true}
+                    // injectJavaScript={this.customScript}
+                    source={{uri: url}}
+                    onMessage={event =>this.paymentStatus(JSON.parse(event.nativeEvent.data))}
                 />
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.isLoading}
-                    onRequestClose={() => {
-                        this.setState({ isLoading: false })
-                    }}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0000004d' }}>
-                        <ActivityIndicator size={'large'} color="#0451A5" />
-                    </View>
-                </Modal>
-
-
-                {/* <TouchableOpacity
-                    style={{ width: 300, height: 100 }}
-                    onPress={() => this.setState({ showModal: true })}
-                >
-                    <Text>Pay with Paypal</Text>
-                </TouchableOpacity>
-                <Text>Payment Status: {this.state.status}</Text> */}
             </View >
         );
     }

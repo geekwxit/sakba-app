@@ -136,9 +136,21 @@ export default class OrderDetail extends Component<props>{
         });
   }
 
-  submitForm(total, noOfPieces) {
+  submitForm(total, noOfPieces, deliveryDate) {
+    var user = this.props.navigation.state.params;
+    var fullname = user.customerName;
+    var email = user.emailID;
     var url = this.url + "&lang=" + this.state.language.getLanguage();
-    this.props.navigation.navigate('paypal', { url: url, language: this.state.language})
+    var params = {
+      measurement: this.props.navigation.getParam('measurement',null),
+      language: this.state.language,
+      customerName: fullname,
+      emailID: email,
+      orderID: this.state.orderId,
+      deliveryDate: deliveryDate,
+      url,
+    };
+    this.props.navigation.navigate('paypal', params)
   }
 
   filterCart(cart, brands){
@@ -357,7 +369,7 @@ export default class OrderDetail extends Component<props>{
                   <View style={{borderWidth:2, borderColor:'#0451A5'}}>
                     <Item style={{padding:0,transform:[{scaleX: isRTL?-1:1}], height: 40,
                       width: width*0.8, backgroundColor: '#ffffff', justifyContent: 'space-between'}}>
-                        <Text style={{fontWeight:'bold',color:'#0451A5',fontSize:18, transform:[{scaleX: isRTL?-1:1}]}}>{screen.havePromo}</Text>
+                      <Text style={{fontWeight:'bold',color:'#0451A5',fontSize:18, transform:[{scaleX: isRTL?-1:1}]}}>{screen.havePromo}</Text>
                       <TouchableHighlight activeOpacity={0.6}
                                           underlayColor={'rgba(4,96,195,0.43)'}
                                           onPress={()=>this.togglePromo()} style={{paddingHorizontal:10, backgroundColor: '#0451A5', height:'100%', justifyContent:'center',alignItems:'center'}}>
@@ -381,7 +393,7 @@ export default class OrderDetail extends Component<props>{
             {renderIf(this.state.page == 'OrderDetail')(
               <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
                 <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 80, justifyContent: 'center', }}
-                  onPress={() => this.submitForm(total, noOfPieces)}>
+                  onPress={() => this.submitForm(total, noOfPieces, delivery_date)}>
                   <Text style={{ fontSize: 18, color: 'white' }}>{screen.paypal}</Text>
                 </Button>
               </View>

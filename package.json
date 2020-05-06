@@ -20,6 +20,7 @@
     "react-native-router-flux": "^4.0.6",
     "react-native-simple-radio-button": "^2.7.3",
     "react-native-table-component": "^1.2.0",
+    "react-native-webview": "^9.4.0",
     "react-navigation": "^3.9.1",
     "render-if": "^0.1.1"
   },

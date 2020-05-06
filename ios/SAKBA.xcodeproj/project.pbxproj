@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		005E4C2EAFD848FCBAA6E3A3 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B4F32C54B1B4B3797035737 /* EvilIcons.ttf */; };
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
@@ -67,6 +66,7 @@
 		EFA9C71B27CD424083AAED15 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CB7BAEA4BD4C4A9B9ADCD253 /* Ionicons.ttf */; };
 		F46D8FD0B66F4B0789749D81 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3BC728CA1A140949717BBC2 /* libRNCAsyncStorage.a */; };
 		F51460F7ADFB4671B5D7CE7E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1807004F8B924411871F68E0 /* Zocial.ttf */; };
+		E89A5A693BC64485B36CBC16 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D70BC8F6FEC240A18B062F92 /* libRNCWebView.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -439,6 +439,8 @@
 		E5ABC9BB46EB40B5B8F8191C /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		32F3ADD8E76D4B6FBDDB4F3F /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		D70BC8F6FEC240A18B062F92 /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -471,6 +473,7 @@
 				4B7B8A16B31C4543A313A83C /* libRNGestureHandler.a in Frameworks */,
 				C05336E744DF4D02A53F39DE /* libReactNativeLocalization.a in Frameworks */,
 				F46D8FD0B66F4B0789749D81 /* libRNCAsyncStorage.a in Frameworks */,
+				E89A5A693BC64485B36CBC16 /* libRNCWebView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +716,7 @@
 				10EB86F300094FC5873BC09D /* RNGestureHandler.xcodeproj */,
 				A0601BC0856B4338B368A0A8 /* ReactNativeLocalization.xcodeproj */,
 				6A545AFF35204D14A9BEEB7E /* RNCAsyncStorage.xcodeproj */,
+				32F3ADD8E76D4B6FBDDB4F3F /* RNCWebView.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1445,12 +1449,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = SAKBATests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1477,12 +1483,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = SAKBATests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1512,6 +1520,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = SAKBA/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1545,6 +1554,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = SAKBA/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1585,11 +1595,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1628,11 +1640,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1668,11 +1682,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1707,11 +1723,13 @@
 					"$(SRCROOT)..\node_modules\neact-native-i18nios",
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
+					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
