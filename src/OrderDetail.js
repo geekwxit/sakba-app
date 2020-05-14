@@ -140,7 +140,6 @@ export default class OrderDetail extends Component<props>{
     var user = this.props.navigation.state.params;
     var fullname = user.customerName;
     var email = user.emailID;
-    var url = this.url + "&lang=" + this.state.language.getLanguage();
     var params = {
       measurement: this.props.navigation.getParam('measurement',null),
       language: this.state.language,
@@ -148,7 +147,7 @@ export default class OrderDetail extends Component<props>{
       emailID: email,
       orderID: this.state.orderId,
       deliveryDate: deliveryDate,
-      url,
+      url: this.url,
     };
     this.props.navigation.navigate('paypal', params)
   }

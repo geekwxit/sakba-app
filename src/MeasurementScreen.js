@@ -38,8 +38,7 @@ export default class MeasurementScreen extends Component {
         let screen = this.state.language?.measurementScreen;
         let {neck, length, shoulder, arm_length, arm_width, vest_size, hip_size,
             bottom, mobile, name, email} = this.state;
-        if(!this.validateFields(neck, mobile, length, shoulder, arm_length, arm_width, vest_size, hip_size,
-            bottom, name, email)){
+        if(!this.validateFields(name, mobile)){
             if(this.state.acceptTerms){
                 await axios.post('write_measurements.php', {
                     neck, length, shoulder, arm_length, arm_width,
@@ -82,8 +81,8 @@ export default class MeasurementScreen extends Component {
                             <Image style={{width:null,height:null,flex:1, resizeMode:'contain'}} source={require('../img/om.png')} />
                         </View>
                         <View style={{flex: 3.5,alignSelf:'flex-end', justifyContent:'space-evenly'}}>
-                            <Input refCustom={this.name} focusNext={this.email} data={ "الاسم :"} onChangeText={(name)=>this.setState({name})}/>
-                            <Input refCustom={this.email} focusNext={this.mobile} data={'ايميل :'} onChangeText={(email)=>this.setState({email})}/>
+                            <Input refCustom={this.name} focusNext={this.mobile} data={ "الاسم :"} onChangeText={(name)=>this.setState({name})}/>
+                            {/*<Input refCustom={this.email} focusNext={this.mobile} data={'ايميل :'} onChangeText={(email)=>this.setState({email})}/>*/}
                             <Input refCustom={this.mobile} focusNext={this.neck} data={'تلفون :'} onChangeText={(mobile)=>this.setState({mobile})} keyboardType={'numeric'}/>
                         </View>
                     </View>

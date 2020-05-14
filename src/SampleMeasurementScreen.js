@@ -56,6 +56,8 @@ class SampleMeasurement extends Component {
               .catch(e=>{
                   Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.commonError, [{text: this.state.language.commonFields.okButton}]);
               })
+      } else {
+          Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.sampleMeasurementScreen.detailsRequired, [{text: this.state.language.commonFields.okButton}]);
       }
   }
 

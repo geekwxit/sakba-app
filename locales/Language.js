@@ -202,12 +202,20 @@ export const strings = new LocalizedStrings({
             mobileLabel: "Mobile :",
             metersLabel: "Meters Needed :",
             heading: "Enter your measurement details",
+            detailsRequired: "All Details Are Required",
         },
         measurementScreen: {
             submitButton: "Submit Measurement",
             acceptTerms: "Please accept terms and conditions.",
-            mandatoryMessage: "All fields are mandatory!",
+            mandatoryMessage: "Please enter name and mobile number",
             measurementSuccess: "Measurement submitted successfully!",
+        },
+        productScreen:{
+            pickSizeLabel: "Pick a size: ",
+            pickColorLabel: "Pick a color: ",
+            descLabel: "Product Description: ",
+            addToCartButton: "ADD TO CART",
+            kd:'KD'
         }
     },
     ar: {
@@ -231,7 +239,7 @@ export const strings = new LocalizedStrings({
             submitButton: "ادخل",
             or: "او",
             installWhatsApp: "نزل برنامج الواتساب عشان تكلمنا",
-            sendSampleButton: "إرسال قياس العينة",
+            sendSampleButton:"أخذ القياس من دشداشه",
             writeMeasurementButton: "اكتب قياسك",
             buyButton: "شراء المنتجات والأقمشة",
             textUs: 'أرسل لنا رسالة',
@@ -246,21 +254,23 @@ export const strings = new LocalizedStrings({
             needNew: "لا، محتاج قياس يديد",
             measureAccept: "هل توافق وتؤكد قياسات العينة الخاصة بك؟",
         },
+    // 2-
+    // 3-
         customerAgree:{
             dishdashaCount: "جم دشداشة تبي تفصل؟",
-            outside: "برسل لكم خامي",
+            outside: "عندي خام",
             inhome: "بشتري خام منكم",
             proceedButton: "كمّل",
             maxInHome : "ضفت اكثر من العدد",
             maxOutside: "ضفت اكثر من العدد",
-            buyDishdasha: "يشترى دشداشة", buyDishdashaAndProduct: "يشترى  دشداشة و منتجات"
+            buyDishdasha: "تفصيل دشاديش", buyDishdashaAndProduct: "تفصيل وشراء منتجات"
         },
         deliveryScreen: {
             screenTitle: "خيار التسليم", //Googled it
             text1: "اختيار خيار التسليم ", //Googled it
             fabricLabel: "توصيل الخام",
-            sendFabric: "اجيبه لكم / او اطرشه لكم المحل",
-            pickup: 'طرشولي السايق يستلمه من عندي ',
+            sendFabric: "ارسله لكم المحل",
+            pickup: "استلام من عنواني",
             addressLabel: "العنوان",
             deliveryLabel: "خيارات التوصيل",
             pArea: "المنطقة",
@@ -407,15 +417,22 @@ export const strings = new LocalizedStrings({
             submitButton: "إرسال",
             nameLabel:  "الاسم",
             mobileLabel: 'رقم',
-            metersLabel: "متر المطلوبة",
+            metersLabel: "الامتار المطلوبة",
             heading: "أدخل تفاصيل القياس الخاصة بك",
+            detailsRequired: "كل البيانات مطلوبة",
         },
         measurementScreen: {
             submitButton: "إرسال القياس",
             acceptTerms: "يرجى قبول الشروط والأحكام",
-            mandatoryMessage: "جميع الحقول إلزامية!",
+            mandatoryMessage: "يرجى إدخال الاسم ورقم الجوال",
             measurementSuccess: "تم إرسال القياس بنجاح!",
-
+        },
+        productScreen:{
+            pickSizeLabel: "اختر الحجم:",
+            pickColorLabel: "اختر لونا:",
+            descLabel: "وصف المنتج:",
+            addToCartButton: "أضف إلى السلة",
+            kd:'KD'
         }
     },
 })

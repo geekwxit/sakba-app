@@ -24,7 +24,7 @@ export async function getSingleProduct(id) {
     try {
         let response = await axios.get('single_product.php?product_id='+id);
         response = response.data;
-        return null;
+        return response;
     } catch (e) {
         return null;
     }

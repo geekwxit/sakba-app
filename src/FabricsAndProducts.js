@@ -186,6 +186,7 @@ export default class FabricsAndProducts extends Component<Props>{
     this.props.navigation.setParams({cartCount: this.state.cart.length+1});
     total = parseInt(this.state.totalCartItems)+1;
     this.setState(prev=>({totalCartItems: total, actualTotalCartItems: prev.actualTotalCartItems+1}));
+    Alert.alert(strings.commonFields.alertTitle, strings.fabricScreen.addedToCart, [{text: strings.commonFields.okButton}]);
   }
 
   render() {

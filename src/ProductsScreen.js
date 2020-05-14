@@ -12,6 +12,7 @@ import Store from "./CommonStore/Store";
 const isIos = Platform.OS == 'ios';
 
 const { width, height } = Dimensions.get('window');
+const baseURL = 'https://sakba.net/images/product/';
 
 export default class ProductsScreen extends Component{
   state = {products: [], isLoading: false};
@@ -28,10 +29,9 @@ export default class ProductsScreen extends Component{
     );
   }
 
-  addToCart(product){
-    const {main} = this.props;
-    const {product_image: image, product_name:name,  product_price:price} = product;
-    let data =  {isFabric: false, image,name, price, quantity:1, product_id: product.product_id, isProduct: true};
+  addToCart(product, main, productRef){
+    // const {main} = this.props;
+    let data =  {isFabric: false, ...product, isProduct: true};
     var screen = main.state.language.fabricScreen;
     var product_found = main.state.cart.findIndex(c=>(c.isProduct && c.product_id==product.product_id));
     if(product_found>=0){
@@ -39,6 +39,7 @@ export default class ProductsScreen extends Component{
     } else {
       main.addToCart(data);
     }
+    productRef.props.navigation.goBack();
   }
 
   render() {
@@ -57,7 +58,7 @@ export default class ProductsScreen extends Component{
                 <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
               </View>:null
           }
-                  <View style={{flex:1,marginBottom:10,alignItems:'center', justifyContent:'center'}}>
+                  <View style={{flex:1, marginBottom:10}}>
                     {
                       (this.state.products && this.state.products.length>0)?
 
@@ -66,9 +67,14 @@ export default class ProductsScreen extends Component{
                               key={2}
                               data={products}
                               renderItem={({item})=> {
+                                  const that= this;
+                                  const {main} = that.props;
                                 return <Product item={item} onAddToCart={()=>this.addToCart(item)}
                                                 openProduct={()=>main.props.navigation.navigate('single_product',{
-                                                    title: item.product_name,
+                                                    title: item.product_name,product_id: item.product_id,
+                                                    addToCartCallback: function (product, ref){
+                                                        that.addToCart(product, main, ref)
+                                                    }
                                                 })}
                                                 addToCartLabel={screen.addToCartLabel}
                                                 outOfStockLabel={screen.outOfStockLabel}
@@ -93,23 +99,36 @@ export default class ProductsScreen extends Component{
 }
 
 const Product=({item, openProduct, onAddToCart, addToCartLabel, outOfStockLabel })=>(
-    <TouchableOpacity onPress={()=>false} style={{marginTop: 10, borderWidth: 1, borderColor: '#0551a5', marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
+    <TouchableOpacity onPress={openProduct} style={{marginTop: 10, borderWidth: 1, borderColor: '#0551a5', marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
         <View style={{width:'100%'}}>
             <View style={{width: '100%', height: 170}}>
-                <Image style={{flex:1,resizeMode:'contain'}} source={{uri: item.product_image}}/>
+                <Image style={{flex:1,resizeMode:'contain'}} source={{uri: baseURL+item.product_gallery.split(',')[0]}}/>
             </View>
             <View style={{paddingHorizontal: 10}}>
                 <Text style={{fontSize: 15}} numberOfLines={2}><B>{item.product_name}</B></Text>
                 <Text style={{fontSize: 15}}><B>Price: </B>{item.product_price} KD</Text>
             </View>
         </View>
-        <TouchableOpacity disabled={!parseInt(item.from_supplier)?false:!(parseInt(item.product_qty)>0)}
-                          onPress={()=>onAddToCart()}
-                          style={{paddingVertical: 5,
-                            backgroundColor: (parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?'#0551a5':'#ff0000', alignItems: 'center'}}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>
-              {(parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?addToCartLabel:outOfStockLabel}
-            </Text>
-        </TouchableOpacity>
     </TouchableOpacity>
 )
+// const Product=({item, openProduct, onAddToCart, addToCartLabel, outOfStockLabel })=>(
+//     <TouchableOpacity onPress={()=>false} style={{marginTop: 10, borderWidth: 1, borderColor: '#0551a5', marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
+//         <View style={{width:'100%'}}>
+//             <View style={{width: '100%', height: 170}}>
+//                 <Image style={{flex:1,resizeMode:'contain'}} source={{uri: item.product_image}}/>
+//             </View>
+//             <View style={{paddingHorizontal: 10}}>
+//                 <Text style={{fontSize: 15}} numberOfLines={2}><B>{item.product_name}</B></Text>
+//                 <Text style={{fontSize: 15}}><B>Price: </B>{item.product_price} KD</Text>
+//             </View>
+//         </View>
+//         <TouchableOpacity disabled={!parseInt(item.from_supplier)?false:!(parseInt(item.product_qty)>0)}
+//                           onPress={()=>onAddToCart()}
+//                           style={{paddingVertical: 5,
+//                             backgroundColor: (parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?'#0551a5':'#ff0000', alignItems: 'center'}}>
+//             <Text style={{color: 'white', fontWeight: 'bold'}}>
+//               {(parseInt(item.from_supplier)?(parseInt(item.product_qty)>0):true)?addToCartLabel:outOfStockLabel}
+//             </Text>
+//         </TouchableOpacity>
+//     </TouchableOpacity>
+// )

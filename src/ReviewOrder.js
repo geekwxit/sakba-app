@@ -86,10 +86,8 @@ export default class ReviewOrder extends Component<props>{
     var screen = this.state.language.reviewScreen;
     var isRTL = this.state.language.isRTL;
     this.setState({isLoading:true});
-    var url = 'get_order_copy.php?lang='+this.state.language.getLanguage();
-    var data = {order_id : this.state.orderID};
     if(this.state.orderID!=null && this.state.orderID!=undefined){
-      await axios.post(url,data)
+      await axios.get('get_order_copy.php?order_id='+this.state.orderID)
           .then((response) => response.data)
           .then(response=>{
             this.setState({isLoading: false});

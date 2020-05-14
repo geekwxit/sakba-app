@@ -1,70 +1,203 @@
-import React, { Component } from 'react';
-import { FlatList, View, Alert, Text, Image,Platform, Dimensions,TouchableWithoutFeedback, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import {Button} from 'native-base';
-import axios from "./axios/AxiosInstance";
-import RadioGroup from './components/RadioGroupCustom';
-import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather';
-import {B, I, U} from "./components/TextStyles";
+import React, {Component} from 'react';
+import {
+    FlatList,
+    View,
+    Alert,
+    Text,
+    Image,
+    Platform,
+    Dimensions,
+    TouchableWithoutFeedback,
+    ActivityIndicator,
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    TouchableOpacity,TouchableHighlight,
+    TextInput, Picker
+} from 'react-native';
 import Store from "./CommonStore/Store";
+import ImageCarousel from "./components/ImageCarousel";
+import {Dropdown} from "react-native-material-dropdown";
+import HTML from "react-native-render-html";
+import {strings} from "../locales/Language";
 
 const isIos = Platform.OS == 'ios';
+const baseURL = 'https://sakba.net/images/product/';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-export default class SingleProduct extends Component{
-    state = {products: [], isLoading: false};
-    static navigationOptions = ({ navigation }) => {
+export default class SingleProduct extends Component {
+    state = {productDetail: null, isLoading: false, selectedColor:null, selectedSize: null};
+    static navigationOptions = ({navigation}) => {
         return {
-            headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
+            headerStyle: {backgroundColor: '#0451A5', marginLeft: 0},
             headerTintColor: '#fff',
             title: navigation.getParam('title'),
         };
     };
 
-  componentDidMount(){
-      this.getProductDetails(this.props.navigation.getParam('product_id'));
-  }
-
-  async getProductDetails(id){
-      debugger
-      await Store.getProductDetail(id);
-  }
-
-  addToCart(product){
-    const {main} = this.props;
-    const {product_image: image, product_name:name,  product_price:price} = product;
-    let data =  {isFabric: false, image,name, price, quantity:1, product_id: product.product_id, isProduct: true};
-    var screen = main.state.language.fabricScreen;
-    var product_found = main.state.cart.findIndex(c=>(c.isProduct && c.product_id==product.product_id));
-    if(product_found>=0){
-      main.updateQuantity(product_found, 1);
-    } else {
-      main.addToCart(data);
+    constructor() {
+        super();
+        this.selectColor = this.selectColor.bind(this);
+        this.selectSize = this.selectSize.bind(this);
+        this.addToCart = this.addToCart.bind(this);
     }
-  }
 
-  render() {
-    Text.defaultProps = Text.defaultProps || {};
-    Text.defaultProps.allowFontScaling = false;
-    // var screen = this.state.language.fabricScreen;
-    const {main} = this.props;
-    const {isLoading} = Store.getStore();
-    debugger
-    // console.log(this.state.products)
-    const products = this.state.products;
-    // console.log(await Store.getProducts());
-    var screen = this.props.screen;
-    return (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{borderColor:'#0451A5',borderWidth:1,borderTopWidth:0,flex:1}}>
-          {isLoading?
-              <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator style={{top: height*0.4}}  color={'#0451A5'} size={'large'} animating={true}/>
-              </View>:null
-          }
-        </ScrollView>
-    );
+    componentDidMount() {
+        this.getProductDetails(this.props.navigation.getParam('product_id'));
+    }
 
-  }
+    async getProductDetails(id) {
+        await Store.getProductDetail(id);
+        let productDetail = await Store.getStore().product;
+        this.setState({productDetail});
+    }
+
+    addToCart() {
+        let addToCartCallback = this.props.navigation.getParam('addToCartCallback', null);
+        let {productDetail, selectedColor, selectedSize} = this.state;
+        if(productDetail){
+            if(productDetail.product_sizes && !selectedSize){
+                alert("Please pick a size for product!");
+            } else if(productDetail.product_colors && !selectedColor) {
+                alert("Please pick a color for product!");
+            } else {
+                addToCartCallback?
+                    addToCartCallback({name: productDetail.product_name, price: productDetail.product_price,
+                        color: selectedColor, size: selectedSize, quantity:1,
+                        image: baseURL+productDetail.product_gallery.split(',')[0],
+                        product_id: productDetail.product_id
+                    }, this):
+                    alert("Something went wroncg!");
+            }
+        }
+    }
+
+    selectColor(selectedColor){
+        if(selectedColor){
+            this.setState({selectedColor});
+        } else {
+            alert("Please select a color.")
+        }
+    }
+    selectSize(selectedSize){
+        if(selectedSize){
+            this.setState({selectedSize});
+        } else {
+            alert("Please select a size.")
+        }
+    }
+
+    render() {
+        Text.defaultProps = Text.defaultProps || {};
+        Text.defaultProps.allowFontScaling = false;
+        // var screen = this.state.language.fabricScreen;
+        const screen = strings.productScreen;
+        const isRTL = strings.isRTL;
+        const isLoading = !true;
+        const {productDetail} = this.state;
+        // if(!productDetail){productDetail.product_colors = "https://cdn.shopify.com/s/files/1/0193/6253/products/214453713_2000x.jpg?v=1575932136," +
+        //     "http://www.modahuarango.es/images/cate_2/640/B-Zebuakuade-Polygonal-Sunglasses-Vintage-Candy-Colored-Glasses-for-Women-Men-Color-A-t3v9Sjx0IZ1Q-kbg0.jpg," +
+        //     "https://img1-image.cdnsbg.com/hashImg/a7e6ac6823.jpg_w600h300q80," +
+        //     "https://cdn.shopify.com/s/files/1/0972/3844/products/FAIRFAX_46_1024x1024.jpg";}
+        return (
+            <SafeAreaView style={{flex: 1}}>
+                {isLoading || !productDetail ?
+                    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                        <ActivityIndicator style={{top: height * 0.4}} color={'#0451A5'} size={'large'}
+                                           animating={true}/>
+                    </View> :
+                    <>
+                        <ScrollView showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={{width: width - 20, alignSelf: 'center'}}
+                        >
+                            <ImageCarousel data={productDetail.product_gallery.split(',')}
+                                           baseURL={'https://sakba.net/images/product/'}
+                                           style={{
+                                               marginTop: 10, borderWidth: 0.5, borderColor: '#333',
+                                               alignSelf: 'center', maxHeight: width
+                                           }}
+                            />
+                            <View style={{transform:[{scaleX: isRTL?-1:1}],flexDirection: 'row', justifyContent: 'space-between', marginTop: 20,}}>
+                                <Text style={{transform:[{scaleX: isRTL?-1:1}],fontWeight: 'bold', fontSize: 20, color: '#0451A5'}}>{productDetail.product_name}</Text>
+                                <Text style={{transform:[{scaleX: isRTL?-1:1}], fontWeight: 'bold', fontSize: 20}}>{productDetail.product_price} KD</Text>
+                            </View>
+                            <Text style={{fontSize: 14, textAlign:isRTL?'right':'left', marginTop: 5, color: '#0451A5'}}>{productDetail.product_brand}</Text>
+                            {/*{productDetail.product_sizes && <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
+                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Size: </Text>*/}
+                            {/*    <Picker />*/}
+                            {/*</View>}*/}
+                            {productDetail.product_sizes &&
+                            <View style={{transform:[{scaleX: isRTL?-1:1}],}}>
+                                <Text style={{transform:[{scaleX: isRTL?-1:1}],marginBottom:10, fontWeight: 'bold', fontSize: 20, marginTop: 20}}>{screen.pickSizeLabel}</Text>
+                                <FlatList key={2} data={productDetail.product_sizes.split(',')}
+                                          horizontal
+
+                                    renderItem={({item})=>(
+                                        <TouchableWithoutFeedback onPress={()=>this.selectSize(item)}>
+                                            <View style={{transform:[{scaleX: isRTL?-1:1}],marginRight:10, alignItems:'center', justifyContent:'center',padding: 10,
+                                                borderColor:this.state.selectedSize==item?'#0451A5':'#bbb',
+                                                borderWidth:this.state.selectedSize==item?2:0.5}}>
+                                            <Text style={{paddingHorizontal:30}}>{item}</Text>
+                                            </View>
+                                        </TouchableWithoutFeedback>
+                                    )}
+                                />
+                            </View>}
+                            {productDetail.product_colors &&
+                            <View style={{transform:[{scaleX: isRTL?-1:1}],}}>
+                                <Text style={{transform:[{scaleX: isRTL?-1:1}],marginBottom:10, fontWeight: 'bold', fontSize: 20, marginTop: 20}}>{screen.pickColorLabel}</Text>
+                                <FlatList key={2} data={productDetail.product_colors.split(',')}
+                                          horizontal
+                                          showsHorizontalScrollIndicator={false}
+                                    renderItem={({item})=>(
+                                        <TouchableWithoutFeedback onPress={()=>this.selectColor(item)}>
+                                            <View style={{transform:[{scaleX: isRTL?-1:1}],marginRight:10, alignItems:'center', justifyContent:'center',padding: 10,
+                                                borderColor:this.state.selectedColor==item?'#0451A5':'#bbb',
+                                                borderWidth:this.state.selectedColor==item?2:0.5}}>
+                                                {productDetail.isColorAnImage?
+                                                    <Image source={{uri: item, width:width/3, height: width/5, resizeMode:'resize'}}/>:
+                                                    <Text>{item}</Text>
+                                                }
+                                            </View>
+                                        </TouchableWithoutFeedback>
+                                    )}
+                                />
+                            </View>}
+                            {/*{productDetail.product_colors &&*/}
+                            {/*<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', marginTop:10}}>*/}
+                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Color: </Text>*/}
+                            {/*    <View style={{width:'45%', backgroundColor:'#0451A5', borderRadius:5}}>*/}
+                            {/*    <Picker selectedValue={this.state.selectedColor}*/}
+                            {/*            onValueChange={this.selectColor} style={{color:'#fff'}} enabled={true}>*/}
+                            {/*        <Picker.Item label={'Select Color'} value={null} />*/}
+                            {/*        {productDetail.product_colors.split(',').map(item=>*/}
+                            {/*            <Picker.Item label={item} value={item} />)}*/}
+                            {/*    </Picker>*/}
+                            {/*    </View>*/}
+                            {/*<Dropdown data={productDetail.product_colors.split(',')}*/}
+                            {/*          label={'Choose color'}*/}
+                            {/*          containerStyle={{width:'50%', backgroundColor: '#0451A5', height:50}}*/}
+                            {/*/>*/}
+                            {/*</View>}*/}
+                            <Text style={{fontWeight: 'bold', fontSize: 20, marginTop:10}}>{screen.descLabel}</Text>
+                            <HTML html={productDetail.product_disc}
+                                  textSelectable={false}
+                            />
+                        </ScrollView>
+                        <TouchableOpacity onPress={this.addToCart} style={{width:width, alignItems:'center', justifyContent:'center', height:50, backgroundColor: '#0451A5'}}>
+                            <Text style={{fontSize:20, color:'#fff', fontWeight:'bold'}}>{screen.addToCartButton}</Text>
+                        </TouchableOpacity>
+                    </>
+                }
+            </SafeAreaView>
+        );
+
+    }
+}
+
+function SelectedView({enabled}){
+    return enabled?<View style={{height:'100%', width:'100%',  position:'absolute',
+        backgroundColor: 'rgba(4,81,165,0.38)', zIndex:1}}>
+    </View>:null
 }
