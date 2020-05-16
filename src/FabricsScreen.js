@@ -196,7 +196,8 @@ export default class FabricsScreen extends React.Component{
                                             this.setState({
                                                 selectedColor: index,
                                                 previewTitle:screen.previewTitle.t2,
-                                                fabricPreview: true,
+                                                // fabricPreview: true,
+                                                productBox: true
                                             })}
                                         }
                                         changeType={this.state.changedType}

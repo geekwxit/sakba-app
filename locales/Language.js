@@ -254,8 +254,6 @@ export const strings = new LocalizedStrings({
             needNew: "لا، محتاج قياس يديد",
             measureAccept: "هل توافق وتؤكد قياسات العينة الخاصة بك؟",
         },
-    // 2-
-    // 3-
         customerAgree:{
             dishdashaCount: "جم دشداشة تبي تفصل؟",
             outside: "عندي خام",

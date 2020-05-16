@@ -156,7 +156,7 @@ export default class DeliveryOptions extends Component<Props>{
             o_number: this.state.mobileNo,
             o_subtotal: subTotal,fabrics,
             products,remarks: this.state.remarks,
-            d_store_name: !delivery?(!parseInt(this.state.pickupShop)?"Awquaf Complex":"Qurain Shop"):"",
+            d_store_name: !delivery?(!parseInt(this.state.pickupShop)?"Awqaf Complex":"Qurain Shop"):"",
             ...deliveryOptions, ...addresses
         }
         if(pickup || delivery || sample){

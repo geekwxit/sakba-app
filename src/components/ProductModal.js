@@ -40,19 +40,19 @@ const ProductModal = ({language, onEnterMeasurement, strings, patternName, color
                                 </View>
                             </View>
                             <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                                <View style={{ alignItems : 'center', justifyContent: 'center'}}>
+                                <View style={{alignItems : 'center', justifyContent: 'center'}}>
                                     {selected.pattern && selected.color?
-                                        <Image style={{width: width*0.8, height: 200, resizeMode: 'contain',borderRadius: 10}} source={{uri: selected.color.path}} /> :
+                                        <Image style={{width: width*0.8, height: 350, resizeMode: 'stretch'}} source={{uri: selected.color.path}} /> :
                                         <Text style={{fontSize:20, color:'rgba(255,40,67,0.67)'}}>{strings.noColorPattern}</Text>
                                     }
                                 </View>
                             </View>
-                            {!isCountNeeded &&
+                            {!isCountNeeded && selected.pattern && selected.color &&
                                 <View style={{margin:10,flexDirection:'row', alignSelf:'center', alignItems:'center'}}>
                                     <Input keyboardType={'numeric'} isRTL={isRTL} maxLength={20} label={strings.measurementLabel} onChangeText={(m)=>onEnterMeasurement(m)}/>
                                 </View>
                             }
-                            <View style={{height: 10}}/>
+                            <View style={{height: 5}}/>
                             <TouchableOpacity onPress={()=>{
                                 (selected.pattern && selected.color)?
                                     measurement?

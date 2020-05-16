@@ -139,9 +139,11 @@ export default class Login extends Component {
             <Container>
                 <Content keyboardShouldPersistTaps={'always'} >
                     <SafeAreaView>
-                        <ScrollView style={{paddingBottom:30}}>
-                            <View style={{ flex: 1 / 6, flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
-                                <Image style={{ width: 80, height: 80 }} source={require('../../img/om.png')} />
+                        <ScrollView style={{marginTop:10,paddingBottom:10}}>
+                            <View style={{paddingBottom:10,flex:1, width: '95%', alignSelf:'center', borderWidth:4, borderColor:'#0451A5'}}>
+                            <View style={{alignSelf:'center', width: 100, height: 100, flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
+                                <Image style={{flex:1, width:null, height:null}}
+                                       source={{uri:"https://sakba.net/images/app_logos/logo.png?"+new Date().getSeconds()}} />
                             </View>
                             <View style={{ marginTop: 50, justifyContent: 'center', alignItems: 'center', marginLeft: 40, marginRight: 40 }}>
                                 <View>
@@ -214,6 +216,7 @@ export default class Login extends Component {
                                     {/**Language Arabic - العربية**/}
                                     <Text style={{color: this.state.language=='ar'?'#0451A5':'#a2a2a2',fontSize: 15}}>العربية</Text>
                                 </TouchableOpacity>
+                            </View>
                             </View>
                         </ScrollView>
                     </SafeAreaView>
