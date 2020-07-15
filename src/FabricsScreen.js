@@ -220,20 +220,20 @@ export default class FabricsScreen extends React.Component{
                     </View>
                 }
             </ScrollView>
-                {(!this.state.isLoading && this.state.brands && this.state.brands.length) && <View style={{marginTop: 10, marginBottom: 10, flexDirection: 'row', justifyContent: 'center'}}>
-                    <Button
-                        style={{
-                            borderRadius: 15,
-                            borderWidth: 2,
-                            backgroundColor: '#0451A5',
-                            height: 40,
-                            width: width - 80,
-                            justifyContent: 'center'
-                        }}
-                        onPress={() => this.setState({productBox: true})}>
-                        <Text style={{fontSize: 18, color: 'white'}}>{screen.addToCartButton}</Text>
-                    </Button>
-                </View>}
+                {/*{(!this.state.isLoading && this.state.brands && this.state.brands.length) && <View style={{marginTop: 10, marginBottom: 10, flexDirection: 'row', justifyContent: 'center'}}>*/}
+                {/*    <Button*/}
+                {/*        style={{*/}
+                {/*            borderRadius: 15,*/}
+                {/*            borderWidth: 2,*/}
+                {/*            backgroundColor: '#0451A5',*/}
+                {/*            height: 40,*/}
+                {/*            width: width - 80,*/}
+                {/*            justifyContent: 'center'*/}
+                {/*        }}*/}
+                {/*        onPress={() => this.setState({productBox: true})}>*/}
+                {/*        <Text style={{fontSize: 18, color: 'white'}}>{screen.addToCartButton}</Text>*/}
+                {/*    </Button>*/}
+                {/*</View>}*/}
             </>
         )
     }

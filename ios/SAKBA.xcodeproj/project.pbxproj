@@ -67,6 +67,8 @@
 		F46D8FD0B66F4B0789749D81 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3BC728CA1A140949717BBC2 /* libRNCAsyncStorage.a */; };
 		F51460F7ADFB4671B5D7CE7E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1807004F8B924411871F68E0 /* Zocial.ttf */; };
 		E89A5A693BC64485B36CBC16 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D70BC8F6FEC240A18B062F92 /* libRNCWebView.a */; };
+		5D3B601CE90E49B0B67F1C96 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7614F0272FE847B2AE88C902 /* libART.a */; };
+		3CE6755E359C4DF5AAC40611 /* libART-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E63789AFC47421F8A0147BE /* libART-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -441,6 +443,9 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		32F3ADD8E76D4B6FBDDB4F3F /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		D70BC8F6FEC240A18B062F92 /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		80798EC6BD7A4B71B1811929 /* ART.xcodeproj */ = {isa = PBXFileReference; name = "ART.xcodeproj"; path = "../node_modules/@react-native-community/art/ios/ART.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7614F0272FE847B2AE88C902 /* libART.a */ = {isa = PBXFileReference; name = "libART.a"; path = "libART.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		9E63789AFC47421F8A0147BE /* libART-tvOS.a */ = {isa = PBXFileReference; name = "libART-tvOS.a"; path = "libART-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -474,6 +479,7 @@
 				C05336E744DF4D02A53F39DE /* libReactNativeLocalization.a in Frameworks */,
 				F46D8FD0B66F4B0789749D81 /* libRNCAsyncStorage.a in Frameworks */,
 				E89A5A693BC64485B36CBC16 /* libRNCWebView.a in Frameworks */,
+				5D3B601CE90E49B0B67F1C96 /* libART.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +498,7 @@
 				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
 				6B3FDDE98F814888BC0EE1FC /* libRNGestureHandler-tvOS.a in Frameworks */,
 				7739AB0D2D1F4F4CA7D7CCB5 /* libRNI18n-tvOS.a in Frameworks */,
+				3CE6755E359C4DF5AAC40611 /* libART-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -717,6 +724,7 @@
 				A0601BC0856B4338B368A0A8 /* ReactNativeLocalization.xcodeproj */,
 				6A545AFF35204D14A9BEEB7E /* RNCAsyncStorage.xcodeproj */,
 				32F3ADD8E76D4B6FBDDB4F3F /* RNCWebView.xcodeproj */,
+				80798EC6BD7A4B71B1811929 /* ART.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1450,12 +1458,15 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = SAKBATests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1484,12 +1495,15 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = SAKBATests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1521,6 +1535,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = SAKBA/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1555,6 +1570,7 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = SAKBA/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1596,11 +1612,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1641,11 +1660,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1683,11 +1705,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
@@ -1724,11 +1749,14 @@
 					"$(SRCROOT)..\node_modules\neact-native-localizationios",
 					"$(SRCROOT)..\node_modules@react-native-community\async-storageios",
 					"$(SRCROOT)\..\node_modules\react-native-webview\apple/**",
+					"$(SRCROOT)/../node_modules/@react-native-community/art/ios/**",
 				);
 				INFOPLIST_FILE = "SAKBA-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);

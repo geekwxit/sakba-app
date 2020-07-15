@@ -178,17 +178,15 @@ Text.defaultProps.allowFontScaling = false;
                 </View>
               </View>
             </View>
-            <View style={{ marginTop: 40, marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button
-                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() => this.proceed(true)}>
+            <View style={{ marginTop: 80}}>
+              <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40,borderRadius:5, justifyContent: 'center' }}
+                      onPress={() => this.proceed(true)}>
                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyDishdasha}</Text>
               </Button>
             </View>
-            <View style={{ marginTop: 20, marginBottom: 10, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button
-                  style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                  onPress={() =>this.proceed()}>
+            <View style={{ marginVertical: 20}}>
+              <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40,borderRadius:5, justifyContent: 'center' }}
+                      onPress={() => this.proceed()}>
                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyDishdashaAndProduct}</Text>
               </Button>
             </View>

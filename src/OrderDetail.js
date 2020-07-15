@@ -170,7 +170,7 @@ export default class OrderDetail extends Component<props>{
 
   async applyPromo(promo){
     if(promo.trim()){
-      await axios.get('apply_promo?promo='+promo+'&order_id='+this.state.orderId)
+      await axios.get('apply_promo.php?promo='+promo+'&order_id='+this.state.orderId)
           .then(response=>response.data)
           .then(response=>{
             if(response.promo_success){
@@ -194,7 +194,7 @@ export default class OrderDetail extends Component<props>{
   }
 
   async removePromo(){
-    await axios.get('apply_promo?removePromo=true&&order_id='+this.state.orderId)
+    await axios.get('apply_promo.php?removePromo=true&&order_id='+this.state.orderId)
         .then(response=>response.data)
         .then(response=>{
           if(response.promo_success){
@@ -390,16 +390,16 @@ export default class OrderDetail extends Component<props>{
               <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
             </View>}
             {renderIf(this.state.page == 'OrderDetail')(
-              <View style={{ marginTop: 30, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-                <Button style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', minHeight: 40, minWidth: width - 80, justifyContent: 'center', }}
-                  onPress={() => this.submitForm(total, noOfPieces, delivery_date)}>
-                  <Text style={{ fontSize: 18, color: 'white' }}>{screen.paypal}</Text>
-                </Button>
-              </View>
+                <View style={{ marginTop: 20, marginBottom:20, alignSelf:'center'}}>
+                  <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40,borderRadius:5, justifyContent: 'center' }}
+                          onPress={() => this.submitForm(total, noOfPieces, delivery_date)}>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{screen.paypal}</Text>
+                  </Button>
+                </View>
             )}
-            <View style={{marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-              <Button style={{ borderRadius: 15,  minWidth: width - 80, minHeight: 40, borderWidth: 2, backgroundColor: '#0451A5', paddingRight: 5, paddingLeft: 5, justifyContent: 'center' }}
-                      onPress={() => { this.sendDetails(total, delivery_date)}}>
+            <View style={{ marginTop: 10, marginBottom:20, alignSelf:'center'}}>
+              <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40,borderRadius:5, justifyContent: 'center' }}
+                      onPress={() => this.sendDetails(total, delivery_date)}>
                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.knet}</Text>
               </Button>
             </View>
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   textHeader: { textAlign: 'center', fontWeight: '500', color: 'white' },
   text: { textAlign: 'center', fontWeight: '100' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' }
+  row: { minHeight:40, backgroundColor: '#E7E6E1' }
 });
 
 export const Input = ({value, disabled,keyboardType, onChangeText, label, isRTL, maxLength = 30}) => (

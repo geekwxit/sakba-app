@@ -125,12 +125,12 @@ export default class FabricsAndProducts extends Component<Props>{
 
   doCheckout(){
     // var screen = this.state.language.fabricScreen;
-    const {inHomeCount, outsideCount, isCountNeeded, language:{fabricScreen: screen}} = this.state;
+    const {inHomeCount, outsideCount, isCountNeeded, noOfPieces, language:{fabricScreen: screen}} = this.state;
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
     const customerName= this.props.navigation.getParam('customerName', null);
     const cart        = this.state.cart;
     let params = {
-      language: this.state.language, inHomeCount, outsideCount, mobileNo,
+      language: this.state.language, inHomeCount, outsideCount, mobileNo, noOfPieces,
       customerName, fabrics: this.state.brands, cart,
       measurementDone: this.props.navigation.getParam('measurementDone'),
       measurement: this.state.measurement, isCountNeeded: isCountNeeded,
@@ -149,7 +149,7 @@ export default class FabricsAndProducts extends Component<Props>{
                     this.props.navigation.navigate('delivery',params):
                     this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
       } else {
-        params.noOfPieces = 0;
+        // params.noOfPieces = 0;
         this.props.navigation.navigate('delivery', params)
       }
     } else {
@@ -197,6 +197,7 @@ export default class FabricsAndProducts extends Component<Props>{
     console.log("discount",this.state.discount);
     var screen = this.state.language.fabricScreen;
     var parentHeight = null;
+    const isRTL = this.state.language.isRTL;
     const sizeCtrl = {width: 40, height: 40}
     return (
       <SafeAreaView style={{flex:1}}>
@@ -229,7 +230,7 @@ export default class FabricsAndProducts extends Component<Props>{
           activeTabIndex={this.state.activeTabIndex}
           children={[
             <FabricsScreen showCart={()=>this.showCart()} language={this.state.language} screen={screen} main={this} />,
-            <ProductsScreen screen={screen} main={this} />
+            <ProductsScreen screen={screen} main={this} isRTL={isRTL}/>
           ]}
           checkout={this.doCheckout}
         >

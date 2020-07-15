@@ -279,10 +279,9 @@ export default class DeliveryOptions extends Component<Props>{
                                     }}
                                 />
                             </View>
-                        <View style={{ marginTop: 20, marginBottom: 30, flexDirection: 'row', justifyContent: 'center' }}>
-                            <Button
-                                style={{ borderRadius: 15, borderWidth: 2, backgroundColor: '#0451A5', height: 40, width: width - 80, justifyContent: 'center' }}
-                                onPress={() => this.submitForm()}>
+                        <View style={{ marginTop: 20, marginBottom:20}}>
+                            <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40,borderRadius:5, justifyContent: 'center' }}
+                                    onPress={() => this.submitForm()}>
                                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.orderNowButton}</Text>
                             </Button>
                         </View>

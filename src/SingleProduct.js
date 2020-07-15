@@ -54,16 +54,19 @@ export default class SingleProduct extends Component {
     }
 
     addToCart() {
+        let price = 0;
         let addToCartCallback = this.props.navigation.getParam('addToCartCallback', null);
         let {productDetail, selectedColor, selectedSize} = this.state;
         if(productDetail){
+            price = productDetail.discount_percentage && parseFloat(productDetail.discount_percentage)?
+                        productDetail.product_sale_price:productDetail.product_price;
             if(productDetail.product_sizes && !selectedSize){
                 alert("Please pick a size for product!");
             } else if(productDetail.product_colors && !selectedColor) {
                 alert("Please pick a color for product!");
             } else {
                 addToCartCallback?
-                    addToCartCallback({name: productDetail.product_name, price: productDetail.product_price,
+                    addToCartCallback({name: productDetail.product_name, price,
                         color: selectedColor, size: selectedSize, quantity:1,
                         image: baseURL+productDetail.product_gallery.split(',')[0],
                         product_id: productDetail.product_id
@@ -114,13 +117,32 @@ export default class SingleProduct extends Component {
                             <ImageCarousel data={productDetail.product_gallery.split(',')}
                                            baseURL={'https://sakba.net/images/product/'}
                                            style={{
-                                               marginTop: 10, borderWidth: 0.5, borderColor: '#333',
-                                               alignSelf: 'center', maxHeight: width
+                                               marginTop: 10, alignSelf: 'center', maxHeight: width
                                            }}
                             />
-                            <View style={{transform:[{scaleX: isRTL?-1:1}],flexDirection: 'row', justifyContent: 'space-between', marginTop: 20,}}>
-                                <Text style={{transform:[{scaleX: isRTL?-1:1}],fontWeight: 'bold', fontSize: 20, color: '#0451A5'}}>{productDetail.product_name}</Text>
-                                <Text style={{transform:[{scaleX: isRTL?-1:1}], fontWeight: 'bold', fontSize: 20}}>{productDetail.product_price} KD</Text>
+                            <View style={{flexDirection: isRTL?'row-reverse':'row', justifyContent: 'space-between', marginTop: 20,}}>
+                                <View style={{width: '65%', alignItems:isRTL?'flex-end':'flex-start'}}>
+                                    <Text style={{textAlign:isRTL?'right':'left',fontWeight: 'bold',
+                                        fontSize: 18, color: '#0451A5'}}>{productDetail.product_name} </Text>
+                                </View>
+                                <View style={{width: '35%',alignItems:!isRTL?'flex-end':'flex-start'}}>
+                                    <View style={{ flexDirection: isRTL?'row-reverse':'row', justifyContent:isRTL?'flex-start':'flex-end'}}>
+                                        <Text style={{textDecorationLine: (productDetail.discount_percentage && parseFloat(productDetail.discount_percentage))?'line-through':'', fontWeight: 'bold', fontSize: 18}}>{productDetail.product_price} KD</Text>
+                                        {(productDetail.discount_percentage && parseFloat(productDetail.discount_percentage))?
+                                            <Text style={{
+                                            color: '#0451A5',
+                                            fontWeight: 'bold',
+                                            fontSize: 18
+                                        }}> {productDetail.product_sale_price} KD </Text>:null}
+                                    </View>
+                                    {(productDetail.discount_percentage && parseFloat(productDetail.discount_percentage))?
+                                        <View style={{alignSelf: isRTL?'flex-start':'flex-end'}}>
+                                        <Text style={{
+                                            fontWeight: 'bold',
+                                            fontSize: 14
+                                        }}>({productDetail.discount_percentage} % off)</Text>
+                                    </View>:null}
+                                </View>
                             </View>
                             <Text style={{fontSize: 14, textAlign:isRTL?'right':'left', marginTop: 5, color: '#0451A5'}}>{productDetail.product_brand}</Text>
                             {/*{productDetail.product_sizes && <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
@@ -132,7 +154,7 @@ export default class SingleProduct extends Component {
                                 <Text style={{transform:[{scaleX: isRTL?-1:1}],marginBottom:10, fontWeight: 'bold', fontSize: 20, marginTop: 20}}>{screen.pickSizeLabel}</Text>
                                 <FlatList key={2} data={productDetail.product_sizes.split(',')}
                                           horizontal
-
+                                        showsHorizontalScrollIndicator={false}
                                     renderItem={({item})=>(
                                         <TouchableWithoutFeedback onPress={()=>this.selectSize(item)}>
                                             <View style={{transform:[{scaleX: isRTL?-1:1}],marginRight:10, alignItems:'center', justifyContent:'center',padding: 10,

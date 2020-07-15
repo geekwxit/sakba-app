@@ -46,7 +46,7 @@ export default class ProductsScreen extends Component{
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     // var screen = this.state.language.fabricScreen;
-    const {main} = this.props;
+    const {main, isRTL=0} = this.props;
     // console.log(this.state.products)
     const products = this.state.products;
     // console.log(await Store.getProducts());
@@ -63,9 +63,12 @@ export default class ProductsScreen extends Component{
                       (this.state.products && this.state.products.length>0)?
 
                           <FlatList
+                              contentContainerStyle={{paddingBottom:5}}
                               numColumns={2}
                               key={2}
                               data={products}
+                              showsVerticalScrollIndicator={false}
+                              keyExtractor={(item, index) => 'products_'+index.toString()}
                               renderItem={({item})=> {
                                   const that= this;
                                   const {main} = that.props;
@@ -76,6 +79,11 @@ export default class ProductsScreen extends Component{
                                                         that.addToCart(product, main, ref)
                                                     }
                                                 })}
+                                                isOutofStock={parseInt(item.from_supplier)?!parseInt(item.product_qty)>0:false}
+                                                isRTL={isRTL}
+                                                discountLabel={screen.discountLabel}
+                                                priceLabel={screen.priceLabel}
+                                                salePriceLabel={screen.salePriceLabel}
                                                 addToCartLabel={screen.addToCartLabel}
                                                 outOfStockLabel={screen.outOfStockLabel}
                                         />
@@ -98,15 +106,39 @@ export default class ProductsScreen extends Component{
   }
 }
 
-const Product=({item, openProduct, onAddToCart, addToCartLabel, outOfStockLabel })=>(
-    <TouchableOpacity onPress={openProduct} style={{marginTop: 10, borderWidth: 1, borderColor: '#0551a5', marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
+const Product=({item, openProduct,isOutofStock, priceLabel, discountLabel, salePriceLabel, outOfStockLabel, isRTL })=>(
+    <TouchableOpacity disabled={isOutofStock} onPress={openProduct}
+                      style={{borderColor: isOutofStock?'#FF0000':'#0551a5', marginTop: 10, borderWidth: 1, marginHorizontal: 10, width: (width / 2) - 30, justifyContent:'space-between'}}>
         <View style={{width:'100%'}}>
+            {isOutofStock?<Text style={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+                color: '#FFFFFF',
+                backgroundColor: 'red'
+            }}>{outOfStockLabel}</Text>:null}
             <View style={{width: '100%', height: 170}}>
                 <Image style={{flex:1,resizeMode:'contain'}} source={{uri: baseURL+item.product_gallery.split(',')[0]}}/>
             </View>
             <View style={{paddingHorizontal: 10}}>
-                <Text style={{fontSize: 15}} numberOfLines={2}><B>{item.product_name}</B></Text>
-                <Text style={{fontSize: 15}}><B>Price: </B>{item.product_price} KD</Text>
+                <B style={{fontSize: 15, textAlign: isRTL?'right':'left'}} numberOfLines={2}>{item.product_name}</B>
+                <View style={{flexDirection:isRTL?'row-reverse':'row'}}>
+                    <B>{priceLabel}</B>
+                    <Text style={{fontSize: 15, textDecorationLine: (item.discount_percentage && parseFloat(item.discount_percentage))?'line-through':''}}>
+                        {item.product_price} KD
+                    </Text>
+                </View>
+                {item.discount_percentage && parseFloat(item.discount_percentage)?
+                    <View style={{flexDirection:isRTL?'row-reverse':'row'}}>
+                        <B>{discountLabel}</B>
+                        <Text style={{fontSize: 15}}>{item.discount_percentage} %</Text>
+                    </View>
+                    :null}
+                {item.product_sale_price && parseFloat(item.product_sale_price) && item.discount_percentage && parseFloat(item.discount_percentage) ?
+                    <View style={{flexDirection:isRTL?'row-reverse':'row'}}>
+                        <B>{salePriceLabel}</B>
+                        <Text style={{fontSize: 15, color: '#0551a5'}}>{item.product_sale_price} KD</Text>
+                    </View>
+                    :null}
             </View>
         </View>
     </TouchableOpacity>

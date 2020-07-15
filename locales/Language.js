@@ -106,6 +106,8 @@ export const strings = new LocalizedStrings({
             enterMeasurement: "Please enter measurement!", greaterNumberError: "Number must be greater than 0",
             addToCartLabel: "ADD TO CART", outOfStockLabel: "OUT OF STOCK",
             measurementLabel: "Measurement",
+            discountLabel: 'Discount: ', priceLabel:'Price: ',salePriceLabel:'Sale Price: ',
+
         },
         orderDetail:{
             title: "Order Details",
@@ -321,6 +323,7 @@ export const strings = new LocalizedStrings({
             enterMeasurement: "الرجاء إدخال القياس!", greaterNumberError: "يجب أن يكون الرقم أكبر من 0",
             addToCartLabel: "اضافه القطعة", outOfStockLabel: "إنتهى من المخزن",
             measurementLabel:  "قياس",
+            discountLabel: 'خصم: ', priceLabel:'السعر: ',salePriceLabel:'سعر البيع: ',
         },
         orderDetail:{
             title: "تفاصيل الطلب",

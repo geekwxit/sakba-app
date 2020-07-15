@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {strings} from '../../locales/Language'
-
+export const baseURL = 'https://sakba.net/mobileApi/';
 const axiosInstance = axios.create({
-    baseURL: 'https://sakba.net/mobileApi/',
+    baseURL,
 })
 
 axiosInstance.interceptors.request.use((config) => {

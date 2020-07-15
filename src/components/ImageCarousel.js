@@ -70,8 +70,8 @@ class ImageCarousel extends Component {
 export default ImageCarousel;
 
 const styles = StyleSheet.create({
-    container: {width:width,height:width/1.5,},
-    carouselView:{width:width-20,height:width/1.5},
+    container: {width:width-20,elevation:1,height:width/2,borderBottomWidth: 0.5, borderBottomColor: '#333',},
+    carouselView:{width:width-20,elevation:1,height:width/2},
     carouselImg:{flex:1,width:null,height:null,resizeMode:'contain',},
     circleView:{width:width,position:'absolute',bottom:5,height:10,display:'flex',flexDirection:'row',justifyContent:'center',alignItems:'center'},
     whiteCircle:{width:6,height:6,borderRadius:3,margin:5,backgroundColor:'#fff'}
