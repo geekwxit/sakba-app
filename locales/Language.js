@@ -1,6 +1,6 @@
 /** Define string constants for the app here */
 import LocalizedStrings from 'react-native-localization';
-import {Text} from "react-native";
+import { Text } from "react-native";
 import React from "react";
 export const strings = new LocalizedStrings({
     en: {
@@ -39,12 +39,12 @@ export const strings = new LocalizedStrings({
             agree: "I agree",
             needNew: "I need new measurments",
         },
-        customerAgree:{
+        customerAgree: {
             dishdashaCount: "How many dishdasha you want ?",
             outside: "YOUR FABRICS",
             inhome: "BUY FROM US",
             proceedButton: "Proceed",
-            maxInHome : "Fabrics count value cannot exceed total number of dishdashas!",
+            maxInHome: "Fabrics count value cannot exceed total number of dishdashas!",
             maxOutside: "Fabrics count value cannot exceed total number of dishdashas!",
             buyDishdasha: "Buy Dishdasha", buyDishdashaAndProduct: "Buy Dishdasha and Products"
         },
@@ -72,7 +72,7 @@ export const strings = new LocalizedStrings({
             orderNowButton: "Order Now !",
             detailsRequired: "All Details Are Required",
             pRemarks: "Remarks :",
-            email: "Email", name:  "Name", phone: 'Phone'
+            email: "Email", name: "Name", phone: 'Phone'
         },
         fabricScreen: {
             title: "Select Fabric Options",
@@ -89,27 +89,27 @@ export const strings = new LocalizedStrings({
             selectPerMeter: 'KD per meter', selectPFinalPrice: "Final Price: ",
             cartEmpty: "Cart is Empty!", cartTitle: "Cart", cartQuantity: "Quantity: ", cartPrice: "Final Price: ", cartRemove: "Remove", cartTotal: "Cart Total", cartConfirm: "Confirm Checkout",
             cartFinalPrice: "Final Price: ",
-            previewTitle: {t1: "Pattern Preview", t2: "Color Preview"}, previewOKButton: "OK",
+            previewTitle: { t1: "Pattern Preview", t2: "Color Preview" }, previewOKButton: "OK",
             commonError: "Something went wrong",
             quantityInc: "Product quantity increased!",
             addedToCart: "Product successfully added to your cart",
-            moreThan: (inHomeCount)=>('Items on cart are more than '+inHomeCount+' dishdashas. Please remove some items.'),
-            lessThan: (inHomeCount)=>('Items on cart are less than '+inHomeCount+' dishdashas. Please add some items.'),
+            moreThan: (inHomeCount) => ('Items on cart are more than ' + inHomeCount + ' dishdashas. Please remove some items.'),
+            lessThan: (inHomeCount) => ('Items on cart are less than ' + inHomeCount + ' dishdashas. Please add some items.'),
             alreadyInCart: "Product is already in cart.", kd: "KD",
             noColorPattern: "This brand has no pattern or color", measureText: "Your measurement :",
             kdPerMeter: "KD per meter", rateLabel: "Rate :", meters: "meters",
 
             brandLabel: "brands", patternLabel: "patterns", colorsLabel: "colors",
-            fabricsLabel: "Fabrics",productsLabel: "Products",shopTitle: 'Shop',
+            fabricsLabel: "Fabrics", productsLabel: "Products", shopTitle: 'Shop',
             noProducts: "No Products found", retryButton: "RETRY",
             promoNumberAlert: "Please enter the promo code first!",
             enterMeasurement: "Please enter measurement!", greaterNumberError: "Number must be greater than 0",
             addToCartLabel: "ADD TO CART", outOfStockLabel: "OUT OF STOCK",
             measurementLabel: "Measurement",
-            discountLabel: 'Discount: ', priceLabel:'Price: ',salePriceLabel:'Sale Price: ',
+            discountLabel: 'Discount: ', priceLabel: 'Price: ', salePriceLabel: 'Sale Price: ',
 
         },
-        orderDetail:{
+        orderDetail: {
             title: "Order Details",
             thankyou: "Thank you for your order ",
             thankyou2: "you confirmed the measurement ",
@@ -123,12 +123,14 @@ export const strings = new LocalizedStrings({
             alertButton: "Ok",
             alertTitle: "Alert",
             tableDishdasha: "Classic Dishdasha *",
-            tablePickup: "Pickup", tableDelivery: "Delivery", tableSamplePickup: "Sample Pickup", tableTotal: "Total",tableHeadTitle: "Product / Service",
+            tablePickup: "Pickup", tableDelivery: "Delivery", tableSamplePickup: "Sample Pickup", tableTotal: "Total", tableHeadTitle: "Product / Service",
             tableDiscount: "Discount",
             fabricsText: "FABRICS FROM OUR SHOP",
             promoAlert: "Please enter the promo code first!",
-            enterCode: "Enter Code",promoCode: "Promo Code",
+            enterCode: "Enter Code", promoCode: "Promo Code",
             havePromo: "Have a Promo Code?",
+            applyCode: "Apply",     //by Prashant Sharma
+            removeCode: "Remove"    // by Prashant Sharma
         },
         confirmScreen: {
             screenTitle: "Checkout",
@@ -140,8 +142,8 @@ export const strings = new LocalizedStrings({
             confirmMsg3: "your payment",
             reviewButton: "REVIEW ORDER",
             alertOnEmailSent: "Our team will contact you for the payment link. Please check your junk/spam email.",
-            regularError    : "Something Went Wrong!",
-            emailError      : "Invalid email address!",
+            regularError: "Something Went Wrong!",
+            emailError: "Invalid email address!",
             reviewError: "Please enter an email and send to continue!"
         },
         visitToShopPage: {
@@ -161,6 +163,7 @@ export const strings = new LocalizedStrings({
             enterUserName: "Please Enter The User Name",
             enterNum: "Please Enter the Number",
             addressField: "Please enter atleast one address field",
+            alert_SendExec: "Alert",
             sendExec: "We Will Send Executive soon",
             title: "Details for Executive Visit",
             pName: "Name",
@@ -193,7 +196,7 @@ export const strings = new LocalizedStrings({
             retryButton: "RETRY",
             expected: "Expected Delivery Date ",
             pickupCharge: "3 KD",
-            deliveryCharge: "3 KD", classic : "Classic Dishdasha",
+            deliveryCharge: "3 KD", classic: "Classic Dishdasha",
             error: "Something went wrong. Please retry again later!",
             fabricsText: "FABRICS FROM OUR SHOP",
         },
@@ -212,12 +215,12 @@ export const strings = new LocalizedStrings({
             mandatoryMessage: "Please enter name and mobile number",
             measurementSuccess: "Measurement submitted successfully!",
         },
-        productScreen:{
+        productScreen: {
             pickSizeLabel: "Pick a size: ",
             pickColorLabel: "Pick a color: ",
             descLabel: "Product Description: ",
             addToCartButton: "ADD TO CART",
-            kd:'KD'
+            kd: 'KD'
         }
     },
     ar: {
@@ -241,11 +244,11 @@ export const strings = new LocalizedStrings({
             submitButton: "ادخل",
             or: "او",
             installWhatsApp: "نزل برنامج الواتساب عشان تكلمنا",
-            sendSampleButton:"أخذ القياس من دشداشه",
+            sendSampleButton: "أخذ القياس من دشداشه",
             writeMeasurementButton: "اكتب قياسك",
             buyButton: "شراء المنتجات والأقمشة",
-            textUs: 'أرسل لنا رسالة',
-            callUs: 'اتصل بنا',
+            textUs: 'راسلنا',
+            callUs: 'كلمنا',
         },
         welcomeCustomer: {
             okButton: "اوكي",
@@ -256,12 +259,12 @@ export const strings = new LocalizedStrings({
             needNew: "لا، محتاج قياس يديد",
             measureAccept: "هل توافق وتؤكد قياسات العينة الخاصة بك؟",
         },
-        customerAgree:{
+        customerAgree: {
             dishdashaCount: "جم دشداشة تبي تفصل؟",
             outside: "عندي خام",
             inhome: "بشتري خام منكم",
             proceedButton: "كمّل",
-            maxInHome : "ضفت اكثر من العدد",
+            maxInHome: "ضفت اكثر من العدد",
             maxOutside: "ضفت اكثر من العدد",
             buyDishdasha: "تفصيل دشاديش", buyDishdashaAndProduct: "تفصيل وشراء منتجات"
         },
@@ -288,7 +291,7 @@ export const strings = new LocalizedStrings({
             orderNowButton: "انتقل للدفع",
             detailsRequired: "كل البيانات مطلوبة",
             pRemarks: "ملاحظات :",
-            email: "ايميلك:", name:  "الاسم", phone: 'رقم',
+            email: "ايميلك:", name: "الاسم", phone: 'رقم',
             sampleLabel: "عينتك:",
         },
         fabricScreen: {
@@ -306,26 +309,26 @@ export const strings = new LocalizedStrings({
             selectPerMeter: "سعر المتر", selectPFinalPrice: "المجموع:",
             cartEmpty: "ما ضفت شي!!", cartTitle: "الطلب", cartQuantity: "العدد:", cartPrice: "المجموع:", cartRemove: "الغي", cartTotal: "المجموع الكلي", cartConfirm: "تأكيد الطلب",
             cartFinalPrice: "السعر النهائي:",
-            previewTitle: {t1: "عرض النقشة", t2: "عرض اللون"}, previewOKButton: "اوكي",
+            previewTitle: { t1: "عرض النقشة", t2: "عرض اللون" }, previewOKButton: "اوكي",
             commonError: "في شي غلط",
             quantityInc: "عدد ال",
             addedToCart: "القطعة انضافت عالطلب",
-            moreThan: (inHomeCount)=>("العناصر الموجودة في العربة أكثر من "+ inHomeCount +" الدشداشة. يرجى إزالة بعض العناصر."),
-            lessThan: (inHomeCount)=>('العناصر الموجودة في العربة أقل من '+ inHomeCount +' دشداشة. الرجاء إضافة بعض العناصر.'),
+            moreThan: (inHomeCount) => ("العناصر الموجودة في العربة أكثر من " + inHomeCount + " الدشداشة. يرجى إزالة بعض العناصر."),
+            lessThan: (inHomeCount) => ('العناصر الموجودة في العربة أقل من ' + inHomeCount + ' دشداشة. الرجاء إضافة بعض العناصر.'),
             alreadyInCart: "المنتج بالفعل في العربة", kd: "KD",
             noColorPattern: "هذه العلامة التجارية ليس لها نمط أو لون", measureText: "القياس الخاص بك:",
             kdPerMeter: "دينار كويتي لكل متر", rateLabel: "معدل :", meters: "متر",
 
             brandLabel: "ركة", patternLabel: "أنماط", colorsLabel: "الألوان",
-            fabricsLabel: "الخامات", productsLabel: "منتجات",shopTitle: 'أسواق',
+            fabricsLabel: "الخامات", productsLabel: "منتجات", shopTitle: 'أسواق',
             noProducts: "لم يتم العثور على منتجات", retryButton: "عيد حاول",
             promoNumberAlert: "يرجى إدخال الرمز الترويجي أولاً!",
             enterMeasurement: "الرجاء إدخال القياس!", greaterNumberError: "يجب أن يكون الرقم أكبر من 0",
             addToCartLabel: "اضافه القطعة", outOfStockLabel: "إنتهى من المخزن",
-            measurementLabel:  "قياس",
-            discountLabel: 'خصم: ', priceLabel:'السعر: ',salePriceLabel:'سعر البيع: ',
+            measurementLabel: "قياس",
+            discountLabel: 'خصم: ', priceLabel: 'السعر: ', salePriceLabel: 'سعر البيع: ',
         },
-        orderDetail:{
+        orderDetail: {
             title: "تفاصيل الطلب",
             thankyou: "شكرا على طلبيتك ",
             thankyou2: "اخترت نفصل لك قياسك اللي بتاريخ ",
@@ -339,12 +342,15 @@ export const strings = new LocalizedStrings({
             alertButton: "اوكي",
             alertTitle: "انذار",
             tableDishdasha: "دشداشة كلاسيك *",
-            tablePickup: "استلام", tableDelivery: "توصيل", tableSamplePickup: "لاقط عينة", tableTotal: "المجموع",tableHeadTitle: "المنتج/الخدمة",
+            tablePickup: "استلام", tableDelivery: "توصيل", tableSamplePickup: "لاقط عينة", tableTotal: "المجموع", tableHeadTitle: "المنتج/الخدمة",
             tableDiscount: "خصم",
             fabricsText: "خامات من المحل",
             promoAlert: "يرجى إدخال الرمز الترويجي أولاً!",
-            enterCode: "ادخل الرمز",promoCode: "شفرة تخفيض",
-            havePromo: "هل يمتلك الرمز الترويجي؟",
+            enterCode: "ادخل الرمز", promoCode: 'الكوبون',
+            havePromo: "عندك كوبون خصم؟ اكتبه هني.",
+            applyCode: "اتمام",     //by Prashant Sharma
+            removeCode: "الغي",    // by Prashant Sharma
+
         },
         confirmScreen: {
             screenTitle: "خروج",
@@ -356,8 +362,8 @@ export const strings = new LocalizedStrings({
             confirmMsg3: "عملية الدفع",
             reviewButton: "عرض الطلب",
             alertOnEmailSent: "راح نكلمك ونرسل لك رابط الدفع يرجى التحقق من البريد الإلكتروني غير الهام / البريد العشوائي الخاص بك",
-            regularError    : "في شي غلط",
-            emailError      : "الايميل غلط",
+            regularError: "في شي غلط",
+            emailError: "الايميل غلط",
             reviewError: "اكتب ايميلك واضغط ارسال"
         },
         visitToShopPage: {
@@ -377,7 +383,8 @@ export const strings = new LocalizedStrings({
             enterUserName: "اكتب اسمك",
             enterNum: "اكتب رقمك",
             addressField: "الرجاء إدخال حقل عنوان واحد على الأقل",
-            sendExec: "راح يكلمك الموظف المختص",
+            alert_SendExec: "تم ارسال طلبك",
+            sendExec: "سيتم الاتصال بك قريبا لتحديد موعد الزيارة.",
             title: "تفاصيل الطلب",
             pName: "الاسم",
             pNumber: "رقمك",
@@ -409,14 +416,14 @@ export const strings = new LocalizedStrings({
             retryButton: "عيد حاول",
             expected: "موعد تسليم الطلب ",
             pickupCharge: "٣ د.ك",
-            deliveryCharge: "٣ د.ك", classic : "دشداشة كلاسيك",
+            deliveryCharge: "٣ د.ك", classic: "دشداشة كلاسيك",
             error: "في خطأ، جرب مره ثانيه",
             fabricsText: "خامات من المحل",
         },
         sampleMeasurementScreen: {
             title: "قياس",
             submitButton: "إرسال",
-            nameLabel:  "الاسم",
+            nameLabel: "الاسم",
             mobileLabel: 'رقم',
             metersLabel: "الامتار المطلوبة",
             heading: "أدخل تفاصيل القياس الخاصة بك",
@@ -428,12 +435,12 @@ export const strings = new LocalizedStrings({
             mandatoryMessage: "يرجى إدخال الاسم ورقم الجوال",
             measurementSuccess: "تم إرسال القياس بنجاح!",
         },
-        productScreen:{
+        productScreen: {
             pickSizeLabel: "اختر الحجم:",
             pickColorLabel: "اختر لونا:",
             descLabel: "وصف المنتج:",
             addToCartButton: "أضف إلى السلة",
-            kd:'KD'
+            kd: 'KD'
         }
     },
 })

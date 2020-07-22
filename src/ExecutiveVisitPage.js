@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, Image, Dimensions, ScrollView, Alert} from 'react-native';
+import { View, Text, Image, Dimensions, ScrollView, Alert } from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Icon, Textarea } from 'native-base';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import axios from './axios/AxiosInstance';
@@ -9,7 +9,7 @@ const { width, height } = Dimensions.get('window');
 export default class ExecutiveVisitPage extends Component<Props>{
   static navigationOptions = ({ navigation }) => {
     return {
-      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0},
+      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
       headerTintColor: '#fff',
     };
   };
@@ -19,32 +19,36 @@ export default class ExecutiveVisitPage extends Component<Props>{
       language: this.props.navigation.getParam('language'),
       page: this.props.navigation.getParam('language').requestExecutiveVisit,
       name: '', number: '',
-      area: '', block: '', street: '', jada: '', house: '', floor: '', apartment: '', extra_Number: ''
+      area: '', block: '', street: '', jada: '', house: '', floor: '', apartment: '', extra_Number: '',
+      Button_True: false
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     lang = this.props.navigation.getParam('language');
-    this.setState({language: lang, page: lang.requestExecutiveVisit});
+    this.setState({ language: lang, page: lang.requestExecutiveVisit });
   }
 
   request() {
     Text.defaultProps = Text.defaultProps || {};
-Text.defaultProps.allowFontScaling = false;
-    const { name , number , area , block, street, jada ,house ,floor ,apartment ,extra_Number } = this.state
+    Text.defaultProps.allowFontScaling = false;
+    const { name, number, area, block, street, jada, house, floor, apartment, extra_Number } = this.state
     // var time = this.state.selectedTime;
     // var date = this.state.selectedDate;
 
-    var address = area+block+street+jada+house+floor+apartment+extra_Number
+    var address = area + block + street + jada + house + floor + apartment + extra_Number
 
     if (name == '') {
-      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterUserName, [{text: this.state.language.commonFields.okButton}]);
+      this.setState({ Button_True: false })
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterUserName, [{ text: this.state.language.commonFields.okButton }]);
       // alert(this.state.page.enterUserName)
     } else if (number == '') {
-      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterNum, [{text: this.state.language.commonFields.okButton}]);
+      this.setState({ Button_True: false })
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterNum, [{ text: this.state.language.commonFields.okButton }]);
       // alert(this.state.page.enterNum)
     } else if (address == '') {
-      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.addressField, [{text: this.state.language.commonFields.okButton}]);
+      this.setState({ Button_True: false })
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.addressField, [{ text: this.state.language.commonFields.okButton }]);
       // alert(this.state.page.addressField)
     }
     // else if (time=='Select Time'){
@@ -55,24 +59,26 @@ Text.defaultProps.allowFontScaling = false;
     else {
       URL = 'add-visit.php'
       axios.post(URL, {
-          name: name,
-          old_number: number,
-          area , street, block , jada , house , floor , apartment ,
-          extra_number: extra_Number,
-        })
+        name: name,
+        old_number: number,
+        area, street, block, jada, house, floor, apartment,
+        extra_number: extra_Number,
+      })
         .then((response) => response.data)
         .then((responseData) => {
-          console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
+          //console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
           if (responseData.mssg == 'Data Added') {
-            Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.sendExec, [{text: this.state.language.commonFields.okButton}]);
+            Alert.alert(this.state.page.alert_SendExec, this.state.page.sendExec, [{ text: this.state.language.commonFields.okButton }]);
             // alert(this.state.page.sendExec)
             this.props.navigation.navigate('login');
+            this.setState({ Button_True: false })
           }
         })
         .catch((error) => {
           console.log("Error");
           console.warn('Error');
         });
+
     }
   }
 
@@ -82,7 +88,7 @@ Text.defaultProps.allowFontScaling = false;
     return (
       <Container>
         <Content>
-          <ScrollView style={{paddingBottom:30}}>
+          <ScrollView style={{ paddingBottom: 30 }}>
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
                 <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
@@ -95,7 +101,7 @@ Text.defaultProps.allowFontScaling = false;
                   <Input
                     placeholder={screen.pName}
                     placeholderTextColor='#aaa'
-                    style={{ height: 40, textAlign: isRTL?'right':'left'}}
+                    style={{ height: 40, textAlign: isRTL ? 'right' : 'left' }}
                     value={this.state.name}
                     onChangeText={(value) => { this.setState({ name: value }) }}
                   />
@@ -106,24 +112,24 @@ Text.defaultProps.allowFontScaling = false;
                     keyboardType='numeric'
                     maxLength={10}
                     placeholderTextColor='#aaa'
-                    style={{ height: 40, textAlign: isRTL?'right':'left' }}
+                    style={{ height: 40, textAlign: isRTL ? 'right' : 'left' }}
                     value={this.state.number}
                     onChangeText={(value) => { this.setState({ number: value }) }}
                   />
                 </Item>
-                <Text style={{ fontSize: 18, marginTop: 15, textAlign: isRTL?'right':'left'}}>{screen.addressLabel}</Text>
+                <Text style={{ fontSize: 18, marginTop: 15, textAlign: isRTL ? 'right' : 'left' }}>{screen.addressLabel}</Text>
                 <View style={{ flexDirection: 'row', marginTop: 10, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
-                        placeholder={screen.pArea}
-                        onChangeText={(text) => this.setState({ area: text })}
-                        value={this.state.area}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
+                      placeholder={screen.pArea}
+                      onChangeText={(text) => this.setState({ area: text })}
+                      value={this.state.area}
                     />
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pBlock}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ block: text })}
@@ -134,7 +140,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pStreet}
                       onChangeText={(text) => this.setState({ street: text })}
                       value={this.state.street}
@@ -142,7 +148,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pJada}
                       onChangeText={(text) => this.setState({ jada: text })}
                       value={this.state.jada}
@@ -152,7 +158,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pHouse}
                       onChangeText={(text) => this.setState({ house: text })}
                       value={this.state.house}
@@ -160,7 +166,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pFloor}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ floor: text })}
@@ -171,7 +177,7 @@ Text.defaultProps.allowFontScaling = false;
                 <View style={{ flexDirection: 'row', marginTop: 5, width: 40, marginBottom: 10 }}>
                   <Item regular style={{ width: width / 2 - 40, height: 30, marginRight: 5 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pApartment}
                       onChangeText={(text) => this.setState({ apartment: text })}
                       value={this.state.apartment}
@@ -179,7 +185,7 @@ Text.defaultProps.allowFontScaling = false;
                   </Item>
                   <Item regular style={{ width: width / 2 - 40, height: 30 }}>
                     <Input
-                        style={{textAlign: isRTL?'right':'left'}}
+                      style={{ textAlign: isRTL ? 'right' : 'left' }}
                       placeholder={screen.pExtra}
                       keyboardType='numeric'
                       onChangeText={(text) => this.setState({ extra_Number: text })}
@@ -210,7 +216,7 @@ Text.defaultProps.allowFontScaling = false;
               </Item> */}
               </Form>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={() => this.request()}>
+                <Button disabled={this.state.Button_True} style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={() => { this.setState({ Button_True: true }), this.request() }}>
                   <Text style={{ fontSize: 20, color: 'white' }}>{screen.requestButton}</Text>
                 </Button>
               </View>

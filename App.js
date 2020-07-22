@@ -33,11 +33,11 @@ const AppNavigator = createStackNavigator(
     paypal: Paypal,
     review: Review,
     delivery: DeliveryOptions,
-      Shop: ProductsScreen,
-      write_measure: MeasurementScreen,
-      sample_measure: SampleMeasurement,
-      fabrics_and_products: FabricsAndProducts,
-      single_product: SingleProduct
+    Shop: ProductsScreen,
+    write_measure: MeasurementScreen,
+    sample_measure: SampleMeasurement,
+    fabrics_and_products: FabricsAndProducts,
+    single_product: SingleProduct
   },
   {
     initialRouteName: 'login',
@@ -60,7 +60,7 @@ export default class App extends Component<Props> {
   componentDidMount() {
     setTimeout(() => {
       this.setTimePassed();
-    }, 2000);
+    }, 3000);
   }
 
   setTimePassed() {
@@ -68,8 +68,8 @@ export default class App extends Component<Props> {
   }
 
   render() {
-    // if (!this.state.timePassed) {
-      if(0){
+    if (!this.state.timePassed) {
+      //if(0){
       return <SplashScreen />;
     } else {
       return <AppContainer />;

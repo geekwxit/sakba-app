@@ -68,7 +68,7 @@ export default class PayPal extends React.Component {
                     javaScriptEnabledAndroid={true}
                     javaScriptEnabled={true}
                     // injectJavaScript={this.customScript}
-                    source={{uri: url}}
+                    // source={{uri: url}}
                     onMessage={event =>this.paymentStatus(JSON.parse(event.nativeEvent.data))}
                 />
             </View >
