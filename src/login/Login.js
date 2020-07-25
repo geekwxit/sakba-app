@@ -30,6 +30,14 @@ export default class Login extends Component {
         //     language: strings,
         //     order_id: 1531,
         // })
+        // this.props.navigation.navigate('payment_success', {
+        //     measurement: 3.5,
+        //     language: strings,
+        //     customerName: "Avinash Kumar",
+        //     emailID: undefined,
+        //     orderID: "1896",
+        //     deliveryDate: "2020-07-22"
+        // })
         // this.props.navigation.navigate('fabrics_and_products', {
         //         language: strings,
         //         order_id: 1531,
@@ -246,7 +254,7 @@ export default class Login extends Component {
                                                     isCountNeeded: false,
                                                     productsOnly: false, measurementDone: false,
                                                     fabricsEnabled: true, productsEnabled: true, shopTitle,
-                                                    fabricsLabel, productsLabel
+                                                    fabricsLabel, productsLabel, mustBuyProduct: true
                                                 })
                                             }}>
                                             <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>
@@ -265,9 +273,9 @@ export default class Login extends Component {
                                     </View>
                                 </View>
                                 <View style={{ width: width - 80, flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10, alignSelf: 'center' }}>
-                                    <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/login_icons/blue_whatsapp.jpg')} />
-                                    <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/login_icons/blue_maps-icon.png')} />
-                                    <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/login_icons/blue_maps-icon.png')} />
+                                    <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/whatsapp_blue.png')} />
+                                    <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/LocationICon.png')} />
+                                    <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/LocationICon.png')} />
                                     <Icon label={screen.callUs} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/blue_call.png')} />
                                 </View>
                             </View>
@@ -281,7 +289,7 @@ export default class Login extends Component {
 }
 
 const Icon = ({ link, strings, screen, path, label }) => (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{borderWidth:0.1, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <TouchableOpacity onPress={() => {
             Linking.canOpenURL(link)
                 .then(supported => {

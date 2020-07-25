@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   textHeader: { textAlign: 'center', fontWeight: '500', color: 'white' },
   text: { textAlign: 'center', fontWeight: '100' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' }
+  row: { minHeight: 40, backgroundColor: '#E7E6E1' }
 });
 
 

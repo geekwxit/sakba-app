@@ -126,6 +126,7 @@ export default class FabricsAndProducts extends Component<Props>{
   doCheckout(){
     // var screen = this.state.language.fabricScreen;
     const {inHomeCount, outsideCount, isCountNeeded, noOfPieces, language:{fabricScreen: screen}} = this.state;
+    const mustBuyProduct = this.props.navigation.getParam('mustBuyProduct', null);
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
     const customerName= this.props.navigation.getParam('customerName', null);
     const cart        = this.state.cart;
@@ -139,21 +140,25 @@ export default class FabricsAndProducts extends Component<Props>{
     this.setState({cartVisible : false});
     let fabricsActualCount = 0;
     cart.forEach(item=>fabricsActualCount+=(item.isFabric==true)?item.quantity:0);
-    if(cart.length>0){
-      if(inHomeCount>0){
-        params.noOfPieces = this.state.noOfPieces;
-        fabricsActualCount>inHomeCount?
-            this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-            fabricsActualCount<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-                fabricsActualCount==inHomeCount?
-                    this.props.navigation.navigate('delivery',params):
-                    this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
+    if(mustBuyProduct!=null){
+      if((cart.length>0 && mustBuyProduct) || !mustBuyProduct){
+        if(inHomeCount>0){
+          params.noOfPieces = this.state.noOfPieces;
+          fabricsActualCount>inHomeCount?
+              this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+              fabricsActualCount<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
+                  fabricsActualCount==inHomeCount?
+                      this.props.navigation.navigate('delivery',params):
+                      this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
+        } else {
+          // params.noOfPieces = 0;
+          this.props.navigation.navigate('delivery', params)
+        }
       } else {
-        // params.noOfPieces = 0;
-        this.props.navigation.navigate('delivery', params)
+        Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.cartEmpty, [{text: this.state.language.commonFields.okButton}])
       }
     } else {
-      Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.cartEmpty, [{text: this.state.language.commonFields.okButton}])
+      Alert.alert(this.state.language.commonFields.alertTitle, this.state.language.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}]);
     }
   }
 
@@ -171,6 +176,7 @@ export default class FabricsAndProducts extends Component<Props>{
   }
 
   onChangeTab(activeTabIndex){
+    this.getData();
     const Tabs = this.state.tabHead.map(t=>{
       t.active = false;
       return t;
@@ -304,29 +310,3 @@ const Tab=({tabname, tabbgcolor, tabcolor, active, onPress, enabled})=>(
         <Text style={{color: active?tabbgcolor:tabcolor, fontSize:15, fontWeight:'bold'}}>{tabname}</Text>
     </TouchableOpacity>
 )
-
-
-
-// {
-//   props.shouldShowPromo?
-//       <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
-//         <TextInput
-//             onChangeText={(promo)=>props.setPromo(promo)}
-//             placeholder={'Promo Code'}
-//             underlineColorAndroid={'black'} style={{width:'60%',color:'rgba(5,88,221,0.67)'}}/>
-//         <TouchableOpacity
-//             style={{backgroundColor: '#0451A5',padding:10,
-//               alignItems: 'center', justifyContent: 'center', borderRadius: 10}}
-//             onPress={()=>props.applyPromo()}>
-//           <Text style={{fontSize: 14, color: 'white'}}>APPLY</Text>
-//         </TouchableOpacity>
-//       </View>:
-//       <View style={{flexDirection:'row'}}>
-//         <Text style={{fontSize: 15, color: '#fff', alignSelf: 'center'}}>
-//           Have a promo code?
-//         </Text>
-//         <TouchableOpacity onPress={()=>props.showPromo()}>
-//           <Text style={{color:'rgba(5,88,221,0.67)'}}> Click</Text>
-//         </TouchableOpacity>
-//       </View>
-// }

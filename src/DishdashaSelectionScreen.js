@@ -65,6 +65,7 @@ export default class DishdashaSelectionScreen extends Component<Props>{
       shopTitle, fabricsLabel, productsLabel,
       fabricsEnabled: !(outsideCount == this.state.noOfPieces),
       measurementDone: this.props.navigation.getParam('measurementDone'),
+      mustBuyProduct: !outsideCount>0
     };
     console.log(
       "fabricsEnabled:", !(outsideCount == this.state.noOfPieces),

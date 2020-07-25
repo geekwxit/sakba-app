@@ -1,17 +1,6 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Dimensions,
-  StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  BackHandler,
-  TouchableOpacity,
-  TouchableHighlight,
-  Alert, TextInput
-} from 'react-native';
+import { View, Text, Image, Dimensions, StyleSheet, ScrollView, SafeAreaView, BackHandler,
+  TouchableOpacity, TouchableHighlight, Alert, TextInput } from 'react-native';
 import { Button, Container, Content, Item } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
@@ -53,7 +42,7 @@ export default class OrderDetail extends Component<props>{
       promo_enabled: false, total: 0, discount_type: '', discount_value: '',
       mail_Button: false,
     };
-    this.url = "http://sakba.net/payment.php?Sid=" + id + "&&token=" + token;
+    this.url = "http://sakba.net/payment.php?lang=" + this.state.language.getLanguage() + "&&Sid=" + id + "&&token=" + token;
   }
   componentDidMount() {
     this.setState(prev => ({
@@ -76,7 +65,6 @@ export default class OrderDetail extends Component<props>{
       })
       .catch((error) => {
         console.log("Error");
-        console.warn('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
       });
   }
 

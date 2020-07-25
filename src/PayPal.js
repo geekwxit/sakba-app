@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, Dimensions,  ActivityIndicator} from "react-native";
+import { View, Text, Dimensions,  ActivityIndicator, BackHandler} from "react-native";
 import { StackActions, NavigationActions } from 'react-navigation';
 import {WebView} from "react-native-webview";
+import Icon from 'react-native-vector-icons/Ionicons';
+
 const {width, height} =  Dimensions.get('window');
 
 const resetAction = StackActions.reset({
@@ -15,9 +17,7 @@ export default class PayPal extends React.Component {
             {headerRight: <Text style={{color:'white', fontSize: 20%(width*height), padding: 15}}>{navigation.getParam('language').paypal.screenTitle}</Text>}:
             {title: navigation.getParam('language').paypal.screenTitle}
         return {
-            // headerLeft:(<TouchableOpacity onPress={()=>{navigation.dispatch(resetAction)}}>
-            //     <Icon name="md-arrow-back" size={20} style={{paddingLeft:20 , color:'#fff'}}/>
-            // </TouchableOpacity>),
+            headerLeft:(<Icon name="md-arrow-back" onPress={()=>navigation.pop(2)} size={20} style={{paddingLeft:20 , color:'#fff'}}/>),
             headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
             headerTintColor: '#fff',...others
         };
@@ -37,8 +37,16 @@ export default class PayPal extends React.Component {
 
 
     componentDidMount() {
+        this.handleBackPress = BackHandler.addEventListener('hardwareBackPress', ()=>{
+            this.props.navigation.pop(2);
+            return true;
+        });
         this.setState({language: this.props.navigation.getParam('language')})
         this.setState({ isLoading: true });
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener(this.handleBackPress);
     }
 
     paymentStatus(data){
@@ -52,7 +60,7 @@ export default class PayPal extends React.Component {
         }
         console.log("data:",data);
         if(data && data.paymentSuccess && data.data && data.data.order_id && data.data.order_id.trim()){
-            this.props.navigation.navigate('order_confirm', params)
+            this.props.navigation.navigate('payment_success', params)
         } else {
             // this.props.navigation.navigate('PendingScreen');
         }

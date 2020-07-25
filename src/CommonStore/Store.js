@@ -15,6 +15,7 @@ export default class Store {
 
     static async getProducts() {
         if (Store.store.products.length > 0) {
+            Store.store.products = await getAllProducts();
             return Store.store.products;
         } else {
             Store.store.products = await getAllProducts();
@@ -23,7 +24,8 @@ export default class Store {
         }
     }
 
-    static async getFabrics(lang) {
+    static async getFabrics() {
+        var lang = strings.getLanguage();
         if (Store.store.fabrics.length > 0) {
             Store.store.fabrics = await getAllFabrics(lang);
             return Store.store.fabrics;

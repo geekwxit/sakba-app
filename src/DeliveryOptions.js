@@ -274,7 +274,7 @@ export default class DeliveryOptions extends Component<Props>{
                             { label: screen.pickup, value: 1 }]}
                             toggle={() => this.setState(prev => ({ sampleAddress: { ...prev.sampleAddress, enabled: !prev.sampleAddress.enabled } }))}
                         />}
-                        {/* {!(this.state.inHomeCount == this.state.noOfPieces) && this.state.isCountNeeded && <AddressOption
+                        {!(this.state.inHomeCount == this.state.noOfPieces) && this.state.isCountNeeded && <AddressOption
                             style={{ marginTop: 20 }}
                             label={screen.fabricLabel}
                             setValue={(value) => this.setState(prev => ({ pickupAddress: { ...prev.pickupAddress, ...value } }))}
@@ -283,7 +283,7 @@ export default class DeliveryOptions extends Component<Props>{
                             radioOptions={[{ label: screen.sendFabric, value: 0 },
                             { label: screen.pickup, value: 1 }]}
                             toggle={() => this.setState(prev => ({ pickupAddress: { ...prev.pickupAddress, enabled: !prev.pickupAddress.enabled } }))}
-                        />} */}
+                        />}
                         {!this.state.isCountNeeded &&
                             <View>
                                 <Text style={{
@@ -457,8 +457,6 @@ const CustomInput = ({ value, keyboardType, onChangeText, label, isRTL, maxLengt
     </Item>
 
 )
-
-
 
 function AppLogo({ logoLoaded, height, source }) {
     const [marginTop, setMarginTop] = useState(height * .20);

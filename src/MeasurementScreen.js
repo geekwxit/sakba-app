@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get('window');
 
 export default class MeasurementScreen extends Component {
     state = {
-        language: {},
+        language: {}, isLoading: false,
         acceptTerms: false, neck: '', length: '', shoulder: '', arm_length: '',
         arm_width: '', vest_size: '', hip_size: '', bottom: '', name: '', email: '', mobile: ''
     };
@@ -41,6 +41,7 @@ export default class MeasurementScreen extends Component {
             bottom, mobile, name, email } = this.state;
         if (!this.validateFields(name, mobile)) {
             if (this.state.acceptTerms) {
+                this.setState({isLoading: true});
                 await axios.post('write_measurements.php', {
                     neck, length, shoulder, arm_length, arm_width,
                     vest_size, hip_size, bottom, name, email, mobile
@@ -54,6 +55,7 @@ export default class MeasurementScreen extends Component {
                             this.props.navigation.navigate('login');
                         }
                     })
+                    .finally(()=>this.setState({isLoading: false}))
 
             } else {
                 Alert.alert(this.state.language.commonFields.alertTitle, screen.acceptTerms, [{ text: this.state.language.commonFields.okButton }]);
@@ -113,7 +115,7 @@ export default class MeasurementScreen extends Component {
                             <Checkbox isActive={this.state.acceptTerms} onChangeMode={() => this.setState(prev => ({ acceptTerms: !prev.acceptTerms }))} />
                         </View>
                     </View>
-                    <Button
+                    <Button disabled={this.state.isLoading}
                         style={{ marginTop: 10, marginBottom: 20, alignSelf: 'center', backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }}
                         onPress={() => this.submit()}>
                         <Text style={{ fontSize: 18, color: 'white' }}>{screen?.submitButton}</Text>

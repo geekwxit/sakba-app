@@ -134,6 +134,10 @@ export const strings = new LocalizedStrings({
         },
         confirmScreen: {
             screenTitle: "Checkout",
+            paymentSuccess1: "Payment ",
+            paymentSuccess2: "Successful",
+            paymentConfirmMsg1: 'Thank you for your order.',
+            paymentConfirmMsg2: 'Your order number.',
             success1: "Order",
             success2: "Successful",
             pEmail: "Enter your email here...",
@@ -354,6 +358,10 @@ export const strings = new LocalizedStrings({
         },
         confirmScreen: {
             screenTitle: "خروج",
+            paymentSuccess1: "الدفع ",
+            paymentSuccess2: "بنجاح",
+            paymentConfirmMsg1: ' شكرا على طلبيتك',
+            paymentConfirmMsg2: ' رقم طلبك:',
             success1: "تم الطلب",
             success2: "بنجاح",
             pEmail: "اكتب ايميلك",

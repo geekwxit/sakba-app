@@ -19,6 +19,7 @@ import MeasurementScreen from "./src/MeasurementScreen";
 import SampleMeasurement from "./src/SampleMeasurementScreen";
 import FabricsAndProducts from "./src/FabricsAndProducts";
 import SingleProduct from "./src/SingleProduct";
+import PaymentSuccess from "./src/PaymentSuccess";
 
 const AppNavigator = createStackNavigator(
   {
@@ -37,7 +38,8 @@ const AppNavigator = createStackNavigator(
     write_measure: MeasurementScreen,
     sample_measure: SampleMeasurement,
     fabrics_and_products: FabricsAndProducts,
-    single_product: SingleProduct
+    single_product: SingleProduct,
+    payment_success: PaymentSuccess
   },
   {
     initialRouteName: 'login',
