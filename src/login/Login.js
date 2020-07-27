@@ -121,6 +121,7 @@ export default class Login extends Component {
                 this.setState({ language: language });
                 strings.setLanguage(language);
                 this.setState({ page: strings.login });
+                this.setImage();
             }
         }
     }
@@ -183,6 +184,7 @@ export default class Login extends Component {
         let screen = this.state.page;
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
+        console.log(this.state.logo)
         // alert("LOGO: " + this.state.logo.backgroundImage)
         if (!this.state.logoLoaded) {
             return (
@@ -197,99 +199,105 @@ export default class Login extends Component {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View keyboardShouldPersistTaps={'always'} style={{ flex: 1, borderColor: '#0451A5', borderRadius: 8 }}>
+                <ScrollView>
                     <AppLogo source={this.state.logo} logoLoaded={this.state.logoLoaded} height={this.state.imageHeight} />
-                    <ImageBackground keyboardShouldPersistTaps={'always'} source={{ uri: this.state.logo.backgroundImage }}
-                        style={{ flex: 1, position: 'absolute', bottom: -20, borderRadius: 10, resizeMode: 'contain' }} >
-                        <Content keyboardShouldPersistTaps={'always'} showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-                            <View style={{ marginVertical: 10 }} >
-                                <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 40 }}>
-                                    <View>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.enterMobile}</Text>
-                                    </View>
-                                    <Form>
-                                        <Item style={{ marginLeft: 0, marginTop: 10, height: 40, width: width - 80, backgroundColor: '#d1e2ff', borderRadius: 5 }}>
-                                            {!strings.isRTL ?
-                                                <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} /> : null}
-                                            <TextInput selectionColor={'rgba(4,101,227,0.44)'}
-                                                style={{ textAlign: strings.isRTL ? 'right' : 'left', width: '80%', height: 50, fontSize: 15 }}
-                                                keyboardType='numeric'
-                                                value={this.state.mobileNo}
-                                                onChangeText={(text) => this.setState({ mobileNo: text })}
-                                                maxLength={9}
-                                            />
-                                            {strings.isRTL ?
-                                                <View style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Image style={{ width: 20, height: 25, marginHorizontal: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />
-                                                </View>
-                                                : null}
-                                        </Item>
-                                    </Form>
-                                    <View style={{ marginTop: 15 }}>
-                                        <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center' }}
-                                            onPress={() => this.submitForm()}>
-                                            <Text style={{ fontSize: 18, color: 'white' }}>{screen.submitButton}</Text>
-                                        </Button>
-                                    </View>
-                                </View>
-                                <View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.or}</Text>
-                                    </View>
-                                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                        <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', }}
-                                            onPress={() => this.props.navigation.navigate('sample_measure', { language: strings, })}>
-                                            <Text style={{ fontSize: 18, color: 'white' }}>{screen.sendSampleButton}</Text>
-                                        </Button>
-                                        <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', marginTop: 15 }}
-                                            onPress={() => this.props.navigation.navigate('write_measure', { language: strings })}>
-                                            <Text style={{ fontSize: 18, color: 'white' }}>{screen.writeMeasurementButton}</Text>
-                                        </Button>
-                                        <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', marginTop: 15 }}
-                                            onPress={() => {
-                                                let { shopTitle, fabricsLabel, productsLabel } = strings.fabricScreen;
-                                                this.props.navigation.navigate('fabrics_and_products', {
-                                                    language: strings, measurement: 0,
-                                                    noOfPieces: 0, mobileNo: 0,
-                                                    inHomeCount: 0, outsideCount: 0,
-                                                    isCountNeeded: false,
-                                                    productsOnly: false, measurementDone: false,
-                                                    fabricsEnabled: true, productsEnabled: true, shopTitle,
-                                                    fabricsLabel, productsLabel, mustBuyProduct: true
-                                                })
-                                            }}>
-                                            <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>
-                                        </Button>
-                                        <View style={{ marginVertical: 10, alignSelf: 'center', flexDirection: 'row', }}>
-                                            <Text style={{ fontSize: 15 }}>Change language to : </Text>
-                                            <TouchableOpacity onPress={() => this._onLanguageChange('en')}>
-                                                <Text style={{ color: this.state.language == 'en' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>English  </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => this._onLanguageChange('ar')}>
-                                                {/**Language Arabic - العربية**/}
-                                                <Text style={{ color: this.state.language == 'ar' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>العربية</Text>
-                                            </TouchableOpacity>
-                                        </View>
 
+                    <ImageBackground keyboardShouldPersistTaps={'always'} source={{ uri: this.state.logo.backgroundImage }}
+                        style={{ flex: 3, borderRadius: 10, resizeMode: 'cover' }} >
+                        
+                            <Content keyboardShouldPersistTaps={'always'} showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+                                <View style={{ marginVertical: 10 }} >
+                                    <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 40 }}>
+                                        <View>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.enterMobile}</Text>
+                                        </View>
+                                        <Form>
+                                            <Item style={{ marginLeft: 0, marginTop: 10, height: 40, width: width - 80, backgroundColor: '#d1e2ff', borderRadius: 5 }}>
+                                                {!strings.isRTL ?
+                                                    <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} /> : null}
+                                                <TextInput selectionColor={'rgba(4,101,227,0.44)'}
+                                                    style={{ textAlign: strings.isRTL ? 'right' : 'left', width: '80%', height: 50, fontSize: 15 }}
+                                                    keyboardType='numeric'
+                                                    value={this.state.mobileNo}
+                                                    onChangeText={(text) => this.setState({ mobileNo: text })}
+                                                    maxLength={9}
+                                                />
+                                                {strings.isRTL ?
+                                                    <View style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Image style={{ width: 20, height: 25, marginHorizontal: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />
+                                                    </View>
+                                                    : null}
+                                            </Item>
+                                        </Form>
+                                        <View style={{ marginTop: 15 }}>
+                                            <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center' }}
+                                                onPress={() => this.submitForm()}>
+                                                <Text style={{ fontSize: 18, color: 'white' }}>{screen.submitButton}</Text>
+                                            </Button>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
+                                            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.or}</Text>
+                                        </View>
+                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                            <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', }}
+                                                onPress={() => this.props.navigation.navigate('sample_measure', { language: strings, })}>
+                                                <Text style={{ fontSize: 18, color: 'white' }}>{screen.sendSampleButton}</Text>
+                                            </Button>
+                                            <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', marginTop: 15 }}
+                                                onPress={() => this.props.navigation.navigate('write_measure', { language: strings })}>
+                                                <Text style={{ fontSize: 18, color: 'white' }}>{screen.writeMeasurementButton}</Text>
+                                            </Button>
+                                            <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', marginTop: 15 }}
+                                                onPress={() => {
+                                                    let { shopTitle, fabricsLabel, productsLabel } = strings.fabricScreen;
+                                                    this.props.navigation.navigate('fabrics_and_products', {
+                                                        language: strings, measurement: 0,
+                                                        noOfPieces: 0, mobileNo: 0,
+                                                        inHomeCount: 0, outsideCount: 0,
+                                                        isCountNeeded: false,
+                                                        productsOnly: false, measurementDone: false,
+                                                        fabricsEnabled: true, productsEnabled: true, shopTitle,
+                                                        fabricsLabel, productsLabel, mustBuyProduct: true
+                                                    })
+                                                }}>
+                                                <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>
+                                            </Button>
+                                            <View style={{ marginVertical: 10, alignSelf: 'center', flexDirection: 'row', }}>
+                                                <Text style={{ fontSize: 15 }}>Change language to : </Text>
+                                                <TouchableOpacity onPress={() => this._onLanguageChange('en')}>
+                                                    <Text style={{ color: this.state.language == 'en' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>English  </Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={() => this._onLanguageChange('ar')}>
+                                                    {/**Language Arabic - العربية**/}
+                                                    <Text style={{ color: this.state.language == 'ar' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>العربية</Text>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                        </View>
+                                    </View>
+                                    <View style={{ width: width - 80, flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10, alignSelf: 'center' }}>
+                                        <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/whatsapp_blue.png')} />
+                                        <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/pinwhite.png')} />
+                                        <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/pinwhite.png')} />
+                                        <Icon label={screen.callUs} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/b2t.png')} />
                                     </View>
                                 </View>
-                                <View style={{ width: width - 80, flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 10, alignSelf: 'center' }}>
-                                    <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/whatsapp_blue.png')} />
-                                    <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/LocationICon.png')} />
-                                    <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/LocationICon.png')} />
-                                    <Icon label={screen.callUs} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/blue_call.png')} />
-                                </View>
-                            </View>
-                        </Content>
+                            </Content>
+                       
                     </ImageBackground>
 
+                    </ScrollView>
+
                 </View>
-            </SafeAreaView >
+            </SafeAreaView>
         );
     }
 }
 
 const Icon = ({ link, strings, screen, path, label }) => (
-    <View style={{borderWidth:0.1, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ borderWidth: 0.1, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <TouchableOpacity onPress={() => {
             Linking.canOpenURL(link)
                 .then(supported => {
@@ -310,13 +318,13 @@ const Icon = ({ link, strings, screen, path, label }) => (
 )
 
 function AppLogo({ logoLoaded, height, source }) {
-    const [marginTop, setMarginTop] = useState(height * .20);
+    const [marginTop, setMarginTop] = useState(height * .60);
     return (
-        <View>
+        <View style={{ flex: 2 }}>
             {logoLoaded ?
-                <ImageProgress style={{ height, resizeMode: 'contain', maxHeight: 300, width: width }}
+                <ImageProgress style={{ height, resizeMode: 'contain', width: width }}
                     source={source}
-                    onLoad={() => setMarginTop(10)}
+                    // onLoad={() => setMarginTop(10)}
                     indicator={ProgressCircle}
                     indicatorProps={{
                         size: 50,
@@ -334,96 +342,3 @@ function AppLogo({ logoLoaded, height, source }) {
     )
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: 40 }}>
-<View>
-    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.enterMobile}</Text>
-</View>
-<Form>
-    <Item style={{ marginLeft: 0, marginTop: 10, height: 40, width: width - 80, backgroundColor: '#d1e2ff', borderRadius: 5 }}>
-        {!strings.isRTL ?
-            <Image style={{ width: 30, height: 25, marginLeft: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} /> : null}
-        <TextInput selectionColor={'rgba(4,101,227,0.44)'}
-            style={{ textAlign: strings.isRTL ? 'right' : 'left', width: '80%', height: 50, fontSize: 15 }}
-            keyboardType='numeric'
-            value={this.state.mobileNo}
-            onChangeText={(text) => this.setState({ mobileNo: text })}
-            maxLength={9}
-        />
-        {strings.isRTL ?
-            <View style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}>
-                <Image style={{ width: 20, height: 25, marginHorizontal: 5 }} source={require('../../img/basic1-035_mobile_phone-512.png')} />
-            </View>
-            : null}
-    </Item>
-</Form>
-<View style={{ marginTop: 15 }}>
-    <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center' }}
-        onPress={() => this.submitForm()}>
-        <Text style={{ fontSize: 18, color: 'white' }}>{screen.submitButton}</Text>
-    </Button>
-</View>
-</View>
-<View>
-<View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
-    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.or}</Text>
-</View>
-<View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-    <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center', }}
-        onPress={() => this.props.navigation.navigate('sample_measure', { language: strings, })}>
-        <Text style={{ fontSize: 18, color: 'white' }}>{screen.sendSampleButton}</Text>
-    </Button>
-    <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center', marginTop: 15 }}
-        onPress={() => this.props.navigation.navigate('write_measure', { language: strings })}>
-        <Text style={{ fontSize: 18, color: 'white' }}>{screen.writeMeasurementButton}</Text>
-    </Button>
-    <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center', marginTop: 15 }}
-        onPress={() => {
-            let { shopTitle, fabricsLabel, productsLabel } = strings.fabricScreen;
-            this.props.navigation.navigate('fabrics_and_products', {
-                language: strings, measurement: 0,
-                noOfPieces: 0, mobileNo: 0,
-                inHomeCount: 0, outsideCount: 0,
-                isCountNeeded: false,
-                productsOnly: false, measurementDone: false,
-                fabricsEnabled: true, productsEnabled: true, shopTitle,
-                fabricsLabel, productsLabel
-            })
-        }}>
-        <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>
-    </Button>
-    <View style={{ width: width - 80, flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 15 }}>
-        <Icon label={screen.textUs} screen={screen} strings={strings} link={'https://wa.me/96522252585'} path={require('../../img/login_icons/blue_whatsapp.jpg')} />
-        <Icon label={strings.visitToShopPage.qurain} screen={screen} strings={strings} link={'https://goo.gl/maps/M4YDSRUrgARVrmoQ9'} path={require('../../img/login_icons/blue_maps-icon.png')} />
-        <Icon label={strings.visitToShopPage.awqaf} screen={screen} strings={strings} link={'https://goo.gl/maps/QG8Ma8ciQfQJxNnZ9'} path={require('../../img/login_icons/blue_maps-icon.png')} />
-        <Icon label={screen.callUs} screen={screen} strings={strings} link={'tel:+96522252585'} path={require('../../img/login_icons/blue_call.png')} />
-    </View>
-</View>
-</View>
-<View style={{ marginTop: 15, alignSelf: 'center', flexDirection: 'row', }}>
-<Text style={{ fontSize: 15 }}>Change language to : </Text>
-<TouchableOpacity onPress={() => this._onLanguageChange('en')}>
-    <Text style={{ color: this.state.language == 'en' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>English  </Text>
-</TouchableOpacity>
-<TouchableOpacity onPress={() => this._onLanguageChange('ar')}>
-    // {/**Language Arabic - العربية**/}
-//     <Text style={{ color: this.state.language == 'ar' ? '#0451A5' : '#a2a2a2', fontSize: 15 }}>العربية</Text>
-// </TouchableOpacity>
-// </View> */}

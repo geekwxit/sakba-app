@@ -54,7 +54,7 @@ export default class PaymentSuccesss extends Component<Props>{
                 .then(response => response.data)
                 .then(response => {
                     if (!response.error) {
-                        Alert.alert(this.state.language.commonFields.alertTitle, screen.alertOnEmailSent, [{ text: this.state.language.commonFields.okButton }]);
+                        Alert.alert(this.state.language.commonFields.alertTitle, screen.paymentEmailSuccess, [{ text: this.state.language.commonFields.okButton }]);
                     }
                     else {
                         Alert.alert(this.state.language.commonFields.alertTitle, screen.regularError, [{ text: this.state.language.commonFields.okButton }]);

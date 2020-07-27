@@ -148,7 +148,8 @@ export const strings = new LocalizedStrings({
             alertOnEmailSent: "Our team will contact you for the payment link. Please check your junk/spam email.",
             regularError: "Something Went Wrong!",
             emailError: "Invalid email address!",
-            reviewError: "Please enter an email and send to continue!"
+            reviewError: "Please enter an email and send to continue!",
+            paymentEmailSuccess: "Email sent successfully"
         },
         visitToShopPage: {
             first: "Aswaq Al Qurain",
@@ -372,7 +373,8 @@ export const strings = new LocalizedStrings({
             alertOnEmailSent: "راح نكلمك ونرسل لك رابط الدفع يرجى التحقق من البريد الإلكتروني غير الهام / البريد العشوائي الخاص بك",
             regularError: "في شي غلط",
             emailError: "الايميل غلط",
-            reviewError: "اكتب ايميلك واضغط ارسال"
+            reviewError: "اكتب ايميلك واضغط ارسال",
+            paymentEmailSuccess:"تم إرسال البريد الإلكتروني بنجاح"
         },
         visitToShopPage: {
             first: "أسواق القرين",
