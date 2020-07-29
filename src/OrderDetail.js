@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, StyleSheet, ScrollView, SafeAreaView, BackHandler,
+import { View, Text, Image, Dimensions, StyleSheet, ScrollView, SafeAreaView,
   TouchableOpacity, TouchableHighlight, Alert, TextInput } from 'react-native';
 import { Button, Container, Content, Item } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 import PayPal from 'react-native-paypal-wrapper';
 import renderIf from 'render-if';
 import axios from './axios/AxiosInstance';
+import {strings} from "../locales/Language";
 
 const { height, width } = Dimensions.get('window');
 const WIDTH = width / 2 - 20;
@@ -101,29 +102,29 @@ export default class OrderDetail extends Component<props>{
       orderID: this.state.orderId,
       deliveryDate: deliveryDate
     };
-    this.sendApiRequest(data).then(() => {
-      this.props.navigation.navigate('order_confirm', params)
+    this.sendApiRequest(data).then((response) => {
+      if(response.error==false){
+        this.props.navigation.navigate('order_confirm', params)
+      } else {
+        Alert.alert(this.state.language.commonFields.alertTitle, strings.confirmScreen.regularError, [{ text: this.state.language.commonFields.okButton }]);
+      }
       this.setState({ mail_Button: false })
     })
   }
 
   async sendApiRequest(data) {
-    var screen = this.state.language.orderDetail;
-    //this.setState({ isLoading: true })
-    //try {
-    //Assign the promise unresolved first then get the data using the json method.
-    await axios.post('requestPayment.php', data)
-      .then(response => { return response.data })
-      .then(response => {
-        console.log("sender", data);
-        console.log("receiver", response);
-      })
-      .catch(e => {
+      var screen = this.state.language.orderDetail;
+      try {
+        var response = await axios.post('requestPayment.php', data);
+        response = response.data;
+        return response;
+      } catch (e) {
         this.setState({ isLoading: false, mail_Button: false });
         Alert.alert(screen.alertTitle, screen.error, [
           { text: screen.alertButton, onPress: () => { this.setState({ isLoading: false }); this.props.navigation.dispatch(resetAction) } }
-        ])
-      });
+        ]);
+        return {error: true};
+      }
   }
 
   submitForm(total, noOfPieces, deliveryDate) {

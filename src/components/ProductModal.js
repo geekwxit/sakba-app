@@ -42,7 +42,7 @@ const ProductModal = ({language, onEnterMeasurement, strings, patternName, color
                             <View style={{alignItems: 'center', justifyContent: 'center'}}>
                                 <View style={{alignItems : 'center', justifyContent: 'center'}}>
                                     {selected.pattern && selected.color?
-                                        <Image style={{width: width*0.8, height: 350, resizeMode: 'stretch'}} source={{uri: selected.color.path}} /> :
+                                        <Image style={{width: width*0.8, height: width*.8, resizeMode: 'stretch'}} source={{uri: selected.color.path}} /> :
                                         <Text style={{fontSize:20, color:'rgba(255,40,67,0.67)'}}>{strings.noColorPattern}</Text>
                                     }
                                 </View>

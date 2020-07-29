@@ -259,7 +259,8 @@ export default class Login extends Component {
                                                         isCountNeeded: false,
                                                         productsOnly: false, measurementDone: false,
                                                         fabricsEnabled: true, productsEnabled: true, shopTitle,
-                                                        fabricsLabel, productsLabel, mustBuyProduct: true
+                                                        fabricsLabel, productsLabel, mustBuyProduct: true,
+                                                        withoutLogin: true
                                                     })
                                                 }}>
                                                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.buyButton}</Text>

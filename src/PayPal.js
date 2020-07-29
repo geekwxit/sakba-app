@@ -46,7 +46,7 @@ export default class PayPal extends React.Component {
     }
 
     componentWillUnmount() {
-        BackHandler.removeEventListener(this.handleBackPress);
+        this.handleBackPress.remove();
     }
 
     paymentStatus(data){

@@ -8,6 +8,9 @@ import Store from "./CommonStore/Store";
 import axios, { baseURL } from "./axios/AxiosInstance";
 import ImageProgress from 'react-native-image-progress';
 import ProgressCircle from 'react-native-progress/Circle';
+import {strings} from "../locales/Language";
+const emailRegx=/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const phoneRegx=/^[0-9]*$/
 
 const { width, height } = Dimensions.get('window');
 const address = {
@@ -54,6 +57,7 @@ export default class DeliveryOptions extends Component<Props>{
             logoLoaded: false,
             sizeDone: false,
             imageHeight: 50,
+            withoutLogin: props.navigation.getParam('withoutLogin', false)
         };
     }
     componentDidMount() {
@@ -97,9 +101,7 @@ export default class DeliveryOptions extends Component<Props>{
         const sampleAddress = { s_area, s_block, s_street, s_jada, s_house, s_floor, s_apartment, s_extra_number, }
         const pickupAddress = { p_area, p_block, p_street, p_jada, p_house, p_floor, p_apartment, p_extra_number, }
         const deliveryAddress = { d_area, d_block, d_street, d_jada, d_house, d_floor, d_apartment, d_extra_number, }
-        // const deliveryOptions = { pickup_type: pickup?'pickup':'send', o_pickup_charge: pickup?3:0,
-        //     delivery_type: delivery?'home':'self', o_delivery_charge: delivery?3:0,
-        //     sample_type: sample?'pickup':'send', o_sample_charge: sample?3:0};
+
         const deliveryOptions = {
             pickup_type: pickup ? 'pickup' : 'send', o_pickup_charge: pickup ? parseFloat(pickupCharges) : 0,
             delivery_type: delivery ? 'home' : 'self', o_delivery_charge: delivery ? parseFloat(deliveryCharges) : 0,
@@ -122,7 +124,7 @@ export default class DeliveryOptions extends Component<Props>{
             samplePickupCharge: deliveryOptions.o_sample_charge,
             customerName: customerName,
             measurementDate: measurementDate,
-            mobileNo: this.state.mobileNo,
+            mobileNo: this.state.mobileNo || phone,
             emailID: emailAddr,
         }
         console.log("ret", others);
@@ -158,6 +160,7 @@ export default class DeliveryOptions extends Component<Props>{
         }
 
         const data = {
+            login_status: this.state.withoutLogin?1:0,
             name, email, phone,
             o_pieces: this.state.noOfPieces,
             o_total: subTotal +
@@ -165,20 +168,33 @@ export default class DeliveryOptions extends Component<Props>{
                 deliveryOptions.o_delivery_charge +
                 deliveryOptions.o_sample_charge +
                 cartTotal,
-            o_number: this.state.mobileNo,
+            o_number: this.state.mobileNo || phone,
             o_subtotal: subTotal, fabrics,
             products, remarks: this.state.remarks,
             d_store_name: !delivery ? (!parseInt(this.state.pickupShop) ? "Awqaf Complex" : "Qurain Shop") : "",
             ...deliveryOptions, ...addresses
         }
+        var alertMsg = "";
         if (pickup || delivery || sample) {
             validated = (pickup ? !this.validateFields(p_area, p_block, p_house, p_street) : true) &&
                 (delivery ? !this.validateFields(d_area, d_block, d_house, d_street) : true) &&
                 (sample ? !this.validateFields(s_area, s_block, s_house, s_street) : true);
-            !validated && Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{ text: this.state.language.commonFields.okButton }]);
+            alertMsg = screen.detailsRequired;
+            // !validated && Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{ text: this.state.language.commonFields.okButton }]);
         } else if (!this.state.isCountNeeded && this.validateFields(name, email, phone)) {
+            alertMsg = screen.detailsRequired;
+            validated = false;
+        } else if (!this.state.isCountNeeded && !emailRegx.test(email.trim())) {
+            alertMsg = strings.confirmScreen.emailError;
+            validated = false;
+        } else if (!this.state.isCountNeeded && String(phone).trim().length<8) {
+            alertMsg = strings.login.validation.lengthError;
+            validated = false;
+        } else if (!this.state.isCountNeeded && !phoneRegx.test(phone)) {
+            alertMsg = strings.login.validation.others + phone;
             validated = false;
         } else {
+            alertMsg = ""
             validated = true;
         }
         if (validated) {
@@ -201,7 +217,8 @@ export default class DeliveryOptions extends Component<Props>{
                     }
                 })
         } else {
-            Alert.alert(this.state.language.commonFields.alertTitle, screen.detailsRequired, [{ text: this.state.language.commonFields.okButton }]);
+
+            Alert.alert(this.state.language.commonFields.alertTitle, alertMsg, [{ text: this.state.language.commonFields.okButton }]);
         }
     }
 
@@ -238,10 +255,6 @@ export default class DeliveryOptions extends Component<Props>{
             this.setState({ sizeDone: true, imageHeight: 50 })
         });
     }
-
-
-
-
 
     render() {
         Text.defaultProps = Text.defaultProps || {};
@@ -290,10 +303,10 @@ export default class DeliveryOptions extends Component<Props>{
                                     fontSize: 20,
                                     alignSelf: isRTL ? 'flex-end' : 'flex-start',
                                     textAlign: isRTL ? 'right' : 'auto'
-                                }}>{screen.deliveryLabel} </Text>
+                                }}>{screen.customerInputLabel} </Text>
                                 <CustomInput label={screen.name} isRTL={isRTL} onChangeText={(name) => this.setState({ name })} />
-                                <CustomInput label={screen.phone} isRTL={isRTL} onChangeText={(phone) => this.setState({ phone })} />
-                                <CustomInput label={screen.email} isRTL={isRTL} onChangeText={(email) => this.setState({ email })} />
+                                <CustomInput label={screen.phone} keyboardType={'number-pad'} isRTL={isRTL} onChangeText={(phone) => this.setState({ phone })} />
+                                <CustomInput label={screen.email} keyboardType={'email-address'} isRTL={isRTL} onChangeText={(email) => this.setState({ email })} />
                             </View>
                         }
                         <AddressOption

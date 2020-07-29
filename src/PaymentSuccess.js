@@ -6,6 +6,7 @@ const { width, height } = Dimensions.get('window');
 const sendIconBlue = require('../img/send_icon_blue.png');
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from "./axios/AxiosInstance";
+import {strings} from "../locales/Language";
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -45,12 +46,17 @@ export default class PaymentSuccesss extends Component<Props>{
         });
     }
 
+    componentWillUnmount() {
+        this.backhandler.remove();
+    }
+
     async sendMail() {
         var screen = this.state.language.confirmScreen;
         var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        const lang = strings.getLanguage();
         if (this.state.email.match(regex)) {
             this.setState({ mail_Button: true });
-            await axios.post('../mailtouser.php', { email: this.state.email, lang: this.state.language, Orderid: this.state.orderID })
+            await axios.post('../mailtouser.php', { email: this.state.email, lang, Orderid: this.state.orderID })
                 .then(response => response.data)
                 .then(response => {
                     if (!response.error) {

@@ -65,7 +65,8 @@ export default class FabricsAndProducts extends Component<Props>{
       tabHead: [
           {name: 'Fabrics', active: false, enabled: true},
         {name: 'Products', active: false, enabled:true}
-        ]
+        ],
+      withoutLogin: props.navigation.getParam('withoutLogin', false)
     };
     this.showCart = this.showCart.bind(this);
     this.doCheckout = this.doCheckout.bind(this);
@@ -125,7 +126,7 @@ export default class FabricsAndProducts extends Component<Props>{
 
   doCheckout(){
     // var screen = this.state.language.fabricScreen;
-    const {inHomeCount, outsideCount, isCountNeeded, noOfPieces, language:{fabricScreen: screen}} = this.state;
+    const {inHomeCount, outsideCount, isCountNeeded, noOfPieces, language:{fabricScreen: screen}, withoutLogin} = this.state;
     const mustBuyProduct = this.props.navigation.getParam('mustBuyProduct', null);
     const mobileNo    = this.props.navigation.getParam('mobileNo', null);
     const customerName= this.props.navigation.getParam('customerName', null);
@@ -134,7 +135,7 @@ export default class FabricsAndProducts extends Component<Props>{
       language: this.state.language, inHomeCount, outsideCount, mobileNo, noOfPieces,
       customerName, fabrics: this.state.brands, cart,
       measurementDone: this.props.navigation.getParam('measurementDone'),
-      measurement: this.state.measurement, isCountNeeded: isCountNeeded,
+      measurement: this.state.measurement, isCountNeeded: isCountNeeded, withoutLogin
     };
 
     this.setState({cartVisible : false});

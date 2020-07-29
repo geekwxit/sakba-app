@@ -62,10 +62,6 @@ export default class ReviewOrder extends Component<props>{
       fabricPickupCharge:0, deliveryCharge:0, samplePickupCharge:0,
       brands:[], deliveryOptions: {isPickingSample:false,isDelivering:false,isPickingFabric:false}
     };
-    this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      this.props.navigation.dispatch(resetAction);
-      return true;
-    });
   }
 
   async getBrands(){
@@ -73,6 +69,10 @@ export default class ReviewOrder extends Component<props>{
   }
 
   componentDidMount() {
+    this.backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.props.navigation.dispatch(resetAction);
+      return true;
+    });
     this.setState({language: this.props.navigation.getParam('language')})
     this.getBrands();
     this.getOrder()
@@ -80,6 +80,10 @@ export default class ReviewOrder extends Component<props>{
           this.createTable();
           this.setState({isLoading:false})
         });
+  }
+
+  componentWillUnmount() {
+    this.backhandler.remove();
   }
 
   async getOrder(){
