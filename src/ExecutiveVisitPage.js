@@ -29,36 +29,22 @@ export default class ExecutiveVisitPage extends Component<Props>{
     this.setState({ language: lang, page: lang.requestExecutiveVisit });
   }
 
-  request() {
+  async request() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
     const { name, number, area, block, street, jada, house, floor, apartment, extra_Number } = this.state
-    // var time = this.state.selectedTime;
-    // var date = this.state.selectedDate;
 
     var address = area + block + street + jada + house + floor + apartment + extra_Number
 
     if (name == '') {
-      this.setState({ Button_True: false })
       Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterUserName, [{ text: this.state.language.commonFields.okButton }]);
-      // alert(this.state.page.enterUserName)
     } else if (number == '') {
-      this.setState({ Button_True: false })
       Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.enterNum, [{ text: this.state.language.commonFields.okButton }]);
-      // alert(this.state.page.enterNum)
     } else if (address == '') {
-      this.setState({ Button_True: false })
       Alert.alert(this.state.language.commonFields.alertTitle, this.state.page.addressField, [{ text: this.state.language.commonFields.okButton }]);
-      // alert(this.state.page.addressField)
-    }
-    // else if (time=='Select Time'){
-    //   alert('Pls Select the Date')
-    // }else if (date=='Pick a Date'){
-    //   alert('Pls select time ')
-    // }
-    else {
-      URL = 'add-visit.php'
-      axios.post(URL, {
+    } else {
+      this.setState({ Button_True: true })
+      await axios.post('add-visit.php', {
         name: name,
         old_number: number,
         area, street, block, jada, house, floor, apartment,
@@ -66,19 +52,15 @@ export default class ExecutiveVisitPage extends Component<Props>{
       })
         .then((response) => response.data)
         .then((responseData) => {
-          //console.warn('tyuhrtyrtytyrtyyryeyrrr', responseData);
           if (responseData.mssg == 'Data Added') {
             Alert.alert(this.state.page.alert_SendExec, this.state.page.sendExec, [{ text: this.state.language.commonFields.okButton }]);
-            // alert(this.state.page.sendExec)
             this.props.navigation.navigate('login');
-            this.setState({ Button_True: false })
           }
         })
         .catch((error) => {
           console.log("Error");
           console.warn('Error');
-        });
-
+        }).finally(()=>this.setState({ Button_True: false }));
     }
   }
 
@@ -216,7 +198,7 @@ export default class ExecutiveVisitPage extends Component<Props>{
               </Item> */}
               </Form>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                <Button disabled={this.state.Button_True} style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={() => { this.setState({ Button_True: true }), this.request() }}>
+                <Button disabled={this.state.Button_True} style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={()=>this.request()}>
                   <Text style={{ fontSize: 20, color: 'white' }}>{screen.requestButton}</Text>
                 </Button>
               </View>
