@@ -14,6 +14,7 @@ import { Language } from '../components/ChangeLanguage';
 import { B } from "../components/TextStyles";
 import Store from "../CommonStore/Store";
 import { Reducer } from 'react-native-router-flux';
+import {isIos} from "../../App";
 
 const { width, height } = Dimensions.get('window');
 
@@ -190,7 +191,7 @@ export default class Login extends Component {
             return (
                 <SafeAreaView style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                        <ActivityIndicator size={40} color={'#0451A5'} />
+                        <ActivityIndicator size={isIos?'large':40} color={'#0451A5'} />
                     </View>
                 </SafeAreaView>
             )
