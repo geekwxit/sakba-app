@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { Platform } from 'react-native';
 import SplashScreen from './src/SplashScreen';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
@@ -78,3 +78,5 @@ export default class App extends Component<Props> {
     }
   }
 }
+
+export const isIos = Platform.OS == 'ios';

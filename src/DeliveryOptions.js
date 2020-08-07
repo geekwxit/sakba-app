@@ -9,6 +9,7 @@ import axios, { baseURL } from "./axios/AxiosInstance";
 import ImageProgress from 'react-native-image-progress';
 import ProgressCircle from 'react-native-progress/Circle';
 import {strings} from "../locales/Language";
+import {isIos} from "../App";
 const emailRegx=/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const phoneRegx=/^[0-9]*$/
 
@@ -265,7 +266,7 @@ export default class DeliveryOptions extends Component<Props>{
             return (
                 <SafeAreaView style={{ flex: 1 }} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
-                        <ActivityIndicator size={40} color={'#0451A5'} />
+                        <ActivityIndicator size={isIos?'large':40} color={'#0451A5'} />
                     </View>
                 </SafeAreaView>
             )
