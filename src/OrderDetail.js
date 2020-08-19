@@ -3,8 +3,6 @@ import { View, Text, Image, Dimensions, StyleSheet, ScrollView, SafeAreaView,
   TouchableOpacity, TouchableHighlight, Alert, TextInput } from 'react-native';
 import { Button, Container, Content, Item } from 'native-base';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
-import PayPal from 'react-native-paypal-wrapper';
-import renderIf from 'render-if';
 import axios from './axios/AxiosInstance';
 import {strings} from "../locales/Language";
 
@@ -15,9 +13,9 @@ const WIDTH = width / 2 - 20;
 export default class OrderDetail extends Component<props>{
   cart = [];
   static navigationOptions = ({ navigation }) => {
-    others = navigation.getParam('language').isRTL ?
-      { headerRight: <Text style={{ color: 'white', fontSize: 20 % (width * height), padding: 15 }}>{navigation.getParam('language').orderDetail.screenTitle}</Text> } :
-      { title: navigation.getParam('language').orderDetail.screenTitle }
+    var others = navigation.getParam('language').isRTL ?
+      { headerRight: <Text style={{ color: 'white', fontSize: 20 % (width * height), padding: 15 }}>{navigation.getParam('language').orderDetail.title}</Text> } :
+      { title: navigation.getParam('language').orderDetail.title }
     return {
       headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
       headerTintColor: '#fff',
@@ -281,7 +279,7 @@ export default class OrderDetail extends Component<props>{
     return (
       <Container>
         <Content>
-          <SafeAreaView>
+          <SafeAreaView style={{backgroundColor:'#fff'}}>
             <ScrollView keyboardShouldPersistTaps={'handled'} >
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
                 <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
@@ -400,14 +398,12 @@ export default class OrderDetail extends Component<props>{
               {delivery_date && <View>
                 <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.expected} {delivery_date}</Text>
               </View>}
-              {renderIf(this.state.page == 'OrderDetail')(
                 <View style={{ marginTop: 20, marginBottom: 20, alignSelf: 'center' }}>
                   <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center' }}
                     onPress={() => this.submitForm(total, noOfPieces, delivery_date)}>
                     <Text style={{ fontSize: 18, color: 'white' }}>{screen.paypal}</Text>
                   </Button>
                 </View>
-              )}
               <View style={{ marginTop: 10, marginBottom: 20, alignSelf: 'center' }}>
                 <Button disabled={this.state.mail_Button} style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 5, justifyContent: 'center' }}
                   onPress={() => { this.setState({ mail_Button: true }), this.sendDetails(total, delivery_date) }}>

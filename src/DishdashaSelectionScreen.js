@@ -4,7 +4,7 @@ import { Button, Icon } from 'native-base';
 import axios, { baseURL } from "./axios/AxiosInstance";
 import ImageProgress from 'react-native-image-progress';
 import ProgressCircle from 'react-native-progress/Circle';
-import {isIos} from "../App";
+import {isIos} from "./login/Login";
 
 const { width, height } = Dimensions.get('window');
 
@@ -157,7 +157,7 @@ export default class DishdashaSelectionScreen extends Component<Props>{
 
     if (!this.state.logoLoaded) {
       return (
-        <SafeAreaView style={{ flex: 1 }} >
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
             <ActivityIndicator size={isIos?'large':40} color={'#0451A5'} />
           </View>
@@ -166,7 +166,7 @@ export default class DishdashaSelectionScreen extends Component<Props>{
     }
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
         <ScrollView>
           <AppLogo source={this.state.logo} logoLoaded={this.state.logoLoaded} height={this.state.imageHeight} />
           {/* <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>

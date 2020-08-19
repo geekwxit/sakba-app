@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, Linking, SafeAreaView } from 'react-native';
 import { Button } from 'native-base';
 import { strings } from '../locales/Language'
 import { B } from "./components/TextStyles";
@@ -25,16 +25,14 @@ export default class VisitPage extends Component<Props>{
   requestExecutiveVisit() {
     this.props.navigation.navigate('executive_visitpage', { language: this.state.language });
   }
-  visitToShop() {
-    this.props.navigation.navigate('visit_to_shoppage', { language: this.state.language });
-  }
+
   render() {
     var screen = this.state.language.visitPage;
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
 
     return (
-      <View>
+      <SafeAreaView style={{flex:1,   backgroundColor: '#fff'}}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
           <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
         </View>
@@ -59,7 +57,7 @@ export default class VisitPage extends Component<Props>{
             </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

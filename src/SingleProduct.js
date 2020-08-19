@@ -13,15 +13,13 @@ import {
     SafeAreaView,
     ScrollView,
     TouchableOpacity, TouchableHighlight,
-    TextInput, Picker
+    TextInput,
 } from 'react-native';
 import Store from "./CommonStore/Store";
 import ImageCarousel from "./components/ImageCarousel";
-import { Dropdown } from "react-native-material-dropdown";
 import HTML from "react-native-render-html";
 import { strings } from "../locales/Language";
 
-const isIos = Platform.OS == 'ios';
 const baseURL = 'https://sakba.net/images/product/';
 
 const { width, height } = Dimensions.get('window');
@@ -106,7 +104,7 @@ export default class SingleProduct extends Component {
         //     "https://img1-image.cdnsbg.com/hashImg/a7e6ac6823.jpg_w600h300q80," +
         //     "https://cdn.shopify.com/s/files/1/0972/3844/products/FAIRFAX_46_1024x1024.jpg";}
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                 {isLoading || !productDetail ?
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <ActivityIndicator style={{ top: height * 0.4 }} color={'#0451A5'} size={'large'}
@@ -149,10 +147,6 @@ export default class SingleProduct extends Component {
                                 </View>
                             </View>
                             <Text style={{ fontSize: 14, textAlign: isRTL ? 'right' : 'left', marginTop: 5, color: '#0451A5' }}>{productDetail.product_brand}</Text>
-                            {/*{productDetail.product_sizes && <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
-                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Size: </Text>*/}
-                            {/*    <Picker />*/}
-                            {/*</View>}*/}
                             {productDetail.product_sizes &&
                                 <View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], }}>
                                     <Text style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], marginBottom: 10, fontWeight: 'bold', fontSize: 20, marginTop: 20 }}>{screen.pickSizeLabel}</Text>
@@ -194,22 +188,6 @@ export default class SingleProduct extends Component {
                                         )}
                                     />
                                 </View>}
-                            {/*{productDetail.product_colors &&*/}
-                            {/*<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', marginTop:10}}>*/}
-                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Color: </Text>*/}
-                            {/*    <View style={{width:'45%', backgroundColor:'#0451A5', borderRadius:5}}>*/}
-                            {/*    <Picker selectedValue={this.state.selectedColor}*/}
-                            {/*            onValueChange={this.selectColor} style={{color:'#fff'}} enabled={true}>*/}
-                            {/*        <Picker.Item label={'Select Color'} value={null} />*/}
-                            {/*        {productDetail.product_colors.split(',').map(item=>*/}
-                            {/*            <Picker.Item label={item} value={item} />)}*/}
-                            {/*    </Picker>*/}
-                            {/*    </View>*/}
-                            {/*<Dropdown data={productDetail.product_colors.split(',')}*/}
-                            {/*          label={'Choose color'}*/}
-                            {/*          containerStyle={{width:'50%', backgroundColor: '#0451A5', height:50}}*/}
-                            {/*/>*/}
-                            {/*</View>}*/}
                             <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>{screen.descLabel}</Text>
                             <HTML html={productDetail.product_disc}
                                 textSelectable={false}

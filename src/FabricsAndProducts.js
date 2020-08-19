@@ -8,8 +8,7 @@ import ProductsScreen from "./ProductsScreen";
 import Store from "./CommonStore/Store";
 import CartModal from "./components/CartModal";
 import {Button} from "native-base";
-
-const isIos = Platform.OS == 'ios';
+import {isIos} from "./login/Login";
 
 const { width, height } = Dimensions.get('window');
 
@@ -207,7 +206,7 @@ export default class FabricsAndProducts extends Component<Props>{
     const isRTL = this.state.language.isRTL;
     const sizeCtrl = {width: 40, height: 40}
     return (
-      <SafeAreaView style={{flex:1}}>
+      <SafeAreaView style={{flex:1, backgroundColor: '#fff'}}>
         <CartModal
             onlyProducts={!this.state.fabricsEnabled}
             // discountAmount={parseFloat(this.state.discount)}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
 import SplashScreen from './src/SplashScreen';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 
 import Login from './src/login/Login';
 import WelcomeCustomer from './src/WelcomeCustomer';
@@ -20,6 +20,7 @@ import SampleMeasurement from "./src/SampleMeasurementScreen";
 import FabricsAndProducts from "./src/FabricsAndProducts";
 import SingleProduct from "./src/SingleProduct";
 import PaymentSuccess from "./src/PaymentSuccess";
+import {createStackNavigator} from "react-navigation-stack";
 
 const AppNavigator = createStackNavigator(
   {
@@ -42,6 +43,9 @@ const AppNavigator = createStackNavigator(
     payment_success: PaymentSuccess
   },
   {
+      defaultNavigationOptions: {
+        title: ''
+      },
     initialRouteName: 'login',
     // initialRouteName: 'review',
     initialRouteParams: { selected: false }
@@ -78,5 +82,3 @@ export default class App extends Component<Props> {
     }
   }
 }
-
-export const isIos = Platform.OS == 'ios';

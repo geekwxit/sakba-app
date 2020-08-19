@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableWithoutFeedback, Picker, Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking, ScrollView } from 'react-native';
+import { TouchableWithoutFeedback, Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking, ScrollView } from 'react-native';
 import { Button } from "native-base";
 import axios from "./axios/AxiosInstance";
 
@@ -77,7 +77,7 @@ export default class MeasurementScreen extends Component {
     render() {
         let screen = this.state.language?.measurementScreen;
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                 <ScrollView keyboardShouldPersistTaps={'handled'} >
                     <View style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
                         <View style={{ flex: 1.5, height: 100 }}>

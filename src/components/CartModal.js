@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {B} from "./TextStyles";
-const isIos = Platform.OS == 'ios';
+import {isIos} from "../login/Login";
+
 const { width, height } = Dimensions.get('window');
 
 const  FabricCartItem = ({texts, isRTL, color, colorName, name, rate, quantity, price, incQuantity, decQuantity,onRemove }) =>{
@@ -192,12 +193,10 @@ const CartModal = (props) => {
                                         <View style={{
                                             borderWidth:1,
                                             borderColor:'rgba(4,90,225,0.35)',
-                                            // maxHeight:(isIos?undefined:5),
                                             backgroundColor: 'rgba(4,92,255,0.35)',
                                             flexDirection: 'row',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            // padding:(isIos?0:10)
                                         }}>
                                         </View>
                                         <View style={{

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Dimensions, ScrollView, Alert } from 'react-native';
 import { Container, Content, Form, Item, Input, Button, Icon, Textarea } from 'native-base';
-import DateTimePicker from "react-native-modal-datetime-picker";
 import axios from './axios/AxiosInstance';
 
 const { width, height } = Dimensions.get('window');
@@ -175,27 +174,6 @@ export default class ExecutiveVisitPage extends Component<Props>{
                     />
                   </Item>
                 </View>
-                { /* <Item regular style={{marginTop:15,height:40}}>
-               <Icon style={{color:'#aaa'}} name='ios-calendar' onPress={this.showDateTimePicker}/>
-                   <Text style={{marginLeft:10}}>{selectedDate}</Text>
-                  <DateTimePicker
-                    isVisible={isDateTimePickerVisible}
-                    onConfirm={(value)=>this.handleDatePicked(value)}
-                    onCancel={this.hideDateTimePicker}
-                    mode='date'
-                 />
-              </Item>
-              <Item regular style={{marginTop:15,height:40}}>
-               <Icon style={{color:'#aaa'}} name='ios-time' onPress={this.showDateTimePicker2}/>
-                   <Text style={{marginLeft:10}}>{selectedTime}</Text>
-                  <DateTimePicker
-                    isVisible={isDateTimePickerVisible2}
-                    onConfirm={(value)=>this.handleDatePicked2(value)}
-                    onCancel={this.hideDateTimePicker}
-                    is24Hour={true}
-                    mode='time'
-                 />
-              </Item> */}
               </Form>
               <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
                 <Button disabled={this.state.Button_True} style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, justifyContent: 'center' }} onPress={()=>this.request()}>

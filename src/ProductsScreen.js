@@ -9,8 +9,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { B, I, U } from "./components/TextStyles";
 import Store from "./CommonStore/Store";
 
-const isIos = Platform.OS == 'ios';
-
 const { width, height } = Dimensions.get('window');
 const baseURL = 'https://sakba.net/images/product/';
 
