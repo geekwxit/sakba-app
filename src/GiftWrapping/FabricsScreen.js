@@ -7,15 +7,13 @@ import {
     View,
     Dimensions,
     Modal,
-    TouchableWithoutFeedback, TouchableOpacity
+    TouchableWithoutFeedback, TouchableOpacity, FlatList
 } from "react-native";
-import RadioGroup from "./components/RadioGroupCustom";
-import { Button } from "native-base";
-import ProductsScreen from "./ProductsScreen";
-import ProductModal from "./components/ProductModal";
-import { strings } from "../locales/Language";
-import Store from "./CommonStore/Store";
-import DishdashaSelectionScreen from "./DishdashaSelectionScreen";
+import RadioGroup from "../components/RadioGroupCustom";
+import ProductModal from "../components/ProductModal";
+import { strings } from "../../locales/Language";
+import Store from "../CommonStore/Store";
+import {Checkbox} from "../MeasurementScreen";
 
 const { width, height } = Dimensions.get('window');
 
@@ -130,10 +128,10 @@ export default class FabricsScreen extends React.Component {
                         onEnterMeasurement={(m) => main.setState({ measurement: m })}
                         close={() => this.setState({ productBox: false })} />
                     {/*<DishdashaSelectionScreen screen={language.customerAgree}/>*/}
-                    {(this.state.brands && this.state.brands.length) ?
-                        <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 40 }}>
+                    {(this.state.brands && this.state.brands.length)?
+                        <View style={{ flex: 1, flexDirection: 'column'}}>
                             {this.state.shouldBrandShow ?
-                                <View>
+                                <View style={{marginHorizontal:40}}>
                                     <View style={{ marginTop: 20, marginBottom: 10 }}>
                                         <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.chooseBrand}</Text>
                                     </View>
@@ -153,7 +151,7 @@ export default class FabricsScreen extends React.Component {
                                 </View>
                                 : null}
                             {this.state.shouldPatternShow ?
-                                <View>
+                                <View style={{marginHorizontal:40}}>
                                     <View style={{ marginTop: 20, marginBottom: 10 }}>
                                         <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.choosePattern}</Text>
                                     </View>
@@ -184,8 +182,27 @@ export default class FabricsScreen extends React.Component {
                                     <View style={{ marginTop: 20, marginBottom: 10 }}>
                                         <Text style={{ fontSize: 20, textAlign: 'center' }}>{screen.chooseColor}</Text>
                                     </View>
+                                    <View style={{alignItems:'center'}}>
+                                        <FlatList data={this.getColorData()}
+                                                  numColumns={2}
+                                                  showsHorizontalScrollIndicator={false}
+                                                  renderItem={({ item }) => (
+                                                      <TouchableWithoutFeedback onPress={a=>alert("")}>
+                                                          <View style={{margin:8,flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+                                                              <Checkbox isActive={true} onChangeMode={()=>0} />
+                                                              <View style={{alignItems:'center', justifyContent:'center'}}>
+                                                                  <Image style={{ width: 100, height: 100, resizeMode: 'cover', marginLeft: 5 }}
+                                                                       source={{ uri: item.path }} />
+                                                                  <Text style={{ width: '100%', textAlign: 'center' }}>{item.name}</Text>
+                                                              </View>
+                                                          </View>
+                                                      </TouchableWithoutFeedback>
+                                                  )}
+                                        />
+                                    </View>
                                     <View>
                                         <RadioGroup
+                                            radioType={'checkbox'}
                                             text={screen}
                                             isRTL={strings.isRTL}
                                             data={this.getColorData()}

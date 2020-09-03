@@ -1,42 +1,26 @@
-import React, { Component } from 'react';
-import { View, Alert, Text, Image,Platform, Dimensions,TouchableWithoutFeedback, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import axios from './axios/AxiosInstance';
-import {strings} from "../locales/Language";
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, {Component} from 'react';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Modal,
+  Platform,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
 import FabricsScreen from "./FabricsScreen";
 import ProductsScreen from "./ProductsScreen";
-import Store from "./CommonStore/Store";
-import CartModal from "./components/CartModal";
-import {Button} from "native-base";
+import Store from "../CommonStore/Store";
+import {strings} from "../../locales/Language";
 
 const isIos = Platform.OS == 'ios';
 
 const { width, height } = Dimensions.get('window');
 
-export default class FabricsAndProducts extends Component<Props>{
-
-  static navigationOptions = ({ navigation }) => {
-    const cartCount = navigation.state.params.cartCount?navigation.state.params.cartCount:null;
-    return {
-      headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
-      headerTintColor: '#fff',
-      title: navigation.getParam('title'),
-      headerRight: (
-          <View style={{marginRight: 10}}>
-          <TouchableOpacity onPress={()=>navigation.state.params.showCart?navigation.state.params.showCart():
-            Alert.alert(this.state.language.commonFields.alertTitle, navigation.getParam('error'), [{text: this.state.language.commonFields.okButton}])
-          }>
-            <View style={{padding: 10, flexDirection: 'row'}}>
-              <Icon color="white" name="md-cart" size={25}></Icon>
-              {cartCount?<View style={{backgroundColor: 'white', padding: 5, position: 'absolute', borderRadius: 15,zIndex: 10, marginLeft: 25}}>
-                <Text style={{fontSize: 10, color: '#0451A5'}}>{cartCount}</Text>
-              </View>:null}
-            </View>
-          </TouchableOpacity>
-          </View>
-      )
-    };
-  };
+export default class ProductListing extends Component<Props>{
   constructor(props) {
     super(props);
     this.state = {
@@ -68,10 +52,9 @@ export default class FabricsAndProducts extends Component<Props>{
         ],
       withoutLogin: props.navigation.getParam('withoutLogin', false)
     };
-    this.showCart = this.showCart.bind(this);
-    this.doCheckout = this.doCheckout.bind(this);
     this.props.navigation.setParams({showCart: this.showCart})
   }
+
   componentDidMount() {
     let shopTitle = this.props.navigation.getParam('shopTitle', '');
     let fabricsLabel = this.props.navigation.getParam('fabricsLabel', '');
@@ -98,82 +81,6 @@ export default class FabricsAndProducts extends Component<Props>{
   async getData(){
     this.setState({brands: await Store.getFabrics(),
       products: await Store.getProducts()});
-  }
-
-  showCart(){
-    this.setState({cartVisible: true})
-  }
-
-  updateQuantity(index, amount){
-    var cart2 = Object.assign([], this.state.cart);
-    var product  = cart2[index];
-    product.quantity += amount;
-    var finalCart = [...(cart2.splice(0, index)), product,...(cart2.splice(1, cart2.length))];
-    this.setState(prev=>({cart: finalCart, actualTotalCartItems: prev.actualTotalCartItems+amount}));
-  }
-
-  removeFromCart(quantity, index){
-    tempCart = this.state.cart;
-    actualQuantity  = tempCart[index].quantity;
-    tempCart.splice(index,1);
-    this.setState({
-      cart: tempCart,
-      totalCartItems: this.state.totalCartItems - quantity,
-      actualTotalCartItems: this.state.actualTotalCartItems - actualQuantity
-    });
-    this.props.navigation.setParams({cartCount: this.state.cart.length});
-  }
-
-  doCheckout(){
-    // var screen = this.state.language.fabricScreen;
-    const {inHomeCount, outsideCount, isCountNeeded, noOfPieces, language:{fabricScreen: screen}, withoutLogin} = this.state;
-    const mustBuyProduct = this.props.navigation.getParam('mustBuyProduct', null);
-    const mobileNo    = this.props.navigation.getParam('mobileNo', null);
-    const customerName= this.props.navigation.getParam('customerName', null);
-    const cart        = this.state.cart;
-    let params = {
-      language: this.state.language, inHomeCount, outsideCount, mobileNo, noOfPieces,
-      customerName, fabrics: this.state.brands, cart,
-      measurementDone: this.props.navigation.getParam('measurementDone'),
-      measurement: this.state.measurement, isCountNeeded: isCountNeeded, withoutLogin
-    };
-
-    this.setState({cartVisible : false});
-    let fabricsActualCount = 0;
-    cart.forEach(item=>fabricsActualCount+=(item.isFabric==true)?item.quantity:0);
-    if(mustBuyProduct!=null){
-      if((cart.length>0 && mustBuyProduct) || !mustBuyProduct){
-        if(inHomeCount>0){
-          params.noOfPieces = this.state.noOfPieces;
-          fabricsActualCount>inHomeCount?
-              this.safeAlert(this.state.language.commonFields.alertTitle, screen.moreThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-              fabricsActualCount<inHomeCount?this.safeAlert(this.state.language.commonFields.alertTitle, screen.lessThan(inHomeCount), [{text: this.state.language.commonFields.okButton}]):
-                  fabricsActualCount==inHomeCount?
-                      this.props.navigation.navigate('delivery',params):
-                      this.safeAlert(this.state.language.commonFields.alertTitle, screen.commonError, [{text: this.state.language.commonFields.okButton}])
-        } else {
-          // params.noOfPieces = 0;
-          this.props.navigation.navigate('delivery', params)
-        }
-      } else {
-        Alert.alert(this.state.language.commonFields.alertTitle, strings.fabricScreen.cartEmpty, [{text: this.state.language.commonFields.okButton}])
-      }
-    } else {
-      Alert.alert(this.state.language.commonFields.alertTitle, strings.fabricScreen.commonError, [{text: this.state.language.commonFields.okButton}]);
-    }
-  }
-
-  safeAlert(title, message, buttons){
-    isIos?setTimeout(()=>Alert.alert(title, message, buttons),500):Alert.alert(title, message, buttons);
-  }
-
-  selectionChanged(type){
-    this.setState({selectionChanged: true, changedType: type})
-    setTimeout(()=>this.temp(), 1000);
-  }
-
-  temp(){
-    this.setState({selectionChanged: false, changedType: null});
   }
 
   onChangeTab(activeTabIndex){
@@ -208,26 +115,6 @@ export default class FabricsAndProducts extends Component<Props>{
     const sizeCtrl = {width: 40, height: 40}
     return (
       <SafeAreaView style={{flex:1}}>
-        <CartModal
-            onlyProducts={!this.state.fabricsEnabled}
-            // discountAmount={parseFloat(this.state.discount)}
-            // promoSuccess={this.state.promo_success}
-            // showPromo={()=>{this.setState({showPromo: true})}}
-            // applyPromo={()=>{this.applyPromo()}}
-            // setPromo={(promo)=>this.setState({promo})}
-            // shouldShowPromo={this.state.showPromo}
-            isCountNeeded={this.state.isCountNeeded}
-            fabricsEnabled={this.state.fabricsEnabled}
-            measurement={this.state.measurement}
-            isRTL={isRTL}
-            text={screen}
-            checkout={this.doCheckout}
-            brands={this.state.brands}
-            removeItem={(quantity, index)=>this.removeFromCart(quantity, index)}
-            updateQuantity={(index, amount)=>this.updateQuantity(index, amount)}
-            close={()=>this.setState({cartVisible: false})}
-            visible={this.state.cartVisible}
-            cartItems={this.state.cart}/>
         <FabricPreview ok={screen.previewOKButton} title={this.state.previewTitle} source={this.previewPath} close={()=>this.setState({fabricPreview: false})} visible={this.state.fabricPreview}/>
         <TabbedView
             screen={screen}
@@ -239,7 +126,6 @@ export default class FabricsAndProducts extends Component<Props>{
             <FabricsScreen showCart={()=>this.showCart()} screen={screen} main={this} />,
             <ProductsScreen screen={screen} main={this} isRTL={isRTL}/>
           ]}
-          checkout={this.doCheckout}
         >
         </TabbedView>
       </SafeAreaView>
@@ -292,13 +178,6 @@ const TabbedView=({screen, style, children, activeTabIndex, tabHead, onChangeTab
       </View>
       <View style={{flex:1}}>
         {children[activeTabIndex]}
-      </View>
-      <View style={{marginVertical:10,flexDirection: 'row', justifyContent: 'center' }}>
-        <Button
-            style={{ borderRadius: 15, height:30,  borderWidth: 2, backgroundColor: '#0451A5', width: width*0.8, justifyContent: 'center' }}
-            onPress={checkout}>
-          <Text style={{ fontSize: 18, color: 'white' }}>{screen.checkoutButton}</Text>
-        </Button>
       </View>
     </View>
 )

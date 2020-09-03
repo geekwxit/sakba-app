@@ -27,22 +27,6 @@ export default class Login extends Component {
         this.setImage();
         this.setLanguage();
         Store.getShippingCharges();
-        // this.props.navigation.navigate('review', {
-        //     language: strings,
-        //     order_id: 1531,
-        // })
-        // this.props.navigation.navigate('payment_success', {
-        //     measurement: 3.5,
-        //     language: strings,
-        //     customerName: "Avinash Kumar",
-        //     emailID: undefined,
-        //     orderID: "1896",
-        //     deliveryDate: "2020-07-22"
-        // })
-        // this.props.navigation.navigate('fabrics_and_products', {
-        //         language: strings,
-        //         order_id: 1531,
-        //     })
     }
 
     async setImage() {

@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
-import { FlatList, View, Alert, Text, Image, Platform, Dimensions, TouchableWithoutFeedback, ActivityIndicator, Modal, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { Button } from 'native-base';
-import axios from "./axios/AxiosInstance";
-import RadioGroup from './components/RadioGroupCustom';
-import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import React, {Component} from 'react';
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Image,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { B, I, U } from "./components/TextStyles";
-import Store from "./CommonStore/Store";
+import {B} from "../components/TextStyles";
+import Store from "../CommonStore/Store";
 
 const isIos = Platform.OS == 'ios';
 
