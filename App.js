@@ -20,6 +20,7 @@ import SampleMeasurement from "./src/SampleMeasurementScreen";
 import FabricsAndProducts from "./src/FabricsAndProducts";
 import SingleProduct from "./src/SingleProduct";
 import PaymentSuccess from "./src/PaymentSuccess";
+import ProductListing from "./src/GiftWrapping/ProductListing";
 import {createStackNavigator} from "react-navigation-stack";
 
 const AppNavigator = createStackNavigator(
@@ -40,11 +41,20 @@ const AppNavigator = createStackNavigator(
     sample_measure: SampleMeasurement,
     fabrics_and_products: FabricsAndProducts,
     single_product: SingleProduct,
-    payment_success: PaymentSuccess
+    payment_success: PaymentSuccess,
+    gift_product_listing: {
+        screen: ProductListing,
+        navigationOptions: {
+            title: 'Shop'
+        }
+    }
   },
   {
-      defaultNavigationOptions: {
-        title: ''
+      defaultNavigationOptions:{
+        headerStyle: {
+            backgroundColor: '#0451A5',
+        },
+          headerTintColor:'#fff',
       },
     initialRouteName: 'login',
     // initialRouteName: 'review',

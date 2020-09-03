@@ -149,11 +149,10 @@ const Input = ({ data, onChangeText, keyboardType = '', refCustom, focusNext }) 
     </View>
 )
 
-const Checkbox = ({ onChangeMode, isActive }) => (
+export const Checkbox = ({ onChangeMode, isActive }) => (
     <TouchableWithoutFeedback onPress={onChangeMode}>
         <View style={{ borderWidth: 2, borderRadius: 2, alignItems: 'center', justifyContent: 'center', borderColor: '#0451A5', width: 18, height: 18 }}>
             {isActive && <Image source={require('../img/blue_tick.png')} style={{ resizeMode: 'contain', width: 10, height: 10 }} />}
         </View>
     </TouchableWithoutFeedback>
 )
-
