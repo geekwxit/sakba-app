@@ -4,7 +4,7 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import RadioButton from "./RadioButton";
-const isIos = Platform.OS == 'ios';
+import {isIos} from "../login/Login";
 
 export default class RadioForm extends React.Component {
     constructor(props) {

@@ -3,7 +3,7 @@
  * @Date  19/04/2019
 */
 import React, { Component, useState } from 'react';
-import { ActivityIndicator, Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking, ScrollView, ImageBackground } from 'react-native';
+import { ActivityIndicator, Alert, View, Text, Image, Dimensions, SafeAreaView, TextInput, TouchableOpacity, Linking, ScrollView, ImageBackground, Platform } from 'react-native';
 import { Form, Item, Container, Content, Button, } from 'native-base';
 import axios, { baseURL } from "../axios/AxiosInstance";
 import ImageProgress from 'react-native-image-progress';
@@ -13,9 +13,7 @@ import { strings } from '../../locales/Language'
 import { Language } from '../components/ChangeLanguage';
 import { B } from "../components/TextStyles";
 import Store from "../CommonStore/Store";
-import { Reducer } from 'react-native-router-flux';
-import {isIos} from "../../App";
-
+export const isIos = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
 
 export default class Login extends Component {
@@ -27,22 +25,6 @@ export default class Login extends Component {
         this.setImage();
         this.setLanguage();
         Store.getShippingCharges();
-        // this.props.navigation.navigate('review', {
-        //     language: strings,
-        //     order_id: 1531,
-        // })
-        // this.props.navigation.navigate('payment_success', {
-        //     measurement: 3.5,
-        //     language: strings,
-        //     customerName: "Avinash Kumar",
-        //     emailID: undefined,
-        //     orderID: "1896",
-        //     deliveryDate: "2020-07-22"
-        // })
-        // this.props.navigation.navigate('fabrics_and_products', {
-        //         language: strings,
-        //         order_id: 1531,
-        //     })
     }
 
     async setImage() {
@@ -177,10 +159,6 @@ export default class Login extends Component {
         this.props.navigation.navigate('executive_visitpage', { language: strings });
     }
 
-    visitToShop() {
-        this.props.navigation.navigate('visit_to_shoppage', { language: strings });
-    }
-
     render() {
         let screen = this.state.page;
         Text.defaultProps = Text.defaultProps || {};
@@ -189,7 +167,7 @@ export default class Login extends Component {
         // alert("LOGO: " + this.state.logo.backgroundImage)
         if (!this.state.logoLoaded) {
             return (
-                <SafeAreaView style={{ flex: 1 }} >
+                <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                         <ActivityIndicator size={isIos?'large':40} color={'#0451A5'} />
                     </View>
@@ -241,7 +219,7 @@ export default class Login extends Component {
                                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
                                             <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{screen.or}</Text>
                                         </View>
-                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf:'center' }}>
                                             <Button style={{ backgroundColor: '#0451A5', width: width - 80, height: 40, borderRadius: 10, justifyContent: 'center', }}
                                                 onPress={() => this.props.navigation.navigate('sample_measure', { language: strings, })}>
                                                 <Text style={{ fontSize: 18, color: 'white' }}>{screen.sendSampleButton}</Text>

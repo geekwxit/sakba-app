@@ -210,7 +210,7 @@ export default class ReviewOrder extends Component<props>{
               <ActivityIndicator size={'large'} color={'#0451A5'}/>
               </View>:
               ordersAvailable?
-          (<SafeAreaView>
+          (<SafeAreaView style={{backgroundColor:'#fff'}}>
             <ScrollView style={[styles.dataWrapper, {height:height}]}>
               <View style={{alignItems: 'center', marginTop: 40}}>
                 <View style={[styles.header, {width: WIDTH*2, justifyContent: 'center'}]}>

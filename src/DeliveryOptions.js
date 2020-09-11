@@ -9,7 +9,7 @@ import axios, { baseURL } from "./axios/AxiosInstance";
 import ImageProgress from 'react-native-image-progress';
 import ProgressCircle from 'react-native-progress/Circle';
 import {strings} from "../locales/Language";
-import {isIos} from "../App";
+import {isIos} from "./login/Login";
 const emailRegx=/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const phoneRegx=/^[0-9]*$/
 
@@ -30,7 +30,7 @@ const initialState = {
 export default class DeliveryOptions extends Component<Props>{
 
     static navigationOptions = ({ navigation }) => {
-        others = navigation.getParam('language').isRTL ?
+        var others = navigation.getParam('language').isRTL ?
             { headerRight: <Text style={{ color: 'white', fontSize: 20 % (width * height), padding: 15 }}>{navigation.getParam('language').deliveryScreen.screenTitle}</Text> } :
             { title: navigation.getParam('language').deliveryScreen.screenTitle }
         return {
@@ -264,7 +264,7 @@ export default class DeliveryOptions extends Component<Props>{
         const isRTL = this.state.language.isRTL;
         if (!this.state.logoLoaded) {
             return (
-                <SafeAreaView style={{ flex: 1 }} >
+                <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
                         <ActivityIndicator size={isIos?'large':40} color={'#0451A5'} />
                     </View>
@@ -272,12 +272,9 @@ export default class DeliveryOptions extends Component<Props>{
             )
         }
         return (
-            <SafeAreaView>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                 <ScrollView>
                     <AppLogo source={this.state.logo} logoLoaded={this.state.logoLoaded} height={this.state.imageHeight} />
-                    {/* <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
-                        <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />
-                    </View> */}
                     <View style={{ marginTop: 10, flexDirection: 'column', marginHorizontal: 40 }}>
                         {!this.state.measurementDone && this.state.isCountNeeded && <AddressOption
                             label={screen.sampleLabel}

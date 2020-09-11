@@ -75,7 +75,7 @@ class SampleMeasurement extends Component {
         return (
             <Container>
                 <Content keyboardShouldPersistTaps={'always'}>
-                    <SafeAreaView>
+                    <SafeAreaView style={{backgroundColor: '#fff'}}>
                         <ScrollView style={{ paddingBottom: 30 }}>
                             <View style={{ flex: 1 / 6, flexDirection: 'row', justifyContent: 'center', marginTop: 50 }}>
                                 <Image style={{ width: 80, height: 80 }} source={require('../img/om.png')} />

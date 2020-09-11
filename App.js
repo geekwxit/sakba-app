@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
 import SplashScreen from './src/SplashScreen';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
 
 import Login from './src/login/Login';
 import WelcomeCustomer from './src/WelcomeCustomer';
@@ -20,6 +20,8 @@ import SampleMeasurement from "./src/SampleMeasurementScreen";
 import FabricsAndProducts from "./src/FabricsAndProducts";
 import SingleProduct from "./src/SingleProduct";
 import PaymentSuccess from "./src/PaymentSuccess";
+import ProductListing from "./src/GiftWrapping/ProductListing";
+import {createStackNavigator} from "react-navigation-stack";
 
 const AppNavigator = createStackNavigator(
   {
@@ -39,9 +41,21 @@ const AppNavigator = createStackNavigator(
     sample_measure: SampleMeasurement,
     fabrics_and_products: FabricsAndProducts,
     single_product: SingleProduct,
-    payment_success: PaymentSuccess
+    payment_success: PaymentSuccess,
+    gift_product_listing: {
+        screen: ProductListing,
+        navigationOptions: {
+            title: 'Shop'
+        }
+    }
   },
   {
+      defaultNavigationOptions:{
+        headerStyle: {
+            backgroundColor: '#0451A5',
+        },
+          headerTintColor:'#fff',
+      },
     initialRouteName: 'login',
     // initialRouteName: 'review',
     initialRouteParams: { selected: false }
@@ -78,5 +92,3 @@ export default class App extends Component<Props> {
     }
   }
 }
-
-export const isIos = Platform.OS == 'ios';

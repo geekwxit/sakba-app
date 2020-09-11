@@ -107,7 +107,7 @@ export default class WelcomeCustomer extends Component {
         console.log(customerName, measurementDate, mobileNo)
         return (
             <Content>
-                <SafeAreaView>
+                <SafeAreaView style={{ backgroundColor: '#fff' }} >
                     <ScrollView style={{ paddingBottom: 30 }}>
                         <AppLogo source={this.state.logo} logoLoaded={this.state.logoLoaded} height={this.state.imageHeight} />
                         {/* <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>

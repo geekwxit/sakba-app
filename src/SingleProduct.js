@@ -13,21 +13,21 @@ import {
     SafeAreaView,
     ScrollView,
     TouchableOpacity, TouchableHighlight,
-    TextInput, Picker
+    TextInput,
 } from 'react-native';
 import Store from "./CommonStore/Store";
 import ImageCarousel from "./components/ImageCarousel";
-import { Dropdown } from "react-native-material-dropdown";
 import HTML from "react-native-render-html";
+import Icon from 'react-native-vector-icons/Entypo'
 import { strings } from "../locales/Language";
 
-const isIos = Platform.OS == 'ios';
 const baseURL = 'https://sakba.net/images/product/';
 
 const { width, height } = Dimensions.get('window');
 
 export default class SingleProduct extends Component {
-    state = { productDetail: null, isLoading: false, selectedColor: null, selectedSize: null, gallery: '' };
+    state = { productDetail: null, isLoading: false, selectedColor: null, selectedSize: null, gallery: '',
+        product_type: 'product', giftbox_quantity:0};
     static navigationOptions = ({ navigation }) => {
         return {
             headerStyle: { backgroundColor: '#0451A5', marginLeft: 0 },
@@ -45,7 +45,9 @@ export default class SingleProduct extends Component {
 
     componentDidMount() {
         this.getProductDetails(this.props.navigation.getParam('product_id'));
-
+        const product_type = this.props.navigation.getParam('product_type', 'product');
+        const giftbox_quantity = this.props.navigation.getParam('giftbox_quantity', 0);
+        this.setState({product_type, giftbox_quantity});
     }
     async getProductDetails(id) {
         await Store.getProductDetail(id);
@@ -93,6 +95,35 @@ export default class SingleProduct extends Component {
         }
     }
 
+    fillEmptyItems(n){
+        const empty = [];
+        for(var i=0; i < n; i++){
+            empty.push(<ADD_ITEM_PREVIEW key={i} index={i} onPress={(i)=>alert(i)}/>);
+        }
+        return empty;
+    }
+
+    getGiftBoxItems(n){
+        const {shopTitle, fabricsLabel, productsLabel} = strings.fabricScreen;
+        const params = {
+            measurement: this.props.navigation.getParam('measurement'),
+            language: this.state.language, noOfPieces: 0,
+            productsEnabled: true,
+            shopTitle, fabricsLabel, productsLabel,
+            fabricsEnabled: true,
+            measurementDone: false,
+            mustBuyProduct: true,
+
+        }
+        // return [];
+        // this.fillEmptyItems(this.state.this.state.giftbox_quantity)
+        const empty = [];
+        for(var i=0; i < 5; i++){
+            empty.push(<ADD_ITEM_PREVIEW key={i} index={i} onPress={(i)=>this.props.navigation.push('gift_product_listing', params)}/>);
+        }
+        return empty;
+    }
+
     render() {
         Text.defaultProps = Text.defaultProps || {};
         Text.defaultProps.allowFontScaling = false;
@@ -100,13 +131,13 @@ export default class SingleProduct extends Component {
         const screen = strings.productScreen;
         const isRTL = strings.isRTL;
         const isLoading = !true;
-        const { productDetail } = this.state;
+        const { productDetail, giftbox_items = [] } = this.state;
         // if(!productDetail){productDetail.product_colors = "https://cdn.shopify.com/s/files/1/0193/6253/products/214453713_2000x.jpg?v=1575932136," +
         //     "http://www.modahuarango.es/images/cate_2/640/B-Zebuakuade-Polygonal-Sunglasses-Vintage-Candy-Colored-Glasses-for-Women-Men-Color-A-t3v9Sjx0IZ1Q-kbg0.jpg," +
         //     "https://img1-image.cdnsbg.com/hashImg/a7e6ac6823.jpg_w600h300q80," +
         //     "https://cdn.shopify.com/s/files/1/0972/3844/products/FAIRFAX_46_1024x1024.jpg";}
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} >
                 {isLoading || !productDetail ?
                     <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                         <ActivityIndicator style={{ top: height * 0.4 }} color={'#0451A5'} size={'large'}
@@ -149,10 +180,6 @@ export default class SingleProduct extends Component {
                                 </View>
                             </View>
                             <Text style={{ fontSize: 14, textAlign: isRTL ? 'right' : 'left', marginTop: 5, color: '#0451A5' }}>{productDetail.product_brand}</Text>
-                            {/*{productDetail.product_sizes && <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>*/}
-                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Size: </Text>*/}
-                            {/*    <Picker />*/}
-                            {/*</View>}*/}
                             {productDetail.product_sizes &&
                                 <View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], }}>
                                     <Text style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], marginBottom: 10, fontWeight: 'bold', fontSize: 20, marginTop: 20 }}>{screen.pickSizeLabel}</Text>
@@ -194,22 +221,19 @@ export default class SingleProduct extends Component {
                                         )}
                                     />
                                 </View>}
-                            {/*{productDetail.product_colors &&*/}
-                            {/*<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', marginTop:10}}>*/}
-                            {/*    <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 20}}>Color: </Text>*/}
-                            {/*    <View style={{width:'45%', backgroundColor:'#0451A5', borderRadius:5}}>*/}
-                            {/*    <Picker selectedValue={this.state.selectedColor}*/}
-                            {/*            onValueChange={this.selectColor} style={{color:'#fff'}} enabled={true}>*/}
-                            {/*        <Picker.Item label={'Select Color'} value={null} />*/}
-                            {/*        {productDetail.product_colors.split(',').map(item=>*/}
-                            {/*            <Picker.Item label={item} value={item} />)}*/}
-                            {/*    </Picker>*/}
-                            {/*    </View>*/}
-                            {/*<Dropdown data={productDetail.product_colors.split(',')}*/}
-                            {/*          label={'Choose color'}*/}
-                            {/*          containerStyle={{width:'50%', backgroundColor: '#0451A5', height:50}}*/}
-                            {/*/>*/}
-                            {/*</View>}*/}
+                            {1 &&
+                                <View style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], }}>
+                                    <Text style={{ transform: [{ scaleX: isRTL ? -1 : 1 }], marginBottom: 10, fontWeight: 'bold', fontSize: 20, marginTop: 20 }}>Add Items to Gift Box</Text>
+                                    <FlatList key={2}
+                                              data={this.getGiftBoxItems()}
+                                              // columnWrapperStyle={{margin:10}}
+                                        showsHorizontalScrollIndicator={false}
+                                              numColumns={3}
+                                        renderItem={({ item }) => (
+                                            item
+                                        )}
+                                    />
+                                </View>}
                             <Text style={{ fontWeight: 'bold', fontSize: 20, marginTop: 10 }}>{screen.descLabel}</Text>
                             <HTML html={productDetail.product_disc}
                                 textSelectable={false}
@@ -226,6 +250,15 @@ export default class SingleProduct extends Component {
     }
 }
 
+function ADD_ITEM_PREVIEW({onPress, index}){
+    return (
+        <TouchableWithoutFeedback style={{flex:1, margin:5}} onPress={()=>onPress(index)}>
+            <View style={{borderRadius:5, margin:10, marginTop:0, marginLeft:0, padding:width/9.5,borderColor:'#cbcbcb', borderWidth:2, borderStyle: 'dashed'}}>
+                <Icon name={'plus'} size={25} color={'#cbcbcb'} />
+            </View>
+        </TouchableWithoutFeedback>
+    )
+}
 function SelectedView({ enabled }) {
     return enabled ? <View style={{
         height: '100%', width: '100%', position: 'absolute',
